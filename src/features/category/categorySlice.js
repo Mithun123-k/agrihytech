@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getCategoriesAPI, getBrandsByCategoryAPI, getmyCategoriesAPI, getMyBrandsByCategoryAPI, getProductsByBrandAPI, getPublicCategoriesAPI } from "./categoryAPI";
+import { getCategoriesAPI, getBrandsByCategoryAPI, getmyCategoriesAPI, getMyBrandsByCategoryAPI, getProductsByBrandAPI, getPublicCategoriesAPI, getCategoriesByRoleAPI } from "./categoryAPI";
 
 
 export const getPublicCategories = createAsyncThunk(
@@ -48,6 +48,22 @@ export const getMyCategories = createAsyncThunk(
   }
 );
 
+// 🔥 GET CATEGORIES BY ROLE
+export const getCategoriesByRole = createAsyncThunk(
+  "category/getCategoriesByRole",
+  async (_, thunkAPI) => {
+    try {
+      const res = await getCategoriesByRoleAPI();
+
+      return res.data.categories;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message ||
+        "Failed to fetch categories"
+      );
+    }
+  }
+);
 
 // brands by Product
 
@@ -223,6 +239,20 @@ const categorySlice = createSlice({
       })
 
       .addCase(getPublicCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getCategoriesByRole.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getCategoriesByRole.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload || [];
+      })
+
+      .addCase(getCategoriesByRole.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

@@ -17,7 +17,7 @@ import ProductHeader from '../../components/product/ProductHeader';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AddBrandModal from '../brands/AddBrandModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBrandsByCategory, getCategories } from '../../features/category/categorySlice';
+import { getBrandsByCategory, getCategoriesByRole } from '../../features/category/categorySlice';
 import { createProduct, updateProduct } from '../../features/product/productSlice';
 import { createBrand } from '../../features/brands/brandSlice';
 
@@ -236,7 +236,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
 
     // 🔥 API CALL
     useEffect(() => {
-        dispatch(getCategories());
+        dispatch(getCategoriesByRole());
     }, []);
 
     const pickBrandImage = async () => {

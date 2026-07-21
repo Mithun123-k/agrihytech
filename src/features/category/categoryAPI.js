@@ -4,6 +4,10 @@ export const getCategoriesAPI = () => {
   return API.get("/categories"); // your route
 };
 
+export const getCategoriesByRoleAPI = () => {
+  return API.get("categories/categories-by-role");
+};
+
 export const getPublicCategoriesAPI = () => {
   return API.get("/categories/public");
 };
