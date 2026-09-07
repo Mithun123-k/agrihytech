@@ -17,7 +17,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { useDispatch, useSelector } from "react-redux";
-import { registerB2B } from "../../features/auth/authSlice";
+import { registerB2B, registerCompany } from "../../features/auth/authSlice";
 
 import FormikInput from "../../components/auth/FormikInput";
 import PasswordInput from "../../components/auth/PasswordInput";
@@ -47,9 +47,22 @@ const schema = Yup.object().shape({
     .required("Category is required"),
 });
 
+const companySchema = Yup.object().shape({
+  companyName: Yup.string().trim().min(2, "Company name required").required("Company name required"),
+  contactPerson: Yup.string().trim().min(2, "Contact person required").required("Contact person required"),
+  phone: Yup.string().matches(/^[0-9]{10}$/, "Invalid phone number").required("Phone required"),
+  email: Yup.string().trim().email("Invalid email address"),
+  state: Yup.string().trim().required("State required"),
+  district: Yup.string().trim().min(2, "District required").required("District required"),
+  village: Yup.string().trim().min(2, "City/Village required").required("City/Village required"),
+  pincode: Yup.string().matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode").required("Pincode required"),
+});
+
 export default function RegisterScreen({
   navigation,
+  route,
 }) {
+  const isCompany = route?.params?.role === "COMPANY";
   const dispatch = useDispatch();
 
   const { loading } = useSelector(
@@ -66,8 +79,8 @@ export default function RegisterScreen({
 
   // ✅ GET CATEGORIES
   useEffect(() => {
-    dispatch(getPublicCategories());
-  }, []);
+    if (!isCompany) dispatch(getPublicCategories());
+  }, [dispatch, isCompany]);
 
   return (
     <ImageBackground
@@ -77,6 +90,11 @@ export default function RegisterScreen({
     >
       <Formik
         initialValues={{
+          companyName: "",
+          contactPerson: "",
+          email: "",
+          gstNumber: "",
+          address: "",
           firmName: "",
           proprietorName: "",
           phone: "",
@@ -87,11 +105,23 @@ export default function RegisterScreen({
           pincode: "",
           categories: [],
         }}
-        validationSchema={schema}
+        validationSchema={isCompany ? companySchema : schema}
         onSubmit={async (values) => {
           try {
+            const registerAccount = isCompany ? registerCompany : registerB2B;
             const result = await dispatch(
-              registerB2B({
+              registerAccount(isCompany ? {
+                mobile: values.phone,
+                companyName: values.companyName.trim(),
+                contactPerson: values.contactPerson.trim(),
+                email: values.email.trim(),
+                gstNumber: values.gstNumber.trim(),
+                address: values.address.trim(),
+                state: values.state.trim(),
+                district: values.district.trim(),
+                village: values.village.trim(),
+                pincode: values.pincode,
+              } : {
                 mobile: values.phone,
 
                 firmName: values.firmName,
@@ -117,7 +147,7 @@ export default function RegisterScreen({
             );
 
             if (
-              registerB2B.fulfilled.match(
+              registerAccount.fulfilled.match(
                 result
               )
             ) {
@@ -178,8 +208,7 @@ export default function RegisterScreen({
 
             {/* 📝 Title */}
             <Text style={styles.title}>
-              Start your smart farming
-              journey 🌾
+              {isCompany ? "Register your company" : "Start your smart farming journey 🌾"}
             </Text>
 
             {/* ================= FORM ================= */}
@@ -196,16 +225,16 @@ export default function RegisterScreen({
             >
               {/* Firm Name */}
               <FormikInput
-                name="firmName"
-                label="Firm Name"
-                placeholder="Enter your firm name"
+                name={isCompany ? "companyName" : "firmName"}
+                label={isCompany ? "Company Name" : "Firm Name"}
+                placeholder={isCompany ? "Enter your company name" : "Enter your firm name"}
               />
 
               {/* Proprietor */}
               <FormikInput
-                name="proprietorName"
-                label="Proprietor Name"
-                placeholder="Proprietor name"
+                name={isCompany ? "contactPerson" : "proprietorName"}
+                label={isCompany ? "Contact Person" : "Proprietor Name"}
+                placeholder={isCompany ? "Contact person name" : "Proprietor name"}
               />
 
               {/* Phone */}
@@ -225,7 +254,15 @@ export default function RegisterScreen({
 
               {/* ================= CATEGORY ================= */}
 
-              <View style={{ marginTop: scale(2) }}>
+              {isCompany && (
+                <>
+                  <FormikInput name="email" label="Email (optional)" placeholder="Company email" keyboardType="email-address" autoCapitalize="none" />
+                  <FormikInput name="gstNumber" label="GST Number (optional)" placeholder="GST number" autoCapitalize="characters" />
+                  <FormikInput name="address" label="Address (optional)" placeholder="Registered address" />
+                </>
+              )}
+
+              {!isCompany && <View style={{ marginTop: scale(2) }}>
                 <Text style={styles.locationTitle}>
                   Categories{" "}
                   <Text
@@ -287,6 +324,7 @@ export default function RegisterScreen({
                   )}
               </View>
 
+              }
               {/* ================= LOCATION ================= */}
 
               <View style={styles.locationBox}>

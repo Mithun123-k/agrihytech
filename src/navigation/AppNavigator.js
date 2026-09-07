@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
+import CompanyNavigator from './CompanyNavigator';
 import SplashScreen from '../screens/auth/SplashScreen';
 
 import { loadUser, logout } from '../features/auth/authSlice';
@@ -39,9 +40,9 @@ if (appLoading || !minTimeDone) {
 
   return (
     <NavigationContainer>
-     {isAuthenticated &&
+     {isAuthenticated && user?.role === 'COMPANY' ? <CompanyNavigator /> : isAuthenticated &&
     (
-      user?.role !== "B2B" ||
+      (user?.role !== "B2B" && user?.role !== "COMPANY") ||
       user?.subscription?.isActive === true
     ) ? (
       <MainNavigator />

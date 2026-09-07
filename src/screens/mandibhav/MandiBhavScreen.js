@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,14 @@ import {
   Dimensions,
   SafeAreaView,
   FlatList,
-  Image,
   StatusBar,
   Platform,
+  TextInput,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import { getMandiPrices, getMandiCommodities, mandiError } from '../../features/mandi/mandiAPI';
 
 const { width, height } = Dimensions.get('window');
 
@@ -95,7 +97,29 @@ const mandiData = [
 
 /* -------------------- Component -------------------- */
 
-const MandiBhavScreen = ({navigation}) => {
+const MandiBhavScreen = ({navigation, route}) => {
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [commodity, setCommodity] = useState('');
+  const [appliedCommodity, setAppliedCommodity] = useState('');
+  const [commodityOptions, setCommodityOptions] = useState([]);
+  const load = useCallback(async (selectedCommodity = '') => {
+    setLoading(true); setError('');
+    try { const [prices, options] = await Promise.all([getMandiPrices({ ...route.params, commodity: selectedCommodity }), getMandiCommodities(route.params)]); setRecords(prices); setCommodityOptions(options); }
+    catch (reason) { setError(mandiError(reason)); }
+    finally { setLoading(false); }
+  }, [route.params]);
+  useEffect(() => { load(); }, [load]);
+  const commodities = commodityOptions.length ? commodityOptions : [...new Set(records.map(item => item.commodity).filter(Boolean))];
+  const visibleRecords = appliedCommodity ? records.filter(item => item.commodity === appliedCommodity) : records;
+  const mandiData = visibleRecords.map((item, index) => ({
+    id: `${item.commodity || 'commodity'}-${index}`,
+    name: item.commodity || item.variety || 'Commodity',
+    hindi: item.market || route.params?.market || '',
+    price: `₹ ${item.modal_price || item.max_price || item.min_price || '—'} / Quintal`,
+    image: require('../../assets/images/banana.png'),
+  }));
   /* -------------------- Render Item -------------------- */
 
   const renderItem = ({ item }) => {
@@ -105,11 +129,7 @@ const MandiBhavScreen = ({navigation}) => {
         style={styles.card}
       >
         {/* Left Image */}
-        <Image
-          source={ item.image }
-          style={styles.itemImage}
-          resizeMode="contain"
-        />
+        <View style={styles.itemIcon}><Icon name="leaf-outline" size={moderateScale(30)} color="#2FA52F" /></View>
 
         {/* Center Content */}
         <View style={styles.centerContent}>
@@ -195,12 +215,22 @@ const MandiBhavScreen = ({navigation}) => {
           adjustsFontSizeToFit
           style={styles.headerTitle}
         >
-          Ch. Dadri Mandi Bhav
+          {route.params?.market || 'Mandi Bhav'}
         </Text>
+      </View>
+
+      <View style={styles.filters}>
+        <Text style={styles.filterTitle}>Find Mandi Prices</Text>
+        <Text style={styles.filterSub}>{route.params?.district || 'Selected district'} · {route.params?.market || 'Selected mandi'}</Text>
+        <View style={styles.picker}><Picker style={styles.pickerText} dropdownIconColor="#222" selectedValue={commodity} onValueChange={setCommodity}><Picker.Item color="#222" label="Select Commodity" value="" />{commodities.map(item => <Picker.Item color="#222" key={item} label={item} value={item} />)}</Picker></View>
+        <View style={styles.filterActions}><TouchableOpacity style={styles.resetButton} onPress={() => { setCommodity(''); setAppliedCommodity(''); setRecords([]); load(''); }}><Text>Reset</Text></TouchableOpacity><TouchableOpacity style={styles.searchButton} onPress={() => { setAppliedCommodity(commodity); load(commodity); }}><Icon name="search" size={18} color="#FFF" /><Text style={styles.searchText}>Search Prices</Text></TouchableOpacity></View>
       </View>
 
       {/* -------------------- Scrollable List -------------------- */}
 
+      {loading ? <Text style={styles.message}>Loading latest mandi prices...</Text> : null}
+      {error ? <TouchableOpacity onPress={load}><Text style={styles.error}>{error}  Tap to retry</Text></TouchableOpacity> : null}
+      {!loading && !error && !mandiData.length ? <Text style={styles.message}>No prices found for this location.</Text> : null}
       <FlatList
         data={mandiData}
         keyExtractor={item => item.id}
@@ -415,4 +445,16 @@ const styles = StyleSheet.create({
 
     textAlign: 'right',
   },
+  itemIcon: { width: moderateScale(58), height: moderateScale(58), borderRadius: moderateScale(16), backgroundColor: '#EAF7EA', alignItems: 'center', justifyContent: 'center' },
+  message: { textAlign: 'center', color: '#555', paddingHorizontal: 20, paddingVertical: 20 },
+  error: { textAlign: 'center', color: '#B42318', paddingHorizontal: 20, paddingVertical: 20 },
+  filters: { backgroundColor: '#FFF', marginHorizontal: 16, marginBottom: 16, padding: 16, borderRadius: 20, elevation: 2 },
+  filterTitle: { fontSize: 20, fontWeight: '800', color: '#111' },
+  filterSub: { fontSize: 13, color: '#666', marginTop: 4, marginBottom: 10 },
+  picker: { borderWidth: 1, borderColor: '#E1E5E1', borderRadius: 14, overflow: 'hidden' },
+  pickerText: { color: '#222' },
+  filterActions: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12, gap: 10 },
+  resetButton: { borderWidth: 1, borderColor: '#DDE3DD', borderRadius: 18, paddingHorizontal: 18, paddingVertical: 11 },
+  searchButton: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#16A34A', borderRadius: 18, paddingHorizontal: 18, paddingVertical: 11 },
+  searchText: { color: '#FFF', fontWeight: '700' },
 });

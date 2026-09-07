@@ -61,6 +61,8 @@ const RoleCard = ({
         { backgroundColor },
       ]}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Continue as ${title}`}
     >
       <Image
         source={image}
@@ -153,6 +155,15 @@ const IntroScreen = ({ navigation }) => {
                   'Login',
                   { role: 'B2B' },
                 )
+              }
+            />
+            <RoleCard
+              title="Company"
+              description="Showcase your brands and products, and connect with sellers and farmers."
+              image={require('../../assets/images/company.png')}
+              backgroundColor="#E5EDF5"
+              onPress={() =>
+                navigation.navigate('Login', { role: 'COMPANY' })
               }
             />
           </View>
@@ -290,6 +301,7 @@ const styles = StyleSheet.create({
 
     marginTop: hp(1.8),
   },
+
 
   cardTitle: {
     fontSize: responsiveFont(20),

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const CategorySection = ({ data = [], navigation, role }) => {
@@ -69,7 +70,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
               </View>
             </View>
 
-            {role !== 'B2C' &&
+            {role !== 'B2C' && role !== 'COMPANY' &&
               <View style={[styles.cardFooter, { gap: 5 }]}>
 
                 <TouchableOpacity
@@ -99,7 +100,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
             // key={item._id || index}
             style={styles.card}
             activeOpacity={0.5}
-            onPress={() =>  navigation.navigate("SelectLocationScreen") }
+            onPress={() => role === 'COMPANY' ? navigation.getParent()?.navigate('SelectLocationScreen') : navigation.navigate('SelectLocationScreen') }
           >
 
             {/* 🔥 IMAGE (DYNAMIC) */}
@@ -127,6 +128,11 @@ const CategorySection = ({ data = [], navigation, role }) => {
            
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={() => role === 'COMPANY' ? navigation.getParent()?.navigate('AnudanYojanaScreen') : navigation.navigate('AnudanYojanaScreen')}>
+            <View style={styles.anudanImage}><Ionicons name="ribbon-outline" size={48} color="#168A45" /></View>
+            <Text style={[styles.name, { textAlign: 'center', width: '100%', fontSize: 16 }]}>Anudan Yojna</Text>
+          </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -146,6 +152,7 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   img: { width: '100%', height: 107, borderRadius: 12 },
+  anudanImage: { width: '100%', height: 107, borderRadius: 12, backgroundColor: '#E2F7E8', alignItems: 'center', justifyContent: 'center' },
   name: { fontWeight: 'bold', marginTop: 8, width: '70%' },
   count: { color: 'orange', marginTop: 4 },
   sell: {

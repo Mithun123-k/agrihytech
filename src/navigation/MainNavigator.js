@@ -20,6 +20,7 @@ import SelectMandiScreen from '../screens/mandibhav/SelectMandiScreen'
 import MandiBhavScreen from '../screens/mandibhav/MandiBhavScreen'
 import PremiumScreen from '../screens/auth/PremiumScreen';
 import DeleteAccountScreen from '../screens/profile/DeleteAccountScreen';
+import AnudanYojanaScreen, { AnudanYojanaDetails } from '../screens/anudan/AnudanYojanaScreen';
 
 
 
@@ -48,6 +49,8 @@ const MainNavigator = () => {
       <Stack.Screen name='MandiBhavScreen' component={MandiBhavScreen} />
       <Stack.Screen name='PremiumScreen' component={PremiumScreen} />
       <Stack.Screen name='DeleteAccountScreen' component={DeleteAccountScreen} />
+      <Stack.Screen name='AnudanYojanaScreen' component={AnudanYojanaScreen} />
+      <Stack.Screen name='AnudanYojanaDetails' component={AnudanYojanaDetails} />
       
 
 

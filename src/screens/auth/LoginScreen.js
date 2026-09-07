@@ -208,6 +208,7 @@ const LoginScreen = ({
                   onPress={() =>
                     navigation.navigate(
                       'RegisterScreen',
+                      { role },
                     )
                   }
                   style={styles.link}

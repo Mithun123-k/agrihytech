@@ -5,6 +5,7 @@ import {
   sendOtpAPI,
   verifyOtpAPI,
   registerB2BAPI,
+  registerCompanyAPI,
   getMeAPI,
   updateProfileAPI,
   requestAccountDeletionAPI,
@@ -68,6 +69,20 @@ export const registerB2B = createAsyncThunk(
 );
 
 // 🔹 LOAD USER (AUTO LOGIN)
+export const registerCompany = createAsyncThunk(
+  "auth/registerCompany",
+  async (data, thunkAPI) => {
+    try {
+      const res = await registerCompanyAPI(data);
+      return { token: res.data.token, user: res.data.user };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.error || err.response?.data?.message || "Company registration failed"
+      );
+    }
+  }
+);
+
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, thunkAPI) => {
@@ -220,6 +235,21 @@ const authSlice = createSlice({
       })
 
       // LOAD USER
+      .addCase(registerCompany.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerCompany.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.isRegistered = true;
+      })
+      .addCase(registerCompany.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(loadUser.pending, (state) => {
         state.appLoading = true;
       })

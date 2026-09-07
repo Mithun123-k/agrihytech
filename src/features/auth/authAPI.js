@@ -15,6 +15,10 @@ export const registerB2BAPI = (data) => {
   return API.post("/auth/register-b2b", data);
 };
 
+export const registerCompanyAPI = (data) => {
+  return API.post("/auth/register-company", data);
+};
+
 // 🔹 Get current user
 export const getMeAPI = () => {
   return API.get("/auth/me");

@@ -79,7 +79,8 @@ const SelectLocationScreen = ({navigation}) => {
   const handleNext = () => {
     console.log('Selected State:', getStateName());
     console.log('Selected District:', selectedDistrict);
-    navigation.navigate('SelectMandiScreen')
+    if (!selectedState || !selectedDistrict) return;
+    navigation.navigate('SelectMandiScreen', { state: getStateName(), district: selectedDistrict });
   };
 
   /* -------------------- Render Item -------------------- */

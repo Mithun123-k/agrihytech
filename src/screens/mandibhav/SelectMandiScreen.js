@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   FlatList,
   StatusBar,
 } from 'react-native';
+import { getMandiMarkets, mandiError } from '../../features/mandi/mandiAPI';
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,44 +28,19 @@ const moderateScale = (size, factor = 0.5) =>
 
 const isTablet = width >= 768;
 
-/* -------------------- Dummy Data -------------------- */
-
-const mandiList = [
-  {
-    id: '1',
-    name: 'Kherli',
-    color: '#F5A623',
-  },
-  {
-    id: '2',
-    name: 'Alwar (F&V)',
-    color: '#2F3B73',
-  },
-  {
-    id: '3',
-    name: 'Alwar',
-    color: '#E63946',
-  },
-  {
-    id: '4',
-    name: 'Khedli',
-    color: '#5E6B4E',
-  },
-  {
-    id: '5',
-    name: 'Khairthal',
-    color: '#4B8B2C',
-  },
-  {
-    id: '6',
-    name: 'Bagar Meo',
-    color: '#3B145B',
-  },
-];
-
 /* -------------------- Component -------------------- */
 
-const SelectMandiScreen = ({navigation}) => {
+const SelectMandiScreen = ({navigation, route}) => {
+  const [mandiList, setMandiList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const loadMarkets = useCallback(async () => {
+    setLoading(true); setError('');
+    try { setMandiList(await getMandiMarkets(route.params)); }
+    catch (reason) { setError(mandiError(reason)); }
+    finally { setLoading(false); }
+  }, [route.params]);
+  useEffect(() => { loadMarkets(); }, [loadMarkets]);
   /* -------------------- Render Item -------------------- */
 
   const renderItem = ({ item }) => {
@@ -72,6 +48,7 @@ const SelectMandiScreen = ({navigation}) => {
       <TouchableOpacity
         activeOpacity={0.8}
         style={styles.card}
+        onPress={() => navigation.navigate('MandiBhavScreen', { ...route.params, market: item.name })}
       >
         {/* Left Circle */}
         <View style={styles.circleWrapper}>
@@ -110,7 +87,7 @@ const SelectMandiScreen = ({navigation}) => {
           {/* Title */}
           <Text style={styles.title}>
             Select <Text style={styles.greenText}>Mandi</Text>{' '}
-            <Text style={styles.greenText}>( Alwar )</Text>
+            <Text style={styles.greenText}></Text>
           </Text>
 
           {/* Subtitle */}
@@ -120,6 +97,9 @@ const SelectMandiScreen = ({navigation}) => {
           </Text>
 
           {/* List */}
+          {loading ? <Text style={styles.message}>Loading mandis...</Text> : null}
+          {error ? <TouchableOpacity onPress={loadMarkets}><Text style={styles.error}>{error}  Tap to retry</Text></TouchableOpacity> : null}
+          {!loading && !error && !mandiList.length ? <Text style={styles.message}>No mandis found for this district.</Text> : null}
           <FlatList
             data={mandiList}
             keyExtractor={item => item.id}
@@ -135,7 +115,7 @@ const SelectMandiScreen = ({navigation}) => {
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.button}
-          onPress={()=>navigation.navigate('MandiBhavScreen')}
+          onPress={()=>navigation.navigate('MandiBhavScreen', route.params)}
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
@@ -298,4 +278,6 @@ const styles = StyleSheet.create({
 
     fontWeight: '700',
   },
+  message: { textAlign: 'center', color: '#555', paddingVertical: 20 },
+  error: { textAlign: 'center', color: '#B42318', paddingVertical: 20 },
 });
