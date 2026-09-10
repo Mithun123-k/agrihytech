@@ -33,18 +33,19 @@ export async function getCompanyCategories() {
   return (Array.isArray(data) ? data : data.categories || []).map(category => ({ ...category, _id: idOf(category) }));
 }
 export async function getCompanyProducts() {
-  const brands = await getCompanyBrands();
-  const results = [];
-  // Keep requests bounded even for companies with many brands.
-  for (const brand of brands) {
-    const products = await allPages(`/brands/${brand._id}/my-products`, 'products');
-    results.push(...products.map(product => ({
-      ...product,
-      brand: [brand],
-      category: product.category || brand.category,
-    })));
+  try {
+    return await allPages('/products/company/mine', 'products');
+  } catch (error) {
+    if (error?.response?.status !== 404) throw error;
+    const [profile, products] = await Promise.all([
+      getCompanyProfile(),
+      allPages('/products', 'products'),
+    ]);
+    return products.filter(product =>
+      idOf(product.companyBrand) === profile._id ||
+      idOf(product.createdBy) === profile._id
+    );
   }
-  return [...new Map(results.map(product => [product._id, product])).values()];
 }
 
 export function appendCompanyImage(form, key, asset) {

@@ -13,7 +13,7 @@ const loadDashboard = async () => {
   return { profile, brands, products, dealers };
 };
 const companyMenu = [
-  ['My Brands', 'CompanyBrands'], ['My Products', 'CompanyProducts'], ['My Dealers', 'CompanyDealers'],
+  ['My Products', 'CompanyProducts'], ['My Dealers', 'CompanyDealers'],
   ['Subscription', 'CompanySubscription'], ['Edit Profile', 'CompanySettings'],
 ];
 export function subscriptionActive(subscription) {
@@ -149,7 +149,7 @@ export function CompanyProfile({ navigation }) {
   </View>;
 }
 
-const profileIcons = { CompanyBrands: 'pricetags-outline', CompanyProducts: 'cube-outline', CompanyDealers: 'people-outline', CompanySubscription: 'card-outline', CompanySettings: 'create-outline' };
+const profileIcons = { CompanyProducts: 'cube-outline', CompanyDealers: 'people-outline', CompanySubscription: 'card-outline', CompanySettings: 'create-outline' };
 const profileStyles = {
   container: { flex: 1, backgroundColor: '#EDF2E9' },
   background: { position: 'absolute', top: 0, left: 0, right: 0, height: 210 },

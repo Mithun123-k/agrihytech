@@ -57,24 +57,24 @@ const ProductDetailsScreen = ({ navigation, route }) => {
 
   useEffect(() => {
 
-    if (
-      productId &&
+    const hasLocation =
       location?.latitude !== null &&
-      location?.longitude !== null
-    ) {
+      location?.longitude !== null;
+
+    if (productId && (user?.role === "COMPANY" || hasLocation)) {
 
       dispatch(
         getProductById({
           productId,
           role: user?.role,
-          lat: location.latitude,
-          lng: location.longitude,
+          lat: hasLocation ? location.latitude : undefined,
+          lng: hasLocation ? location.longitude : undefined,
         })
       );
 
     }
 
-  }, [productId, location]);
+  }, [productId, location, dispatch, user?.role]);
 
   if (loading || !productDetails) {
     return <Text style={{ textAlign: "center", marginTop: 50 }}>Loading...</Text>;
@@ -94,7 +94,7 @@ const ProductDetailsScreen = ({ navigation, route }) => {
             {/* </SafeAreaView> */}
 
             <ProductInfoCard data={productDetails} />
-            {
+            {/* {
               user?.role !== "B2B" && <>
                 <UsageSection data={productDetails} />
                 <BenefitsSection data={productDetails} />
@@ -102,22 +102,24 @@ const ProductDetailsScreen = ({ navigation, route }) => {
                 <SpecificationSection data={productDetails} />
                 <SafetySection data={productDetails} />
               </>
-            }
+            } */}
 
 
-            <StoreCard data={productDetails} role={user?.role} />
+            {user?.role !== "COMPANY" && <StoreCard data={productDetails} role={user?.role} />}
 
           </>
         }
       />
 
       {/* Bottom Fixed Button */}
-      <View style={styles.bottomBar}>
-        <View style={styles.connectBtn}>
-          <Icon name="phone-call" size={18} color="#FFFFFF" />
-          <Text style={styles.callText}>Connect to Nearest Seller</Text>
+      {user?.role !== "COMPANY" && (
+        <View style={styles.bottomBar}>
+          <View style={styles.connectBtn}>
+            <Icon name="phone-call" size={18} color="#FFFFFF" />
+            <Text style={styles.callText}>Connect to Nearest Seller</Text>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };

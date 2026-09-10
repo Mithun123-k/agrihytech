@@ -135,7 +135,7 @@ const IntroScreen = ({ navigation }) => {
             <RoleCard
               title="Farmer"
               description="Find pesticides, brands, and nearby sellers for your crops."
-              image={require('../../assets/images/intro1.png')}
+              image={require('../../assets/images/farmer.jpeg')}
               backgroundColor="#E7F0E5"
               onPress={() =>
                 navigation.navigate(
@@ -148,7 +148,7 @@ const IntroScreen = ({ navigation }) => {
             <RoleCard
               title="Seller"
               description="List products, connect with farmers, and manage availability."
-              image={require('../../assets/images/intro.png')}
+              image={require('../../assets/images/seller.jpeg')}
               backgroundColor="#F3E9DD"
               onPress={() =>
                 navigation.navigate(
@@ -160,7 +160,7 @@ const IntroScreen = ({ navigation }) => {
             <RoleCard
               title="Company"
               description="Showcase your brands and products, and connect with sellers and farmers."
-              image={require('../../assets/images/company.png')}
+              image={require('../../assets/images/company.jpeg')}
               backgroundColor="#E5EDF5"
               onPress={() =>
                 navigation.navigate('Login', { role: 'COMPANY' })
@@ -284,14 +284,16 @@ const styles = StyleSheet.create({
 
     height:
       width < 360
-        ? hp(18)
+        ? hp(20)
         : width < 420
-        ? hp(18)
-        : hp(20),
+        ? hp(20)
+        : hp(24),
 
     borderRadius: wp(5),
 
     resizeMode: 'cover',
+
+    objectPosition: 'top',
   },
 
   cardContent: {

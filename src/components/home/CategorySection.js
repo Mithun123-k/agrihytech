@@ -23,8 +23,8 @@ const CategorySection = ({ data = [], navigation, role }) => {
           <TouchableOpacity
             key={item._id || index}
             style={styles.card}
-            activeOpacity={role === 'B2C' ? 0.5 : 1}
-            onPress={() => role === 'B2C' ? navigation.navigate("UserProduct", { categoryId: item._id, categoryName: item.name, categoryImage: item.image }) : null }
+            activeOpacity={role === 'B2C' || role === 'COMPANY' ? 0.5 : 1}
+            onPress={() => role === 'B2C' || role === 'COMPANY' ? navigation.navigate("UserProduct", { categoryId: item._id, categoryName: item.name, categoryImage: item.image }) : null }
           >
 
             {/* 🔥 IMAGE (DYNAMIC) */}

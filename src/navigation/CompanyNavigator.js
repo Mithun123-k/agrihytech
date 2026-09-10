@@ -12,6 +12,9 @@ import AnudanYojanaScreen, { AnudanYojanaDetails } from '../screens/anudan/Anuda
 import SelectLocationScreen from '../screens/mandibhav/SelectLocationScreen';
 import SelectMandiScreen from '../screens/mandibhav/SelectMandiScreen';
 import MandiBhavScreen from '../screens/mandibhav/MandiBhavScreen';
+import UserProductsScreen from '../screens/product/UserProductScreen';
+import UserBrandScreen from '../screens/home/UserBrandScreen';
+import ProductDetailsScreen from '../screens/product/ProductDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,6 +39,9 @@ export default function CompanyNavigator() {
     <Stack.Screen name="CompanyProducts" component={CompanyProducts} />
     <Stack.Screen name="CompanyProductForm" component={CompanyProductForm} />
     <Stack.Screen name="CompanyProductDetails" component={CompanyProductDetails} />
+    <Stack.Screen name="UserProduct" component={UserProductsScreen} />
+    <Stack.Screen name="UserBrandScreen" component={UserBrandScreen} />
+    <Stack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
     <Stack.Screen name="CompanyDealers" component={CompanyDealers} />
     <Stack.Screen name="CompanyDealerDetails" component={CompanyDealerDetails} />
     <Stack.Screen name="CompanySettings" component={CompanySettings} />

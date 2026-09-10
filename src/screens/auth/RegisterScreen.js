@@ -51,11 +51,7 @@ const companySchema = Yup.object().shape({
   companyName: Yup.string().trim().min(2, "Company name required").required("Company name required"),
   contactPerson: Yup.string().trim().min(2, "Contact person required").required("Contact person required"),
   phone: Yup.string().matches(/^[0-9]{10}$/, "Invalid phone number").required("Phone required"),
-  email: Yup.string().trim().email("Invalid email address"),
-  state: Yup.string().trim().required("State required"),
-  district: Yup.string().trim().min(2, "District required").required("District required"),
-  village: Yup.string().trim().min(2, "City/Village required").required("City/Village required"),
-  pincode: Yup.string().matches(/^[0-9]{6}$/, "Enter a valid 6-digit pincode").required("Pincode required"),
+  email: Yup.string().trim().email("Invalid email address").required("Email required"),
 });
 
 export default function RegisterScreen({
@@ -115,12 +111,6 @@ export default function RegisterScreen({
                 companyName: values.companyName.trim(),
                 contactPerson: values.contactPerson.trim(),
                 email: values.email.trim(),
-                gstNumber: values.gstNumber.trim(),
-                address: values.address.trim(),
-                state: values.state.trim(),
-                district: values.district.trim(),
-                village: values.village.trim(),
-                pincode: values.pincode,
               } : {
                 mobile: values.phone,
 
@@ -255,11 +245,7 @@ export default function RegisterScreen({
               {/* ================= CATEGORY ================= */}
 
               {isCompany && (
-                <>
-                  <FormikInput name="email" label="Email (optional)" placeholder="Company email" keyboardType="email-address" autoCapitalize="none" />
-                  <FormikInput name="gstNumber" label="GST Number (optional)" placeholder="GST number" autoCapitalize="characters" />
-                  <FormikInput name="address" label="Address (optional)" placeholder="Registered address" />
-                </>
+                <FormikInput name="email" label="Email" placeholder="Company email" keyboardType="email-address" autoCapitalize="none" />
               )}
 
               {!isCompany && <View style={{ marginTop: scale(2) }}>
@@ -327,7 +313,7 @@ export default function RegisterScreen({
               }
               {/* ================= LOCATION ================= */}
 
-              <View style={styles.locationBox}>
+              {!isCompany && <View style={styles.locationBox}>
                 <Text
                   style={styles.locationTitle}
                 >
@@ -365,7 +351,7 @@ export default function RegisterScreen({
                   placeholder="Pincode"
                   keyboardType="number-pad"
                 />
-              </View>
+              </View>}
             </ScrollView>
 
             {/* ================= BUTTON ================= */}
