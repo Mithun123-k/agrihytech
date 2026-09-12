@@ -29,7 +29,7 @@ export async function getCompanyProfile() {
 }
 export const getCompanyBrands = () => allPages('/brands/my-brands', 'brands');
 export async function getCompanyCategories() {
-  const { data } = await API.get('/categories/public');
+  const { data } = await API.get('/categories/categories-by-role', { params: { page: 1, limit: 100 } });
   return (Array.isArray(data) ? data : data.categories || []).map(category => ({ ...category, _id: idOf(category) }));
 }
 export async function getCompanyProducts() {
@@ -61,9 +61,9 @@ export function companyBrandForm(draft) {
 }
 export function companyProductForm(draft) {
   const form = new FormData();
-  ['name', 'brand', 'category', 'description', 'price', 'quantity', 'unit'].forEach(key => {
-    form.append(key, String(draft[key] ?? '').trim());
-  });
+  form.append('name', draft.name.trim());
+  form.append('category', draft.category);
+  if (draft.description?.trim()) form.append('description', draft.description.trim());
   (draft.images || []).forEach(asset => appendCompanyImage(form, 'images', asset));
   return form;
 }

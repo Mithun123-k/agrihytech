@@ -7,7 +7,7 @@ import HomeScreen from '../screens/home/HomeScreen';
 import SearchScreen from '../screens/search/SearchScreen';
 import CategoryScreen from '../screens/category/CategoryScreen';
 import { CompanyDealers, CompanyDealerDetails, CompanyProfile, CompanySettings, CompanySubscription } from '../screens/company/CompanyAccount';
-import { CompanyBrands, CompanyBrandForm, CompanyProducts, CompanyProductForm, CompanyProductDetails } from '../screens/company/CompanyCatalog';
+import { CompanyProducts, CompanyProductForm, CompanyProductDetails } from '../screens/company/CompanyCatalog';
 import AnudanYojanaScreen, { AnudanYojanaDetails } from '../screens/anudan/AnudanYojanaScreen';
 import SelectLocationScreen from '../screens/mandibhav/SelectLocationScreen';
 import SelectMandiScreen from '../screens/mandibhav/SelectMandiScreen';
@@ -34,8 +34,6 @@ function CompanyTabs() {
 export default function CompanyNavigator() {
   return <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
     <Stack.Screen name="CompanyTabs" component={CompanyTabs} />
-    <Stack.Screen name="CompanyBrands" component={CompanyBrands} />
-    <Stack.Screen name="CompanyBrandForm" component={CompanyBrandForm} />
     <Stack.Screen name="CompanyProducts" component={CompanyProducts} />
     <Stack.Screen name="CompanyProductForm" component={CompanyProductForm} />
     <Stack.Screen name="CompanyProductDetails" component={CompanyProductDetails} />

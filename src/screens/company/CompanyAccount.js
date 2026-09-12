@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RazorpayCheckout from 'react-native-razorpay';
 import { logout, updateProfile, loadUser } from '../../features/auth/authSlice';
-import { getCompanyProfile, getCompanyBrands, getCompanyProducts, getCompanyDealers, getCompanyDealerDetails, getCompanyCategories, assignCompanyDealer, removeCompanyDealer, setCompanyDealerStatus, getCompanySubscription, getCompanyPlans, startCompanyTrial, createCompanyOrder, verifyCompanyPayment, companyError, appendCompanyImage } from '../../features/company/companyAPI';
+import { getCompanyProfile, getCompanyProducts, getCompanyDealers, getCompanyDealerDetails, getCompanyCategories, assignCompanyDealer, removeCompanyDealer, setCompanyDealerStatus, getCompanySubscription, getCompanyPlans, startCompanyTrial, createCompanyOrder, verifyCompanyPayment, companyError, appendCompanyImage } from '../../features/company/companyAPI';
 import { CompanyPage, CompanyButton, CompanyField, useCompanyData, pickCompanyImages, s } from './shared';
 
 const loadDashboard = async () => {
-  const [profile, brands, products, dealers] = await Promise.all([getCompanyProfile(), getCompanyBrands(), getCompanyProducts(), getCompanyDealers()]);
-  return { profile, brands, products, dealers };
+  const [profile, products, dealers] = await Promise.all([getCompanyProfile(), getCompanyProducts(), getCompanyDealers()]);
+  return { profile, products, dealers };
 };
 const companyMenu = [
   ['My Products', 'CompanyProducts'], ['My Dealers', 'CompanyDealers'],
@@ -25,11 +25,12 @@ export function CompanyDashboard({ navigation }) {
   const resource = useCompanyData(loadDashboard);
   const data = resource.data;
   const metrics = [
-    ['Brands', data?.brands.length || 0], ['Products', data?.products.length || 0],
-    ['Dealers', data?.dealers.length || 0], ['Active Dealers', data?.dealers.filter(dealer => dealer.companyDealerStatus === 'ACTIVE').length || 0],
+    ['Products', data?.products.length || 0],
+    ['Dealers', data?.dealers.length || 0],
+    ['Active Dealers', data?.dealers.filter(dealer => dealer.companyDealerStatus === 'ACTIVE').length || 0],
   ];
   return <CompanyPage title={data?.profile.companyName || 'Company'} navigation={navigation} resource={resource} tab>
-    <View style={s.card}><Text style={s.title}>Welcome, {data?.profile.contactPerson || 'Company'}</Text><Text style={s.text}>Manage your brands, products and dealer network.</Text>
+    <View style={s.card}><Text style={s.title}>Welcome, {data?.profile.contactPerson || 'Company'}</Text><Text style={s.text}>Manage your products and dealer network.</Text>
       <Text style={s.text}>{subscriptionActive(data?.profile.subscription) ? `Subscription active until ${dateLabel(data.profile.subscription.endDate)}` : 'Subscription inactive'}</Text>
     </View>
     <View style={s.row}>{metrics.map(([label, value]) => <View key={label} style={s.metric}><Text style={s.number}>{value}</Text><Text style={s.text}>{label}</Text></View>)}</View>

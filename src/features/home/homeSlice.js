@@ -1,13 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getHomeAPI, getUserHomeAPI } from "./homeAPI";
+import { getmyCategoriesAPI } from "../category/categoryAPI";
 
 // 🔹 FETCH B2B / ADMIN HOME DATA
 export const getHomeData = createAsyncThunk(
   "home/getHomeData",
   async (_, thunkAPI) => {
     try {
-      const res = await getHomeAPI();
-      return res.data;
+      const role = thunkAPI.getState()?.auth?.user?.role;
+      if (role === "B2B" || role === "COMPANY") {
+        const [homeResponse, categoryResponse] = await Promise.all([
+          getHomeAPI(),
+          getmyCategoriesAPI(),
+        ]);
+        return {
+          ...homeResponse.data,
+          categories: categoryResponse.data.categories || [],
+        };
+      }
+      const response = await getHomeAPI();
+      return response.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to load home"

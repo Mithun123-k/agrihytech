@@ -26,6 +26,8 @@ import { responsiveFont, scale } from "../../utils/responsive";
 import { getPublicCategories } from "../../features/category/categorySlice";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { launchImageLibrary } from "react-native-image-picker";
+import { getAssignableBrandsAPI } from "../../features/brands/brandAPI";
 
 // ✅ Validation
 const schema = Yup.object().shape({
@@ -51,7 +53,8 @@ const companySchema = Yup.object().shape({
   companyName: Yup.string().trim().min(2, "Company name required").required("Company name required"),
   contactPerson: Yup.string().trim().min(2, "Contact person required").required("Contact person required"),
   phone: Yup.string().matches(/^[0-9]{10}$/, "Invalid phone number").required("Phone required"),
-  email: Yup.string().trim().email("Invalid email address").required("Email required"),
+  email: Yup.string().trim().email("Invalid email address"),
+  categories: Yup.array().min(1, "Please select at least 1 category").max(2, "Only 2 categories allowed").required("Category is required"),
 });
 
 export default function RegisterScreen({
@@ -70,13 +73,43 @@ export default function RegisterScreen({
   );
 
   const [openCat, setOpenCat] = useState(false);
+  const [openBrand, setOpenBrand] = useState(false);
+  const [availableBrands, setAvailableBrands] = useState([]);
+  const [brandsLoading, setBrandsLoading] = useState(false);
+  const [companyLogo, setCompanyLogo] = useState(null);
 
   const categories = publicCategories || [];
 
   // ✅ GET CATEGORIES
   useEffect(() => {
-    if (!isCompany) dispatch(getPublicCategories());
-  }, [dispatch, isCompany]);
+    dispatch(getPublicCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isCompany) return;
+    let active = true;
+    setBrandsLoading(true);
+    getAssignableBrandsAPI()
+      .then(({ data }) => {
+        if (active) setAvailableBrands(data.brands || []);
+      })
+      .catch(() => {
+        if (active) setAvailableBrands([]);
+      })
+      .finally(() => {
+        if (active) setBrandsLoading(false);
+      });
+    return () => { active = false; };
+  }, [isCompany]);
+
+  const pickCompanyLogo = async () => {
+    const result = await launchImageLibrary({ mediaType: "photo", selectionLimit: 1, quality: 0.8 });
+    if (result.errorCode) {
+      Alert.alert("Logo", result.errorMessage || "Unable to select logo");
+      return;
+    }
+    if (!result.didCancel && result.assets?.[0]) setCompanyLogo(result.assets[0]);
+  };
 
   return (
     <ImageBackground
@@ -100,40 +133,48 @@ export default function RegisterScreen({
           village: "",
           pincode: "",
           categories: [],
+          dealerBrands: [],
         }}
         validationSchema={isCompany ? companySchema : schema}
         onSubmit={async (values) => {
           try {
             const registerAccount = isCompany ? registerCompany : registerB2B;
-            const result = await dispatch(
-              registerAccount(isCompany ? {
-                mobile: values.phone,
-                companyName: values.companyName.trim(),
-                contactPerson: values.contactPerson.trim(),
-                email: values.email.trim(),
-              } : {
-                mobile: values.phone,
+            if (isCompany && !companyLogo) {
+              Alert.alert("Logo required", "Please select your company logo");
+              return;
+            }
 
+            let registrationData;
+            if (isCompany) {
+              registrationData = new FormData();
+              registrationData.append("mobile", values.phone);
+              registrationData.append("companyName", values.companyName.trim());
+              registrationData.append("contactPerson", values.contactPerson.trim());
+              if (values.email.trim()) registrationData.append("email", values.email.trim());
+              values.categories.forEach(category => registrationData.append("categories", category));
+              registrationData.append("profileimage", {
+                uri: companyLogo.uri,
+                type: companyLogo.type || "image/jpeg",
+                name: companyLogo.fileName || "company-logo.jpg",
+              });
+            } else {
+              registrationData = {
+                mobile: values.phone,
                 firmName: values.firmName,
-
-                proprietorName:
-                  values.proprietorName,
-
+                proprietorName: values.proprietorName,
                 password: values.password,
-
                 state: values.state,
-
                 district: values.district,
-
                 village: values.village,
-
                 pincode: values.pincode,
-
                 categories: values.categories,
-
+                dealerBrands: values.dealerBrands || [],
                 lat: 26.3,
                 lng: 84.4,
-              })
+              };
+            }
+            const result = await dispatch(
+              registerAccount(registrationData)
             );
 
             if (
@@ -220,6 +261,16 @@ export default function RegisterScreen({
                 placeholder={isCompany ? "Enter your company name" : "Enter your firm name"}
               />
 
+              {isCompany && (
+                <View style={styles.logoField}>
+                  <Text style={styles.locationTitle}>Company Logo <Text style={styles.required}>*</Text></Text>
+                  {companyLogo?.uri ? <Image source={{ uri: companyLogo.uri }} style={styles.companyLogoPreview} /> : null}
+                  <TouchableOpacity style={styles.logoPicker} activeOpacity={0.8} onPress={pickCompanyLogo}>
+                    <Text style={styles.logoPickerText}>{companyLogo ? "Change Company Logo" : "Select Company Logo"}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
               {/* Proprietor */}
               <FormikInput
                 name={isCompany ? "contactPerson" : "proprietorName"}
@@ -245,10 +296,10 @@ export default function RegisterScreen({
               {/* ================= CATEGORY ================= */}
 
               {isCompany && (
-                <FormikInput name="email" label="Email" placeholder="Company email" keyboardType="email-address" autoCapitalize="none" />
+                <FormikInput name="email" label="Email (optional)" placeholder="Company email" keyboardType="email-address" autoCapitalize="none" />
               )}
 
-              {!isCompany && <View style={{ marginTop: scale(2) }}>
+              <View style={{ marginTop: scale(2) }}>
                 <Text style={styles.locationTitle}>
                   Categories{" "}
                   <Text
@@ -310,7 +361,34 @@ export default function RegisterScreen({
                   )}
               </View>
 
-              }
+              {!isCompany && (
+                <View style={{ marginTop: scale(14) }}>
+                  <Text style={styles.locationTitle}>Select Brand</Text>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.categorySelector}
+                    onPress={() => setOpenBrand(true)}
+                  >
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        !(values.dealerBrands || []).length && { color: "#999" },
+                      ]}
+                      numberOfLines={2}
+                    >
+                      {(values.dealerBrands || []).length
+                        ? availableBrands
+                            .filter(brand => (values.dealerBrands || []).includes(brand._id))
+                            .map(brand => brand.name)
+                            .join(", ")
+                        : brandsLoading
+                          ? "Loading brands..."
+                          : "Select Brand"}
+                    </Text>
+                    <Text style={styles.dropdownArrow}>▼</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
               {/* ================= LOCATION ================= */}
 
               {!isCompany && <View style={styles.locationBox}>
@@ -493,6 +571,74 @@ export default function RegisterScreen({
                     >
                       Done
                     </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              visible={openBrand}
+              transparent
+              animationType="slide"
+              onRequestClose={() => setOpenBrand(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalBox}>
+                  <Text style={styles.modalTitle}>Select Brand</Text>
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    {availableBrands
+                      .filter(brand => {
+                        if (!values.categories.length) return true;
+                        if (brand.isCompany) {
+                          return (brand.categories || []).some(category =>
+                            values.categories.includes(category)
+                          );
+                        }
+                        return !brand.category?.name ||
+                          values.categories.includes(brand.category.name);
+                      })
+                      .map(brand => {
+                        const selected = (values.dealerBrands || []).includes(brand._id);
+                        return (
+                          <TouchableOpacity
+                            key={brand._id}
+                            style={styles.categoryItem}
+                            activeOpacity={0.8}
+                            onPress={() => {
+                              let updated;
+                              if (selected) {
+                                updated = (values.dealerBrands || []).filter(id => id !== brand._id);
+                              } else if (brand.isCompany) {
+                                const companyIds = availableBrands
+                                  .filter(item => item.isCompany)
+                                  .map(item => item._id);
+                                updated = (values.dealerBrands || [])
+                                  .filter(id => !companyIds.includes(id))
+                                  .concat(brand._id);
+                              } else {
+                                updated = [...(values.dealerBrands || []), brand._id];
+                              }
+                              setFieldValue("dealerBrands", updated);
+                            }}
+                          >
+                            <View style={styles.brandOption}>
+                              {brand.image ? (
+                                <Image source={{ uri: brand.image }} style={styles.brandImage} />
+                              ) : null}
+                              <View style={styles.brandText}>
+                                <Text style={styles.categoryLabel}>{brand.name}</Text>
+                                {brand.isCompany ? <Text style={styles.companyLabel}>Company</Text> : null}
+                              </View>
+                            </View>
+                            <View style={[styles.checkBox, selected && styles.checkBoxActive]}>
+                              {selected ? <Text style={styles.checkText}>✓</Text> : null}
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      })}
+                  </ScrollView>
+                  <TouchableOpacity style={styles.doneBtn} activeOpacity={0.9} onPress={() => setOpenBrand(false)}>
+                    <Text style={styles.doneText}>Done</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -681,6 +827,40 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
+  logoField: {
+    marginTop: scale(2),
+    marginBottom: scale(12),
+  },
+
+  required: {
+    color: "red",
+  },
+
+  companyLogoPreview: {
+    width: scale(92),
+    height: scale(92),
+    borderRadius: scale(14),
+    marginBottom: scale(10),
+    resizeMode: "contain",
+    alignSelf: "center",
+  },
+
+  logoPicker: {
+    minHeight: scale(50),
+    borderWidth: 1,
+    borderColor: "#2e7d32",
+    borderRadius: scale(12),
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#EDF2E9",
+  },
+
+  logoPickerText: {
+    color: "#2e7d32",
+    fontSize: responsiveFont(14),
+    fontWeight: "600",
+  },
+
   // ================= BUTTON =================
 
   button: {
@@ -774,6 +954,33 @@ const styles = StyleSheet.create({
     color: "#333",
 
     fontWeight: "500",
+  },
+
+  brandOption: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: scale(12),
+  },
+
+  brandImage: {
+    width: scale(42),
+    height: scale(42),
+    borderRadius: scale(8),
+    resizeMode: "contain",
+    marginRight: scale(12),
+    backgroundColor: "#F5F5F5",
+  },
+
+  brandText: {
+    flex: 1,
+  },
+
+  companyLabel: {
+    marginTop: scale(2),
+    color: "#2e7d32",
+    fontSize: responsiveFont(11),
+    fontWeight: "600",
   },
 
   checkBox: {

@@ -5,6 +5,18 @@ export const getAllBrandsAPI = (page = 1, search = "") => {
   return API.get(`/brands`);
 };
 
+export const getAssignableBrandsAPI = () => {
+  return API.get("/brands", { params: { assignable: true } });
+};
+
+export const getAssignedBrandsAPI = () => {
+  return API.get("/auth/me");
+};
+
+export const updateAssignedBrandsAPI = (dealerBrands) => {
+  return API.put("/auth/me/update", { dealerBrands });
+};
+
 export const getProductsByBrandAPI = (brandId, page = 1) => {
   return API.get(`/brands/${brandId}/products`);
 };

@@ -19,7 +19,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories } from "../../features/category/categorySlice";
+import { getCategories, getCategoriesByRole } from "../../features/category/categorySlice";
 
 const { width, height } = Dimensions.get("window");
 
@@ -109,8 +109,12 @@ const CategoryScreen = ({
   // API
   // ==========================
   useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
+    dispatch(
+      user?.role === "B2B" || user?.role === "COMPANY"
+        ? getCategoriesByRole()
+        : getCategories()
+    );
+  }, [dispatch, user?.role]);
 
   // ==========================
   // FILTER
@@ -169,17 +173,13 @@ const CategoryScreen = ({
           {item.name}
         </Text>
 
-        <View style={styles.countBadge}>
-          {user?.role === "B2C" ? (
+        {user?.role === "B2C" ? (
+          <View style={styles.countBadge}>
             <Text style={styles.countText}>
               {item.productCount || 0}+
             </Text>
-          ) : (
-            <Text style={styles.countText}>
-              {item.totalBrands || 0}+
-            </Text>
-          )}
-        </View>
+          </View>
+        ) : null}
       </View>
 
       {user?.role === "B2B" && (

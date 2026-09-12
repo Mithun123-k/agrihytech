@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   StyleSheet,
@@ -10,130 +9,80 @@ import {
   Image,
   StatusBar,
   Dimensions,
+  Modal,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import ProductHeader from '../../components/product/ProductHeader';
-import AddBrandModal from './AddBrandModal';
-import { useDispatch, useSelector } from 'react-redux';
 import {
-  getMyBrands,
-  createBrand,
-  updateBrand
-} from '../../features/brands/brandSlice';
-import { getCategories } from '../../features/category/categorySlice';
+  getAssignedBrandsAPI,
+  getAssignableBrandsAPI,
+  updateAssignedBrandsAPI,
+} from '../../features/brands/brandAPI';
 
 const { width, height } = Dimensions.get('window');
 
-const productsData = [
-  {
-    id: '1',
-    name: 'Teak Seeds',
-    cat: 'fertilizer',
-    image: require('../../assets/images/prolist.png'),
-  },
-  {
-    id: '2',
-    name: 'African Mahogany Seeds',
-    cat: 'fertilizer',
-    image: require('../../assets/images/prolist.png'),
-  },
-  {
-    id: '3',
-    name: 'Super Napier Grass Seeds',
-    cat: 'fertilizer',
-    image: require('../../assets/images/prolist.png'),
-  },
-  {
-    id: '4',
-    name: 'Gliricidia Sepium Seeds',
-    cat: 'fertilizer',
-    image: require('../../assets/images/prolist.png'),
-  },
-  {
-    id: '5',
-    name: 'Subabul Seeds',
-    cat: 'fertilizer',
-    image: require('../../assets/images/prolist.png'),
-  },
-  {
-    id: '6',
-    name: 'Drumstick Seeds',
-    cat: 'fertilizer',
-    image: require('../../assets/images/prolist.png'),
-  },
-];
-
-const CATEGORY_OPTIONS = [
-  { label: 'Seeds', value: 'Seeds' },
-  { label: 'Fertilizers', value: 'Fertilizers' },
-  { label: 'Pesticides', value: 'Pesticides' },
-  { label: 'Equipment', value: 'Equipment' },
-];
-
-// ADD THIS near CATEGORY_OPTIONS
-const BRAND_OPTIONS = [
-  { label: 'CropGuard', value: 'CropGuard' },
-  { label: 'AgriTech', value: 'AgriTech' },
-  { label: 'Kisan Power', value: 'Kisan Power' },
-  { label: '+ Add New Brand', value: '__add_new__' },
-];
-
 const OurbrandsScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const { brands: myBrands, loading } = useSelector(
-    state => state.brand
-  );
-  const { categories } = useSelector((state) => state.category);
-  const categoryOptions = categories?.map((item) => ({
-    label: item.name,
-    value: item._id
-  })) || [];
   const [search, setSearch] = useState('');
+  const [myBrands, setMyBrands] = useState([]);
+  const [availableBrands, setAvailableBrands] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [brandModal, setBrandModal] = useState(false);
-  const [brands, setBrands] = useState(BRAND_OPTIONS);
-  const [newBrand, setNewBrand] = useState({
-    name: '',
-    category: '',
-    image: null,
-  });
-  const [selectedBrand, setSelectedBrand] = useState(null);
-  const [modalType, setModalType] = useState("create");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  // onPress={() => {
-  //   setModalType("create");
-  //   setSelectedBrand(null);
-  //   setBrandModal(true);
-  // }}
-
-  const handleCreateBrand = async (brand, mode) => {
+  const loadBrands = async () => {
+    setLoading(true);
     try {
-      if (mode === "edit") {
-        await dispatch(
-          updateBrand({
-            id: brand._id,
-            brandData: brand
-          })
-        ).unwrap();
-
-      } else {
-        await dispatch(createBrand(brand)).unwrap();
-      }
-
-      dispatch(getMyBrands({ page: 1, search: "" }));
-      setBrandModal(false);
-
+      const [assignedResponse, availableResponse] = await Promise.all([
+        getAssignedBrandsAPI(),
+        getAssignableBrandsAPI(),
+      ]);
+      const user = assignedResponse.data?.user || {};
+      const assigned = (user.dealerBrands || []).filter(Boolean);
+      const registeredCategories = (user.categories || []).map(name => name.toLowerCase());
+      const eligibleBrands = (availableResponse.data?.brands || []).filter(brand =>
+        !registeredCategories.length ||
+        (brand.category?.name && registeredCategories.includes(brand.category.name.toLowerCase())),
+      );
+      setMyBrands(assigned);
+      setAvailableBrands(eligibleBrands);
+      setSelectedIds(assigned.map(brand => brand._id));
     } catch (error) {
-      console.log(error);
+      Alert.alert(
+        'Unable to load brands',
+        error.response?.data?.error || error.response?.data?.message || 'Please try again.',
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-
-
-
   const filteredProducts = useMemo(() => {
-    return myBrands || [];
-  }, [myBrands]);
+    const value = search.trim().toLowerCase();
+    return value
+      ? myBrands.filter(item => item.name?.toLowerCase().includes(value))
+      : myBrands;
+  }, [myBrands, search]);
+
+  const saveAssignments = async () => {
+    setSaving(true);
+    try {
+      await updateAssignedBrandsAPI(selectedIds);
+      const assigned = availableBrands.filter(brand => selectedIds.includes(brand._id));
+      setMyBrands(assigned);
+      setBrandModal(false);
+    } catch (error) {
+      Alert.alert(
+        'Unable to update brands',
+        error.response?.data?.error || error.response?.data?.message || 'Please try again.',
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -156,25 +105,17 @@ const OurbrandsScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.editButton}
-          onPress={() => {
-            setModalType("edit");
-            setSelectedBrand(item);
-            setBrandModal(true);
-          }}
-        >
-          <Feather name="edit" size={22} color="#5E8E1A" />
-        </TouchableOpacity>
+        <View style={styles.assignedBadge}>
+          <Feather name="check" size={15} color="#5E8E1A" />
+          <Text style={styles.assignedText}>Selected</Text>
+        </View>
       </View>
     );
   };
 
   useEffect(() => {
-    dispatch(getMyBrands({ page: 1, search }));
-    dispatch(getCategories());
-  }, [dispatch, search]);
+    loadBrands();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -207,6 +148,17 @@ const OurbrandsScreen = ({ navigation }) => {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            loading ? (
+              <ActivityIndicator size="large" color="#4C7A1E" style={styles.loader} />
+            ) : (
+              <View style={styles.emptyState}>
+                <Feather name="briefcase" size={36} color="#A4AFA0" />
+                <Text style={styles.emptyTitle}>No brands selected</Text>
+                <Text style={styles.emptyText}>Select brands available for your registered categories.</Text>
+              </View>
+            )
+          }
         />
       </View>
 
@@ -214,22 +166,55 @@ const OurbrandsScreen = ({ navigation }) => {
         activeOpacity={0.9}
         style={styles.addButton}
         onPress={() => {
-          setModalType("create");
-          setSelectedBrand(null);
+          setSelectedIds(myBrands.map(brand => brand._id));
           setBrandModal(true);
         }}
       >
-        <Text style={styles.addButtonText}>Add New Brand</Text>
+        <Text style={styles.addButtonText}>Manage Brands</Text>
       </TouchableOpacity>
 
-      <AddBrandModal
-        visible={brandModal}
-        mode={modalType}
-        brandData={selectedBrand}
-        onClose={() => setBrandModal(false)}
-        categories={categoryOptions}
-        onCreate={handleCreateBrand}
-      />
+      <Modal visible={brandModal} transparent animationType="slide" onRequestClose={() => setBrandModal(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <View>
+                <Text style={styles.modalTitle}>Select Brands</Text>
+                <Text style={styles.modalSubtitle}>Choose Company and Admin brands.</Text>
+              </View>
+              <TouchableOpacity onPress={() => setBrandModal(false)}>
+                <Feather name="x" size={24} color="#202020" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={availableBrands}
+              keyExtractor={item => item._id}
+              contentContainerStyle={styles.optionList}
+              renderItem={({ item }) => {
+                const selected = selectedIds.includes(item._id);
+                return (
+                  <TouchableOpacity
+                    style={[styles.brandOption, selected && styles.brandOptionSelected]}
+                    onPress={() => setSelectedIds(current => selected
+                      ? current.filter(id => id !== item._id)
+                      : [...current, item._id])}
+                  >
+                    <Image source={{ uri: item.image }} style={styles.optionImage} />
+                    <View style={styles.optionText}>
+                      <Text style={styles.optionName}>{item.name}</Text>
+                      <Text style={styles.optionCategory}>{item.category?.name || 'Uncategorized'}</Text>
+                    </View>
+                    <Feather name={selected ? 'check-square' : 'square'} size={22} color={selected ? '#4C7A1E' : '#9B9B9B'} />
+                  </TouchableOpacity>
+                );
+              }}
+              ListEmptyComponent={<Text style={styles.noOptions}>No Company or Admin brands are available.</Text>}
+            />
+            <TouchableOpacity disabled={saving} style={styles.saveButton} onPress={saveAssignments}>
+              {saving ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.saveButtonText}>Save Selection</Text>}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -307,6 +292,33 @@ const styles = StyleSheet.create({
 
   listContent: {
     paddingBottom: height * 0.02,
+    flexGrow: 1,
+  },
+
+  loader: {
+    marginTop: 60,
+  },
+
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+
+  emptyTitle: {
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#202020',
+  },
+
+  emptyText: {
+    marginTop: 6,
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#707070',
+    textAlign: 'center',
   },
 
   card: {
@@ -363,13 +375,20 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
 
-  editButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#EEF5E6',
-    justifyContent: 'center',
+  assignedBadge: {
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#EEF5E6',
+    borderRadius: 14,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+  },
+
+  assignedText: {
+    marginLeft: 4,
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#5E8E1A',
   },
 
   addButton: {
@@ -396,6 +415,104 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     paddingVertical: height * 0.016,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'flex-end',
+  },
+
+  modalContent: {
+    maxHeight: '78%',
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+  },
+
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#202020',
+  },
+
+  modalSubtitle: {
+    marginTop: 4,
+    fontSize: 13,
+    color: '#707070',
+  },
+
+  optionList: {
+    paddingBottom: 8,
+  },
+
+  brandOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 10,
+  },
+
+  brandOptionSelected: {
+    borderColor: '#5E8E1A',
+    backgroundColor: '#F5FAF0',
+  },
+
+  optionImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 9,
+    backgroundColor: '#F3F3F3',
+    resizeMode: 'contain',
+  },
+
+  optionText: {
+    flex: 1,
+    marginHorizontal: 12,
+  },
+
+  optionName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#202020',
+  },
+
+  optionCategory: {
+    marginTop: 3,
+    fontSize: 12,
+    color: '#707070',
+  },
+
+  noOptions: {
+    paddingVertical: 40,
+    textAlign: 'center',
+    color: '#707070',
+  },
+
+  saveButton: {
+    minHeight: 52,
+    marginTop: 10,
+    borderRadius: 14,
+    backgroundColor: '#4C7A1E',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

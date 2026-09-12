@@ -24,7 +24,22 @@ const CategorySection = ({ data = [], navigation, role }) => {
             key={item._id || index}
             style={styles.card}
             activeOpacity={role === 'B2C' || role === 'COMPANY' ? 0.5 : 1}
-            onPress={() => role === 'B2C' || role === 'COMPANY' ? navigation.navigate("UserProduct", { categoryId: item._id, categoryName: item.name, categoryImage: item.image }) : null }
+            onPress={() => {
+              if (role === 'COMPANY') {
+                navigation.getParent()?.navigate('CompanyProducts', {
+                  categoryId: item._id,
+                  categoryName: item.name,
+                });
+                return;
+              }
+              if (role === 'B2C') {
+                navigation.navigate('UserProduct', {
+                  categoryId: item._id,
+                  categoryName: item.name,
+                  categoryImage: item.image,
+                });
+              }
+            }}
           >
 
             {/* 🔥 IMAGE (DYNAMIC) */}
@@ -50,7 +65,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
                 {item?.name || "Category"}
               </Text>
 
-              <View style={{
+              {role === 'B2C' ? <View style={{
                 backgroundColor: '#FAF3E7',
                 paddingHorizontal: 8,
                 paddingVertical: 4,
@@ -59,15 +74,11 @@ const CategorySection = ({ data = [], navigation, role }) => {
               }}>
 
                 {/* 🔥 COUNT */}
-                {role !== 'B2C' ? (
-                  <Text style={styles.count}>
-                    {`${item?.totalBrands}+`}
-                  </Text>
-                ) : <Text style={styles.count}>
+                <Text style={styles.count}>
                     {`${item?.totalProducts}+`}
-                  </Text>}
+                </Text>
 
-              </View>
+              </View> : null}
             </View>
 
             {role !== 'B2C' && role !== 'COMPANY' &&

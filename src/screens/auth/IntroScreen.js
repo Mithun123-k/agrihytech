@@ -284,16 +284,14 @@ const styles = StyleSheet.create({
 
     height:
       width < 360
-        ? hp(20)
+        ? hp(16)
         : width < 420
-        ? hp(20)
-        : hp(24),
+        ? hp(16)
+        : hp(20),
 
     borderRadius: wp(5),
 
     resizeMode: 'cover',
-
-    objectPosition: 'top',
   },
 
   cardContent: {

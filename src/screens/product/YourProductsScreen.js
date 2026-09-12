@@ -14,7 +14,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ProductHeader from '../../components/product/ProductHeader';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories, getMyCategories } from '../../features/category/categorySlice';
-import { get } from 'react-native/Libraries/NativeComponent/NativeComponentRegistry';
 
 const { width } = Dimensions.get('window');
 const CARD_GAP = 16;
@@ -87,7 +86,7 @@ console.log("Categories in YourProductsScreen:", categories); // Debug log
   // 🔥 API CALL
     useEffect(() => {
       dispatch(getMyCategories());
-    }, []);
+    }, [dispatch]);
 
     return (
         <View style={styles.container}>

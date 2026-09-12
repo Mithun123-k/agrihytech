@@ -16,7 +16,11 @@ export const registerB2BAPI = (data) => {
 };
 
 export const registerCompanyAPI = (data) => {
-  return API.post("/auth/register-company", data);
+  return API.post("/auth/register-company", data, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
 };
 
 // 🔹 Get current user

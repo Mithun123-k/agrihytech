@@ -77,15 +77,20 @@ export function CompanyProducts({ navigation, route }) {
   const [search, setSearch] = useState('');
   const [busy, setBusy] = useState(false);
   const brandId = route.params?.brandId;
-  const rows = (resource.data || []).filter(item => (!brandId || item.brand?.some(brand => idOf(brand) === brandId)) && item.name?.toLowerCase().includes(search.toLowerCase()));
+  const categoryId = route.params?.categoryId;
+  const rows = (resource.data || []).filter(item =>
+    (!brandId || item.brand?.some(brand => idOf(brand) === brandId)) &&
+    (!categoryId || idOf(item.category) === categoryId) &&
+    item.name?.toLowerCase().includes(search.toLowerCase())
+  );
   const remove = async id => {
     setBusy(true);
     try { await deleteCompanyProduct(id); await resource.reload(); }
     catch (error) { Alert.alert('Unable to delete product', companyError(error)); }
     finally { setBusy(false); }
   };
-  return <CompanyPage title={route.params?.brandName || 'My Products'} navigation={navigation} resource={resource}>
-    <CompanyButton title="Add Product" onPress={() => navigation.navigate('CompanyProductForm', { brandId })} />
+  return <CompanyPage title={route.params?.categoryName || route.params?.brandName || 'My Products'} navigation={navigation} resource={resource}>
+    <CompanyButton title="Add Product" onPress={() => navigation.navigate('CompanyProductForm', { brandId, categoryId })} />
     <CompanyField label="Search products" value={search} onChangeText={setSearch} />
     {!rows.length && !resource.loading ? <Text style={s.text}>No products found.</Text> : null}
     {rows.map(product => <View key={product._id} style={s.rowCard}>
@@ -105,41 +110,39 @@ export function CompanyProducts({ navigation, route }) {
 
 export function CompanyProductForm({ navigation, route }) {
   const product = route.params?.product;
-  const resource = useCompanyData(loadBrandOptions);
-  const [draft, setDraft] = useState({ name: product?.name || '', brand: idOf(product?.brand?.[0]) || route.params?.brandId || '', category: idOf(product?.category), description: product?.description || '', price: String(product?.price ?? 0), quantity: String(product?.quantity ?? 0), unit: product?.unit || '', images: [] });
+  const resource = useCompanyData(getCompanyCategories);
+  const [draft, setDraft] = useState({
+    name: product?.name || '',
+    category: idOf(product?.category) || route.params?.categoryId || '',
+    description: product?.description || '',
+    images: [],
+  });
   const [busy, setBusy] = useState(false);
   const field = key => value => setDraft(old => ({ ...old, [key]: value }));
-  const brands = resource.data?.brands || [];
-  const selectedBrand = brands.find(brand => brand._id === draft.brand);
-  const category = idOf(selectedBrand?.category) || draft.category;
   const pick = async () => {
     try { const images = await pickCompanyImages(true); if (images?.length) field('images')(images); }
     catch (error) { Alert.alert('Photo library', companyError(error)); }
   };
   const save = async () => {
-    if (!draft.name.trim() || !selectedBrand || !category) { Alert.alert('Missing details', 'Enter a product name and select your brand and category.'); return; }
-    if (![draft.price, draft.quantity].every(value => String(value).trim() && Number.isFinite(Number(value)) && Number(value) >= 0)) { Alert.alert('Invalid details', 'Price and quantity must be valid non-negative numbers.'); return; }
+    if (!draft.name.trim() || !draft.category || (!product && !draft.images.length)) {
+      Alert.alert('Missing details', 'Enter a product name, select a category and choose a product image.');
+      return;
+    }
     setBusy(true);
-    try { await saveCompanyProduct({ ...draft, category }, product?._id); navigation.goBack(); }
+    try { await saveCompanyProduct(draft, product?._id); navigation.goBack(); }
     catch (error) { Alert.alert('Unable to save product', companyError(error)); }
     finally { setBusy(false); }
   };
   return <CompanyPage title={product ? 'Edit Product' : 'Add Product'} navigation={navigation} resource={resource}>
     <View style={s.card}>
-      {!brands.length && !resource.loading ? <CompanyButton title="Create a Brand First" onPress={() => navigation.navigate('CompanyBrandForm')} /> : null}
       <CompanyField label="Product Name" value={draft.name} onChangeText={field('name')} />
-      <CompanySelect label="Brand" value={draft.brand} onChange={field('brand')} options={brands} />
-      <Text style={s.label}>Category</Text><Text style={s.text}>{selectedBrand?.category?.name || resource.data?.categories.find(item => item._id === category)?.name || 'Select a brand'}</Text>
-      {!idOf(selectedBrand?.category) ? <CompanySelect label="Category" value={draft.category} onChange={field('category')} options={resource.data?.categories || []} /> : null}
-      <CompanyField label="Price (₹)" value={draft.price} onChangeText={field('price')} keyboardType="decimal-pad" />
-      <CompanyField label="Quantity" value={draft.quantity} onChangeText={field('quantity')} keyboardType="decimal-pad" />
-      <CompanyField label="Unit" value={draft.unit} onChangeText={field('unit')} placeholder="kg, litre, pack..." />
-      <CompanyField label="Description" value={draft.description} onChangeText={field('description')} multiline />
+      <CompanySelect label="Category" value={draft.category} onChange={field('category')} options={resource.data || []} />
+      <CompanyField label="Description (optional)" value={draft.description} onChangeText={field('description')} multiline />
       {(draft.images.length ? draft.images : product?.images || []).map((asset, index) => <Image key={index} source={{ uri: imageUri(asset) }} style={s.image} />)}
       <CompanyButton secondary title="Choose Images (up to 5)" disabled={busy} onPress={pick} />
       {draft.images.length ? <CompanyButton secondary title="Discard Selected Images" onPress={() => field('images')([])} /> : null}
       {product ? <Text style={s.text}>Choosing new images replaces the existing images when you save.</Text> : null}
-      <CompanyButton title={busy ? 'Saving...' : 'Save Product'} disabled={busy || !brands.length} onPress={save} />
+      <CompanyButton title={busy ? 'Saving...' : 'Save Product'} disabled={busy} onPress={save} />
     </View>
   </CompanyPage>;
 }
