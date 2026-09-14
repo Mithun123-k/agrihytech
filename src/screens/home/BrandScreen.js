@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from "react";
 import {
     View,
@@ -68,17 +70,17 @@ const BrandScreen = ({ navigation, route }) => {
 
             {/* Footer */}
             <View style={styles.cardFooter}>
-                <Text
+                <AppText
                     style={styles.cardTitle}
                     numberOfLines={2}
                 >
                     {item.name}
-                </Text>
+                </AppText>
 
                 <View style={styles.countBadge}>
-                    <Text style={styles.countText}>
+                    <AppText style={styles.countText}>
                         {item?.productCount || 0} Products
-                    </Text>
+                    </AppText>
                 </View>
             </View>
         </TouchableOpacity>
@@ -118,12 +120,12 @@ const BrandScreen = ({ navigation, route }) => {
                             />
                         </TouchableOpacity>
 
-                        <Text
+                        <AppText
                             style={styles.headerTitle}
                             numberOfLines={2}
                         >
                             Select the brand you like the most
-                        </Text>
+                        </AppText>
 
                         <View style={{ width: 40 }} />
                     </View>
@@ -136,7 +138,7 @@ const BrandScreen = ({ navigation, route }) => {
                             color="#888"
                         />
 
-                        <TextInput
+                        <AppTextInput
                             placeholder="Search brand name"
                             placeholderTextColor="#888"
                             style={styles.input}
@@ -149,9 +151,9 @@ const BrandScreen = ({ navigation, route }) => {
 
             {/* Title */}
             <View style={styles.titleContainer}>
-                <Text style={styles.sectionTitle}>
+                <AppText style={styles.sectionTitle}>
                     {filteredBrand.length} Brands Available
-                </Text>
+                </AppText>
             </View>
 
             {/* Loader */}
@@ -177,9 +179,9 @@ const BrandScreen = ({ navigation, route }) => {
                     }
                     ListEmptyComponent={
                         <View style={styles.emptyContainer}>
-                            <Text style={styles.emptyText}>
+                            <AppText style={styles.emptyText}>
                                 No brands found
-                            </Text>
+                            </AppText>
                         </View>
                     }
                 />

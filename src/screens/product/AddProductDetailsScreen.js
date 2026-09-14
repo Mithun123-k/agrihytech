@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 
 import React, { useEffect, useState } from 'react';
 import {
@@ -50,7 +52,7 @@ const validationSchema = Yup.object().shape({
 
 const Input = ({ error, multiline, ...props }) => (
     <>
-        <TextInput
+        <AppTextInput
             placeholderTextColor="#9C9C9C"
             multiline={multiline}
             style={[
@@ -60,20 +62,20 @@ const Input = ({ error, multiline, ...props }) => (
             ]}
             {...props}
         />
-        {!!error && <Text style={styles.errorText}>{error}</Text>}
+        {!!error && <AppText style={styles.errorText}>{error}</AppText>}
     </>
 );
 
 const Label = ({ title, required }) => (
-    <Text style={styles.label}>
+    <AppText style={styles.label}>
         {title}
-        {required && <Text style={{ color: COLORS.error }}> *</Text>}
-    </Text>
+        {required && <AppText style={{ color: COLORS.error }}> *</AppText>}
+    </AppText>
 );
 
 const Card = ({ title, children }) => (
     <View style={styles.card}>
-        <Text style={styles.cardTitle}>{title}</Text>
+        <AppText style={styles.cardTitle}>{title}</AppText>
         {children}
     </View>
 );
@@ -114,14 +116,14 @@ const Dropdown = ({
                 onPress={() => setOpen(!open)}
                 disabled={disabled}
             >
-                <Text
+                <AppText
                     style={[
                         styles.dropdownText,
                         !value?.length && !value && { color: '#9C9C9C' },
                     ]}
                 >
                     {displayValue}
-                </Text>
+                </AppText>
 
                 <Icon
                     name={open ? 'chevron-up-outline' : 'chevron-down-outline'}
@@ -156,16 +158,16 @@ const Dropdown = ({
                                     }
                                 }}
                             >
-                                <Text style={styles.dropdownItemText}>
+                                <AppText style={styles.dropdownItemText}>
                                     {item.label} {isSelected ? '✓' : ''}
-                                </Text>
+                                </AppText>
                             </TouchableOpacity>
                         );
                     })}
                 </View>
             )}
 
-            {!!error && <Text style={styles.errorText}>{error}</Text>}
+            {!!error && <AppText style={styles.errorText}>{error}</AppText>}
         </View>
     );
 };
@@ -506,10 +508,10 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                     <ScrollView
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={styles.content}>
-                        <Text style={styles.title}>{isEdit ? 'Update Product' : 'Add New Product'}</Text>
-                        <Text style={styles.subtitle}>
+                        <AppText style={styles.title}>{isEdit ? 'Update Product' : 'Add New Product'}</AppText>
+                        <AppText style={styles.subtitle}>
                             Fill in product details to list it for farmers
-                        </Text>
+                        </AppText>
 
                         <Card title="Product Photos">
                             <TouchableOpacity
@@ -520,8 +522,8 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                     <Icon name="image-outline" size={22} color={COLORS.green} />
                                 </View>
 
-                                <Text style={styles.uploadTitle}>Add Product Images</Text>
-                                <Text style={styles.uploadSub}>Tap to upload up to 5 images</Text>
+                                <AppText style={styles.uploadTitle}>Add Product Images</AppText>
+                                <AppText style={styles.uploadSub}>Tap to upload up to 5 images</AppText>
                             </TouchableOpacity>
 
                             {images.length > 0 && (
@@ -631,15 +633,15 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                 onBlur={handleBlur('description')}
                                 error={touched.description && errors.description}
                             />
-                            <Text style={styles.counter}>
+                            <AppText style={styles.counter}>
                                 {values.description.length}/500 characters
-                            </Text>
+                            </AppText>
                         </Card>
 
                         <Card title="Pricing Details">
                             <View style={styles.priceContainer}>
-                                <Text style={styles.rupee}>₹</Text>
-                                <TextInput
+                                <AppText style={styles.rupee}>₹</AppText>
+                                <AppTextInput
                                     style={styles.priceInput}
                                     placeholder="Enter Price"
                                     placeholderTextColor="#9C9C9C"
@@ -649,7 +651,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                 />
                             </View>
                             {!!errors.price && touched.price && (
-                                <Text style={styles.errorText}>{errors.price}</Text>
+                                <AppText style={styles.errorText}>{errors.price}</AppText>
                             )}
                         </Card>
 
@@ -705,7 +707,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                             <>
                                                 {values.usageSteps.map((item, index) => (
                                                     <View key={index} style={{ marginBottom: 14 }}>
-                                                        <Text style={styles.stepTitle}>Step {index + 1}</Text>
+                                                        <AppText style={styles.stepTitle}>Step {index + 1}</AppText>
                                                         <Input
                                                             placeholder="Heading"
                                                             value={item.heading}
@@ -735,7 +737,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                                     onPress={() =>
                                                         arrayHelpers.push({ heading: '', description: '' })
                                                     }>
-                                                    <Text style={styles.smallButtonText}>Add Step</Text>
+                                                    <AppText style={styles.smallButtonText}>Add Step</AppText>
                                                 </TouchableOpacity>
                                             </>
                                         )}
@@ -744,7 +746,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
 
                                 <Card title="Key Benefits">
                                     <View style={styles.tagInputRow}>
-                                        <TextInput
+                                        <AppTextInput
                                             style={styles.tagInput}
                                             placeholder="eg. CropGuard Pro Insecticide"
                                             placeholderTextColor="#9C9C9C"
@@ -769,7 +771,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                     <View style={styles.tagsWrap}>
                                         {values.keyBenefits.map((item, index) => (
                                             <View key={index} style={styles.tag}>
-                                                <Text style={styles.tagText}>{item}</Text>
+                                                <AppText style={styles.tagText}>{item}</AppText>
 
                                                 <TouchableOpacity
                                                     onPress={() => {
@@ -788,7 +790,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
 
                                 <Card title="Suitable for Crops *">
                                     <View style={styles.tagInputRow}>
-                                        <TextInput
+                                        <AppTextInput
                                             style={styles.tagInput}
                                             placeholder="eg. wheat, Rice..."
                                             placeholderTextColor="#9C9C9C"
@@ -813,7 +815,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                     <View style={styles.tagsWrap}>
                                         {values.suitableCrops.map((item, index) => (
                                             <View key={index} style={styles.tag}>
-                                                <Text style={styles.tagText}>{item}</Text>
+                                                <AppText style={styles.tagText}>{item}</AppText>
 
                                                 <TouchableOpacity
                                                     onPress={() => {
@@ -867,7 +869,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                     />
 
                                     {/* <TouchableOpacity style={styles.fullButton}>
-                                <Text style={styles.fullButtonText}>Add More Specifications</Text>
+                                <AppText style={styles.fullButtonText}>Add More Specifications</AppText>
                             </TouchableOpacity> */}
                                 </Card>
 
@@ -878,15 +880,15 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                         value={values.safetyPrecautions}
                                         onChangeText={handleChange('safetyPrecautions')}
                                     />
-                                    <Text style={styles.counter}>
+                                    <AppText style={styles.counter}>
                                         {values.safetyPrecautions.length}/500 characters
-                                    </Text>
+                                    </AppText>
                                 </Card> </>)}
 
                         <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
-                            <Text style={styles.saveButtonText}>{loading
+                            <AppText style={styles.saveButtonText}>{loading
                                 ? (isEdit ? 'Updating...' : 'Saving...')
-                                : (isEdit ? 'Update Product' : 'Save Product')}</Text>
+                                : (isEdit ? 'Update Product' : 'Save Product')}</AppText>
                         </TouchableOpacity>
                     </ScrollView>
 

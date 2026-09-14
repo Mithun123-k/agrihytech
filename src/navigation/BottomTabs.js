@@ -9,6 +9,7 @@ import SearchScreen from '../screens/search/SearchScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import BrandScreen from '../screens/home/BrandScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,12 +26,14 @@ function HomeStack() {
 
 
 const BottomTabs = () => {
+  const { t } = useLanguage();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
 
         tabBarShowLabel: true,
+        tabBarLabel: t(route.name),
 
         tabBarActiveTintColor: '#4A7C1C',
         tabBarInactiveTintColor: '#777',

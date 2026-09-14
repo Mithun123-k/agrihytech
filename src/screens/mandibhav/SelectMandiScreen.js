@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
@@ -63,7 +64,7 @@ const SelectMandiScreen = ({navigation, route}) => {
         </View>
 
         {/* Mandi Name */}
-        <Text style={styles.cardText}>{item.name}</Text>
+        <AppText style={styles.cardText}>{item.name}</AppText>
       </TouchableOpacity>
     );
   };
@@ -85,21 +86,21 @@ const SelectMandiScreen = ({navigation, route}) => {
         {/* Main White Card */}
         <View style={styles.mainCard}>
           {/* Title */}
-          <Text style={styles.title}>
-            Select <Text style={styles.greenText}>Mandi</Text>{' '}
-            <Text style={styles.greenText}></Text>
-          </Text>
+          <AppText style={styles.title}>
+            Select <AppText style={styles.greenText}>Mandi</AppText>{' '}
+            <AppText style={styles.greenText}></AppText>
+          </AppText>
 
           {/* Subtitle */}
-          <Text style={styles.subTitle}>
-            अपना <Text style={styles.greenText}>मंडी</Text>{' '}
+          <AppText style={styles.subTitle}>
+            अपना <AppText style={styles.greenText}>मंडी</AppText>{' '}
             चुने!
-          </Text>
+          </AppText>
 
           {/* List */}
-          {loading ? <Text style={styles.message}>Loading mandis...</Text> : null}
-          {error ? <TouchableOpacity onPress={loadMarkets}><Text style={styles.error}>{error}  Tap to retry</Text></TouchableOpacity> : null}
-          {!loading && !error && !mandiList.length ? <Text style={styles.message}>No mandis found for this district.</Text> : null}
+          {loading ? <AppText style={styles.message}>Loading mandis...</AppText> : null}
+          {error ? <TouchableOpacity onPress={loadMarkets}><AppText style={styles.error}>{error}  Tap to retry</AppText></TouchableOpacity> : null}
+          {!loading && !error && !mandiList.length ? <AppText style={styles.message}>No mandis found for this district.</AppText> : null}
           <FlatList
             data={mandiList}
             keyExtractor={item => item.id}
@@ -117,7 +118,7 @@ const SelectMandiScreen = ({navigation, route}) => {
           style={styles.button}
           onPress={()=>navigation.navigate('MandiBhavScreen', route.params)}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <AppText style={styles.buttonText}>Next</AppText>
         </TouchableOpacity>
       </ImageBackground>
     </SafeAreaView>

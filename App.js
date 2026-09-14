@@ -4,6 +4,7 @@ import { SafeAreaView, Text } from 'react-native';
 import RNBootSplash from "react-native-bootsplash";
 import { Provider } from 'react-redux';
 import { store } from './src/apps/store';
+import { LanguageProvider } from './src/i18n/LanguageContext';
 
 const App = () => {
 
@@ -15,9 +16,11 @@ const App = () => {
 
   return (
     // <SafeAreaView style={{ flex: 1 }}>
-      <Provider store={store}>
-      <AppNavigator />
-    </Provider>
+      <LanguageProvider>
+        <Provider store={store}>
+          <AppNavigator />
+        </Provider>
+      </LanguageProvider>
     // </SafeAreaView>
   )
 

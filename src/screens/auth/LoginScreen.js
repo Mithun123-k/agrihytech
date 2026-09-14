@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useState } from 'react';
 import {
   View,
@@ -18,6 +20,8 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux';
 import { sendOtp } from '../../features/auth/authSlice';
+import { useLanguage } from '../../i18n/LanguageContext';
+import LanguageSelector from '../../components/common/LanguageSelector';
 
 const { width, height } = Dimensions.get('window');
 
@@ -54,6 +58,7 @@ const LoginScreen = ({
   route,
 }) => {
   const { role } = route.params || {};
+  const { t } = useLanguage();
 
   console.log('Selected Role:', role);
 
@@ -68,8 +73,8 @@ const LoginScreen = ({
   const handleLogin = async () => {
     if (phone.length !== 10) {
       Alert.alert(
-        'Invalid Number',
-        'Please enter valid 10 digit mobile number',
+        t('Invalid Number'),
+        t('Please enter valid 10 digit mobile number'),
       );
 
       return;
@@ -126,11 +131,7 @@ const LoginScreen = ({
         >
           {/* Language button */}
           <View style={styles.topRow}>
-            <View style={styles.langBtn}>
-              <Text style={styles.langText}>
-                🌐 हिंदी में
-              </Text>
-            </View>
+            <LanguageSelector style={styles.langBtn} />
           </View>
 
           {/* Logo */}
@@ -144,28 +145,28 @@ const LoginScreen = ({
 
           {/* Card */}
           <View style={styles.card}>
-            <Text style={styles.title}>
+            <AppText style={styles.title}>
               Welcome To Hitech Kisan
-            </Text>
+            </AppText>
 
-            <Text style={styles.subtitle}>
+            <AppText style={styles.subtitle}>
               Login to find the right
               pesticide and crop solution
               near you.
-            </Text>
+            </AppText>
 
-            <Text style={styles.label}>
+            <AppText style={styles.label}>
               Phone Number
-            </Text>
+            </AppText>
 
             <View
               style={styles.phoneContainer}
             >
-              <Text style={styles.prefix}>
+              <AppText style={styles.prefix}>
                 +91
-              </Text>
+              </AppText>
 
-              <TextInput
+              <AppTextInput
                 placeholder="XXXX XXXX XX"
                 placeholderTextColor={
                   '#7F7F7F'
@@ -186,11 +187,11 @@ const LoginScreen = ({
               {loading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text
+                <AppText
                   style={styles.loginText}
                 >
                   Login
-                </Text>
+                </AppText>
               )}
             </TouchableOpacity>
 
@@ -198,13 +199,13 @@ const LoginScreen = ({
               activeOpacity={1}
               style={styles.registerBtn}
             >
-              <Text
+              <AppText
                 style={
                   styles.registerText
                 }
               >
                 Don’t have an account?{' '}
-                <Text
+                <AppText
                   onPress={() =>
                     navigation.navigate(
                       'RegisterScreen',
@@ -214,22 +215,22 @@ const LoginScreen = ({
                   style={styles.link}
                 >
                   Register
-                </Text>
-              </Text>
+                </AppText>
+              </AppText>
             </TouchableOpacity>}
 
-            <Text style={styles.terms}>
+            <AppText style={styles.terms}>
               By logging into this app,
               you agree to our{' '}
-              <Text style={styles.link}>
+              <AppText style={styles.link}>
                 Terms of Service
-              </Text>{' '}
+              </AppText>{' '}
               and{' '}
-              <Text style={styles.link}>
+              <AppText style={styles.link}>
                 Privacy Policy
-              </Text>
+              </AppText>
               .
-            </Text>
+            </AppText>
           </View>
         </ScrollView>
       </SafeAreaView>

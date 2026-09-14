@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useState } from "react";
 
 import {
@@ -182,13 +184,13 @@ const DeleteAccountScreen = ({
           />
         </TouchableOpacity>
 
-        <Text
+        <AppText
           style={
             styles.headerTitle
           }
         >
           Delete Account
-        </Text>
+        </AppText>
 
         <View
           style={{
@@ -219,15 +221,15 @@ const DeleteAccountScreen = ({
         </View>
 
         {/* TITLE */}
-        <Text
+        <AppText
           style={styles.title}
         >
           Permanently Delete
           Your Account
-        </Text>
+        </AppText>
 
         {/* DESCRIPTION */}
-        <Text
+        <AppText
           style={
             styles.description
           }
@@ -239,7 +241,7 @@ const DeleteAccountScreen = ({
           account-related
           information from Agro
           Mere Agri Hitech.
-        </Text>
+        </AppText>
 
         {/* WARNING CARD */}
         <View
@@ -260,25 +262,25 @@ const DeleteAccountScreen = ({
               color="#F39C12"
             />
 
-            <Text
+            <AppText
               style={
                 styles.warningTitle
               }
             >
               Important
-            </Text>
+            </AppText>
           </View>
 
-          <Text
+          <AppText
             style={
               styles.warningText
             }
           >
             • This action cannot
             be undone.
-          </Text>
+          </AppText>
 
-          <Text
+          <AppText
             style={
               styles.warningText
             }
@@ -286,9 +288,9 @@ const DeleteAccountScreen = ({
             • Your account data
             will be permanently
             removed.
-          </Text>
+          </AppText>
 
-          <Text
+          <AppText
             style={
               styles.warningText
             }
@@ -296,7 +298,7 @@ const DeleteAccountScreen = ({
             • Account deletion may
             take up to 7 business
             days to process.
-          </Text>
+          </AppText>
         </View>
 
         {/* REASON INPUT */}
@@ -305,16 +307,16 @@ const DeleteAccountScreen = ({
             styles.inputContainer
           }
         >
-          <Text
+          <AppText
             style={
               styles.inputLabel
             }
           >
             Reason for leaving
             (Optional)
-          </Text>
+          </AppText>
 
-          <TextInput
+          <AppTextInput
             value={reason}
             onChangeText={
               setReason
@@ -347,7 +349,7 @@ const DeleteAccountScreen = ({
             color="#fff"
           />
 
-          <Text
+          <AppText
             style={
               styles.deleteBtnText
             }
@@ -355,7 +357,7 @@ const DeleteAccountScreen = ({
             {loading
               ? "Deleting..."
               : "Delete My Account"}
-          </Text>
+          </AppText>
         </TouchableOpacity>
 
         {/* CANCEL BUTTON */}
@@ -368,13 +370,13 @@ const DeleteAccountScreen = ({
             navigation.goBack()
           }
         >
-          <Text
+          <AppText
             style={
               styles.cancelBtnText
             }
           >
             Cancel
-          </Text>
+          </AppText>
         </TouchableOpacity>
 
         <View

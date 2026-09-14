@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -14,12 +15,12 @@ const BenefitsSection = ({data}) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.heading}>Key Benefits</Text>
+      <AppText style={styles.heading}>Key Benefits</AppText>
 
       {prodBenefits?.map((item, index) => (
         <View key={index} style={styles.row}>
           <Icon name="checkmark-circle-outline" size={20} color="#4C8C2B" />
-          <Text style={styles.text}>{item}</Text>
+          <AppText style={styles.text}>{item}</AppText>
         </View>
       ))}
     </View>

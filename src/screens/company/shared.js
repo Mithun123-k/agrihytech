@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useCallback, useRef, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, RefreshControl, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -37,7 +39,7 @@ export function CompanyPage({ title, navigation, children, resource, tab = false
     <ProductHeader title={title} navigation={navigation} />
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={[s.content, tab && s.tabContent]}
       refreshControl={resource ? <RefreshControl refreshing={resource.loading} onRefresh={resource.reload} colors={['#4C7A1E']} /> : undefined}>
-      {resource?.error ? <View style={s.card}><Text style={s.error}>{resource.error}</Text><CompanyButton title="Retry" onPress={resource.reload} /></View> : null}
+      {resource?.error ? <View style={s.card}><AppText style={s.error}>{resource.error}</AppText><CompanyButton title="Retry" onPress={resource.reload} /></View> : null}
       {resource?.loading && !resource.data ? <ActivityIndicator color="#4C7A1E" /> : children}
     </ScrollView>
   </KeyboardAvoidingView>;
@@ -45,14 +47,14 @@ export function CompanyPage({ title, navigation, children, resource, tab = false
 export function CompanyButton({ title, onPress, disabled, secondary, danger }) {
   return <TouchableOpacity accessibilityRole="button" disabled={disabled} onPress={onPress}
     style={[s.button, secondary && s.secondary, danger && s.danger, disabled && s.disabled]}>
-    <Text style={[s.buttonText, secondary && s.secondaryText]}>{title}</Text>
+    <AppText style={[s.buttonText, secondary && s.secondaryText]}>{title}</AppText>
   </TouchableOpacity>;
 }
 export function CompanyField({ label, value, onChangeText, ...props }) {
-  return <View style={s.field}><Text style={s.label}>{label}</Text><TextInput accessibilityLabel={label} style={s.input} value={String(value ?? '')} onChangeText={onChangeText} placeholderTextColor="#888" {...props} /></View>;
+  return <View style={s.field}><AppText style={s.label}>{label}</AppText><AppTextInput accessibilityLabel={label} style={s.input} value={String(value ?? '')} onChangeText={onChangeText} placeholderTextColor="#888" {...props} /></View>;
 }
 export function CompanySelect({ label, value, onChange, options }) {
-  return <View style={s.field}><Text style={s.label}>{label}</Text><View style={s.select}><Picker accessibilityLabel={label} selectedValue={value} onValueChange={onChange}>
+  return <View style={s.field}><AppText style={s.label}>{label}</AppText><View style={s.select}><Picker accessibilityLabel={label} selectedValue={value} onValueChange={onChange}>
     <Picker.Item label={`Select ${label.toLowerCase()}`} value="" />
     {options.map(item => <Picker.Item key={item._id} label={item.name} value={item._id} />)}
   </Picker></View></View>;

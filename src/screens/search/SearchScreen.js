@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -106,9 +108,9 @@ const SearchScreen = ({ navigation }) => {
       </View>
 
       {/* TITLE */}
-      <Text style={styles.gridName} numberOfLines={2}>
+      <AppText style={styles.gridName} numberOfLines={2}>
         {item.name}
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 
@@ -151,7 +153,7 @@ const SearchScreen = ({ navigation }) => {
                 color="#999"
               />
 
-              <TextInput
+              <AppTextInput
                 placeholder="Search for Product, Brand..."
                 placeholderTextColor="#999"
                 style={styles.input}
@@ -183,9 +185,9 @@ const SearchScreen = ({ navigation }) => {
 
         <View style={styles.section}>
           <View style={styles.rowBetween}>
-            <Text style={styles.title}>
+            <AppText style={styles.title}>
               Recent Search
-            </Text>
+            </AppText>
 
             {recentSearches?.length > 0 && (
               <TouchableOpacity
@@ -193,9 +195,9 @@ const SearchScreen = ({ navigation }) => {
                   dispatch(clearRecentSearches())
                 }
               >
-                <Text style={styles.clearText}>
+                <AppText style={styles.clearText}>
                   Clear
-                </Text>
+                </AppText>
               </TouchableOpacity>
             )}
           </View>
@@ -213,9 +215,9 @@ const SearchScreen = ({ navigation }) => {
                   />
                 </TouchableOpacity>
 
-                <Text style={styles.chipText}>
+                <AppText style={styles.chipText}>
                   {item}
-                </Text>
+                </AppText>
               </View>
             ))}
           </View>
@@ -229,9 +231,9 @@ const SearchScreen = ({ navigation }) => {
             {results?.data?.products?.length >
               0 && (
               <>
-                <Text style={styles.sectionTitle}>
+                <AppText style={styles.sectionTitle}>
                   Products
-                </Text>
+                </AppText>
 
                 <View style={styles.grid}>
                   {results.data.products.map(
@@ -255,9 +257,9 @@ const SearchScreen = ({ navigation }) => {
             {/* BRANDS */}
             {results?.data?.brands?.length > 0 && (
               <>
-                <Text style={styles.sectionTitle}>
+                <AppText style={styles.sectionTitle}>
                   Brands
-                </Text>
+                </AppText>
 
                 <View style={styles.grid}>
                   {results.data.brands.map((item) =>
@@ -281,9 +283,9 @@ const SearchScreen = ({ navigation }) => {
             {results?.data?.categories?.length >
               0 && (
               <>
-                <Text style={styles.sectionTitle}>
+                <AppText style={styles.sectionTitle}>
                   Categories
-                </Text>
+                </AppText>
 
                 <View style={styles.grid}>
                   {results.data.categories.map(
@@ -323,9 +325,9 @@ const SearchScreen = ({ navigation }) => {
               !results?.data?.brands?.length &&
               !results?.data?.categories
                 ?.length && (
-                <Text style={styles.noResult}>
+                <AppText style={styles.noResult}>
                   No results found
-                </Text>
+                </AppText>
               )}
           </View>
         )}

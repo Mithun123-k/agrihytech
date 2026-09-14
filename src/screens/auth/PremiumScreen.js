@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 // PremiumScreen.js
 
 import React, { useEffect, useState } from "react";
@@ -83,9 +84,9 @@ const FeatureItem = ({ text }) => (
       />
     </View>
 
-    <Text style={styles.featureText}>
+    <AppText style={styles.featureText}>
       {text}
-    </Text>
+    </AppText>
 
   </View>
 );
@@ -118,20 +119,20 @@ const PlanCard = ({
 
       <View style={{ flex: 1 }}>
 
-        <Text style={styles.planTitle}>
+        <AppText style={styles.planTitle}>
           {title}{" "}
 
-          <Text style={styles.priceText}>
+          <AppText style={styles.priceText}>
             ₹{price}
-          </Text>
+          </AppText>
 
-        </Text>
+        </AppText>
 
         {!!subText && (
 
-          <Text style={styles.subText}>
+          <AppText style={styles.subText}>
             {subText}
-          </Text>
+          </AppText>
 
         )}
 
@@ -139,9 +140,9 @@ const PlanCard = ({
 
           <View style={styles.saveBadge}>
 
-            <Text style={styles.saveText}>
+            <AppText style={styles.saveText}>
               Recommended
-            </Text>
+            </AppText>
 
           </View>
 
@@ -404,11 +405,11 @@ const PremiumScreen = () => {
                 onPress={handleTrial}
               >
 
-                <Text
+                <AppText
                   style={styles.skipText}
                 >
                   Start Free Trial
-                </Text>
+                </AppText>
 
               </TouchableOpacity>
 
@@ -429,28 +430,28 @@ const PremiumScreen = () => {
                   color="#fff"
                 />
 
-                <Text
+                <AppText
                   style={styles.badgeText}
                 >
                   PREMIUM
-                </Text>
+                </AppText>
 
               </View>
 
 
               {/* TITLE */}
-              <Text style={styles.title}>
+              <AppText style={styles.title}>
                 Unlock Premium Seller
                 Experience
-              </Text>
+              </AppText>
 
               {/* SUBTITLE */}
-              <Text style={styles.subtitle}>
+              <AppText style={styles.subtitle}>
                 Boost your business
                 visibility and grow
                 faster with premium
                 selling tools.
-              </Text>
+              </AppText>
 
 
               {/* FEATURES */}
@@ -530,13 +531,13 @@ const PremiumScreen = () => {
 
 
               {/* FOOTER TEXT */}
-              <Text
+              <AppText
                 style={styles.trialText}
               >
                 Cancel anytime. Secure
                 payment powered by
                 Razorpay.
-              </Text>
+              </AppText>
 
 
               {/* CONTINUE BUTTON */}
@@ -547,7 +548,7 @@ const PremiumScreen = () => {
                 disabled={loading}
               >
 
-                <Text
+                <AppText
                   style={
                     styles.continueText
                   }
@@ -555,17 +556,17 @@ const PremiumScreen = () => {
                   {loading
                     ? "Processing..."
                     : "Continue"}
-                </Text>
+                </AppText>
 
               </TouchableOpacity>
 
 
               {/* FOOTER */}
-              <Text
+              <AppText
                 style={styles.footerText}
               >
                 Terms · Privacy
-              </Text>
+              </AppText>
 
             </View>
 

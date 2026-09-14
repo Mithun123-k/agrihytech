@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -99,17 +101,17 @@ const BrandListing = ({ navigation }) => {
 
       {/* Footer */}
       <View style={styles.cardFooter}>
-        <Text
+        <AppText
           style={styles.cardTitle}
           numberOfLines={2}
         >
           {item.name}
-        </Text>
+        </AppText>
 
         <View style={styles.countBadge}>
-          <Text style={styles.countText}>
+          <AppText style={styles.countText}>
             {item.productCount || 0} Products
-          </Text>
+          </AppText>
         </View>
       </View>
     </TouchableOpacity>
@@ -150,12 +152,12 @@ const BrandListing = ({ navigation }) => {
               />
             </TouchableOpacity>
 
-            <Text
+            <AppText
               style={styles.headerTitle}
               numberOfLines={1}
             >
               Choose a Brand
-            </Text>
+            </AppText>
 
             <View style={{ width: 40 }} />
           </View>
@@ -168,7 +170,7 @@ const BrandListing = ({ navigation }) => {
               color="#888"
             />
 
-            <TextInput
+            <AppTextInput
               placeholder="Search brand"
               placeholderTextColor="#888"
               style={styles.input}
@@ -181,9 +183,9 @@ const BrandListing = ({ navigation }) => {
 
       {/* TITLE */}
       <View style={styles.titleContainer}>
-        <Text style={styles.sectionTitle}>
+        <AppText style={styles.sectionTitle}>
           Product Brand
-        </Text>
+        </AppText>
       </View>
 
       {/* LOADER */}
@@ -209,9 +211,9 @@ const BrandListing = ({ navigation }) => {
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
+              <AppText style={styles.emptyText}>
                 No Brands Found
-              </Text>
+              </AppText>
             </View>
           }
         />

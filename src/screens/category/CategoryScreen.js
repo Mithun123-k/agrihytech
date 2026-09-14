@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -166,18 +168,18 @@ const CategoryScreen = ({
       />
 
       <View style={styles.cardFooter}>
-        <Text
+        <AppText
           style={styles.cardTitle}
           numberOfLines={2}
         >
           {item.name}
-        </Text>
+        </AppText>
 
         {user?.role === "B2C" ? (
           <View style={styles.countBadge}>
-            <Text style={styles.countText}>
+            <AppText style={styles.countText}>
               {item.productCount || 0}+
-            </Text>
+            </AppText>
           </View>
         ) : null}
       </View>
@@ -200,9 +202,9 @@ const CategoryScreen = ({
               )
             }
           >
-            <Text style={styles.sellText}>
+            <AppText style={styles.sellText}>
               Sell
-            </Text>
+            </AppText>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -217,9 +219,9 @@ const CategoryScreen = ({
               )
             }
           >
-            <Text style={styles.buyText}>
+            <AppText style={styles.buyText}>
               Buy
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
       )}
@@ -256,12 +258,12 @@ const CategoryScreen = ({
               />
             </TouchableOpacity>
 
-            <Text
+            <AppText
               style={styles.headerTitle}
               numberOfLines={1}
             >
               Choose a Category
-            </Text>
+            </AppText>
 
             <View
               style={{
@@ -278,7 +280,7 @@ const CategoryScreen = ({
               color="#888"
             />
 
-            <TextInput
+            <AppTextInput
               placeholder="Search category"
               placeholderTextColor="#888"
               style={styles.input}
@@ -314,11 +316,11 @@ const CategoryScreen = ({
             {/* <View
               style={styles.cropContainer}
             >
-              <Text
+              <AppText
                 style={styles.sectionTitle}
               >
                 Browse by crops
-              </Text>
+              </AppText>
 
               <FlatList
                 horizontal
@@ -371,7 +373,7 @@ const CategoryScreen = ({
                         resizeMode="contain"
                       />
 
-                      <Text
+                      <AppText
                         style={[
                           styles.chipText,
                           isActive &&
@@ -379,7 +381,7 @@ const CategoryScreen = ({
                         ]}
                       >
                         {item.name}
-                      </Text>
+                      </AppText>
                     </TouchableOpacity>
                   );
                 }}
@@ -387,7 +389,7 @@ const CategoryScreen = ({
             </View> */}
 
             {/* SECTION TITLE */}
-            <Text
+            <AppText
               style={[
                 styles.sectionTitle,
                 {
@@ -405,12 +407,12 @@ const CategoryScreen = ({
               ]}
             >
               Product Categories
-            </Text>
+            </AppText>
           </>
         }
         ListEmptyComponent={
           !loading && (
-            <Text
+            <AppText
               style={{
                 textAlign:
                   "center",
@@ -423,7 +425,7 @@ const CategoryScreen = ({
               }}
             >
               No categories found
-            </Text>
+            </AppText>
           )
         }
         ListFooterComponent={

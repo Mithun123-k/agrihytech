@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,10 +11,10 @@ const CategorySection = ({ data = [], navigation, role }) => {
     <View style={{ marginTop: 25 }}>
 
       <View style={styles.row}>
-        <Text style={styles.title}>Categories</Text>
+        <AppText style={styles.title}>Categories</AppText>
 
         <TouchableOpacity onPress={() => navigation.navigate('Category')}>
-          <Text style={{ color: 'green' }}>View All</Text>
+          <AppText style={{ color: 'green' }}>View All</AppText>
         </TouchableOpacity>
       </View>
 
@@ -61,9 +62,9 @@ const CategorySection = ({ data = [], navigation, role }) => {
             }}>
 
               {/* 🔥 NAME */}
-              <Text style={styles.name}>
+              <AppText style={styles.name}>
                 {item?.name || "Category"}
-              </Text>
+              </AppText>
 
               {role === 'B2C' ? <View style={{
                 backgroundColor: '#FAF3E7',
@@ -74,9 +75,9 @@ const CategorySection = ({ data = [], navigation, role }) => {
               }}>
 
                 {/* 🔥 COUNT */}
-                <Text style={styles.count}>
+                <AppText style={styles.count}>
                     {`${item?.totalProducts}+`}
-                </Text>
+                </AppText>
 
               </View> : null}
             </View>
@@ -88,7 +89,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
                   style={styles.sell}
                   onPress={() => navigation.navigate('AddProductDetailsScreen')}
                 >
-                  <Text style={styles.sellText}>Sell</Text>
+                  <AppText style={styles.sellText}>Sell</AppText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -96,7 +97,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
                   onPress={() => navigation.navigate("BrandScreen", { categoryId: item._id })
                   }
                 >
-                  <Text style={styles.buyText}>Buy</Text>
+                  <AppText style={styles.buyText}>Buy</AppText>
                 </TouchableOpacity>
 
               </View>}
@@ -129,9 +130,9 @@ const CategorySection = ({ data = [], navigation, role }) => {
             }}>
 
               {/* 🔥 NAME */}
-              <Text style={[styles.name, {textAlign:'center', width:'100%', fontSize:16}]}>
+              <AppText style={[styles.name, {textAlign:'center', width:'100%', fontSize:16}]}>
                 {"Mandi Bhav"}
-              </Text>
+              </AppText>
 
              
             </View>
@@ -141,7 +142,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
 
           <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={() => role === 'COMPANY' ? navigation.getParent()?.navigate('AnudanYojanaScreen') : navigation.navigate('AnudanYojanaScreen')}>
             <View style={styles.anudanImage}><Ionicons name="ribbon-outline" size={48} color="#168A45" /></View>
-            <Text style={[styles.name, { textAlign: 'center', width: '100%', fontSize: 16 }]}>Anudan Yojna</Text>
+            <AppText style={[styles.name, { textAlign: 'center', width: '100%', fontSize: 16 }]}>Anudan Yojna</AppText>
           </TouchableOpacity>
 
       </View>

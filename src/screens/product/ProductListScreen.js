@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   SafeAreaView,
@@ -107,15 +109,15 @@ const ProductListScreen = ({ navigation, route }) => {
           </View>
 
           <View style={styles.textContainer}>
-            <Text
+            <AppText
               numberOfLines={1}
               adjustsFontSizeToFit
               style={styles.productName}
             >
               {item.name}
-            </Text>
+            </AppText>
 
-            <Text style={styles.qtyText}>Qty: {item.quantity} {item?.unit} </Text>
+            <AppText style={styles.qtyText}>Qty: {item.quantity} {item?.unit} </AppText>
           </View>
         </View>
 
@@ -166,7 +168,7 @@ const ProductListScreen = ({ navigation, route }) => {
           color="#7F7F7F"
         />
 
-        <TextInput
+        <AppTextInput
           value={search}
           onChangeText={setSearch}
           placeholder="Search products name"
@@ -190,7 +192,7 @@ const ProductListScreen = ({ navigation, route }) => {
         style={styles.addButton}
         onPress={() => navigation?.navigate('AddProductDetailsScreen')}
       >
-        <Text style={styles.addButtonText}>Add New Product</Text>
+        <AppText style={styles.addButtonText}>Add New Product</AppText>
       </TouchableOpacity>
     </View>
   );

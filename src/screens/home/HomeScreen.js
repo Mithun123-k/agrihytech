@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, {
   useCallback,
   useEffect,
@@ -190,13 +191,13 @@ const HomeScreen = ({
           />
 
           {error && (
-            <Text
+            <AppText
               style={
                 styles.errorText
               }
             >
               {error}
-            </Text>
+            </AppText>
           )}
 
           <View

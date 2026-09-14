@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from 'react';
 
 import {
@@ -58,9 +59,9 @@ const BrandSection = ({
     >
       {/* HEADER */}
       <View style={styles.row}>
-        <Text style={styles.title}>
+        <AppText style={styles.title}>
           Popular Brands
-        </Text>
+        </AppText>
 
         <TouchableOpacity
           onPress={() =>
@@ -69,13 +70,13 @@ const BrandSection = ({
             )
           }
         >
-          <Text
+          <AppText
             style={
               styles.viewAll
             }
           >
             View All
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
 
@@ -123,7 +124,7 @@ const BrandSection = ({
             />
 
             {/* NAME */}
-            <Text
+            <AppText
               style={
                 styles.brandName
               }
@@ -131,10 +132,10 @@ const BrandSection = ({
             >
               {b?.name ||
                 'Brand'}
-            </Text>
+            </AppText>
 
             {/* PRODUCT COUNT */}
-            <Text
+            <AppText
               style={
                 styles.productCount
               }
@@ -142,7 +143,7 @@ const BrandSection = ({
               {b?.totalProducts ||
                 0}{' '}
               Products
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </ScrollView>

@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, StatusBar, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -77,7 +78,7 @@ const ProductDetailsScreen = ({ navigation, route }) => {
   }, [productId, location, dispatch, user?.role]);
 
   if (loading || !productDetails) {
-    return <Text style={{ textAlign: "center", marginTop: 50 }}>Loading...</Text>;
+    return <AppText style={{ textAlign: "center", marginTop: 50 }}>Loading...</AppText>;
   }
 
   return (
@@ -116,7 +117,7 @@ const ProductDetailsScreen = ({ navigation, route }) => {
         <View style={styles.bottomBar}>
           <View style={styles.connectBtn}>
             <Icon name="phone-call" size={18} color="#FFFFFF" />
-            <Text style={styles.callText}>Connect to Nearest Seller</Text>
+            <AppText style={styles.callText}>Connect to Nearest Seller</AppText>
           </View>
         </View>
       )}

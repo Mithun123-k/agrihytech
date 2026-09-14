@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
@@ -16,12 +17,12 @@ const SpecificationSection = ({ data }) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.heading}>Specifications</Text>
+      <AppText style={styles.heading}>Specifications</AppText>
 
       {specs?.map((item, index) => (
         <View key={index} style={styles.item}>
-          <Text style={styles.label}>{item.label}</Text>
-          <Text style={styles.value}>{item.value}</Text>
+          <AppText style={styles.label}>{item.label}</AppText>
+          <AppText style={styles.value}>{item.value}</AppText>
           {index !== specs.length - 1 && <View style={styles.divider} />}
         </View>
       ))}

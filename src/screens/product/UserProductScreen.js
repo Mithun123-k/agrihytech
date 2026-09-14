@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useEffect } from "react";
 import {
   View,
@@ -52,17 +54,17 @@ const UserProductsScreen = ({ navigation, route }) => {
       </View>
 
       {/* <View style={styles.categoryChip}>
-        <Text style={styles.categoryText}>
+        <AppText style={styles.categoryText}>
           {item.category?.name || "Category"}
-        </Text>
+        </AppText>
       </View> */}
 
      
 
-      <Text style={styles.title} numberOfLines={2}>
+      <AppText style={styles.title} numberOfLines={2}>
         {item.name}
-      </Text>
-       {/* <Text style={styles.price}>₹{item.price || 0}</Text> */}
+      </AppText>
+       {/* <AppText style={styles.price}>₹{item.price || 0}</AppText> */}
     </TouchableOpacity>
   );
 
@@ -95,16 +97,16 @@ const UserProductsScreen = ({ navigation, route }) => {
                     <Icon name="arrow-back" size={24} color="#000" />
                   </TouchableOpacity>
 
-                  <Text style={styles.headerTitle}>
+                  <AppText style={styles.headerTitle}>
                     {categoryName || "Seed"}
-                  </Text>
+                  </AppText>
 
                   <Image source={{ uri: categoryImage }} style={styles.logo} />
                 </View>
 
                 <View style={styles.searchBar}>
                   <Icon name="search" size={18} color="#999" />
-                  <TextInput
+                  <AppTextInput
                     placeholder="Search products"
                     placeholderTextColor="#999"
                     style={styles.searchInput}
@@ -113,13 +115,13 @@ const UserProductsScreen = ({ navigation, route }) => {
               </SafeAreaView>
             </ImageBackground>
 
-            <Text style={styles.countText}>
+            <AppText style={styles.countText}>
               Showing{" "}
-              <Text style={{ fontWeight: "700" }}>
+              <AppText style={{ fontWeight: "700" }}>
                 {products?.length}
-              </Text>{" "}
+              </AppText>{" "}
               products
-            </Text>
+            </AppText>
           </>
         }
       />

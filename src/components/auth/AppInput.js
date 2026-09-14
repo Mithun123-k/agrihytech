@@ -1,3 +1,5 @@
+import AppTextInput from '../common/AppTextInput';
+import AppText from '../common/AppText';
 import React from "react";
 import { View, TextInput, Text, StyleSheet } from "react-native";
 import { responsiveFont, scale } from "../../utils/responsive";
@@ -10,16 +12,16 @@ const AppInput = ({
 }) => {
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <AppText style={styles.label}>{label}</AppText>}
 
-      <TextInput
+      <AppTextInput
         style={styles.input}
         {...props}
         placeholderTextColor={'#7F7F7F'}
       />
 
       {touched && error && (
-        <Text style={styles.error}>{error}</Text>
+        <AppText style={styles.error}>{error}</AppText>
       )}
     </View>
   );

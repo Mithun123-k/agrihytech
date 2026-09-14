@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useEffect } from "react";
 import {
   View,
@@ -36,7 +38,7 @@ const ProductsScreen = ({ navigation, route }) => {
       {/* Image Section */}
       <View style={styles.imageContainer}>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>🔥 Bestseller</Text>
+          <AppText style={styles.badgeText}>🔥 Bestseller</AppText>
         </View>
 
         <Image
@@ -48,32 +50,32 @@ const ProductsScreen = ({ navigation, route }) => {
 
       {/* Category */}
       <View style={styles.categoryChip}>
-        <Text style={styles.categoryText}>Insecticide</Text>
+        <AppText style={styles.categoryText}>Insecticide</AppText>
       </View>
 
       {/* Price */}
-      <Text style={styles.price}>
+      <AppText style={styles.price}>
         Price Range: - ₹200 - ₹250
-      </Text>
+      </AppText>
 
       {/* Title */}
-      <Text style={styles.title}>
+      <AppText style={styles.title}>
         CropGuard Pro Insecticide
-      </Text>
+      </AppText>
 
       {/* Description */}
-      <Text style={styles.description} numberOfLines={2}>
+      <AppText style={styles.description} numberOfLines={2}>
         A high-performance, broad-spectrum insecticide designed to
         eliminate resilient pests while remaining gentle on your crops.
-      </Text>
+      </AppText>
 
       {/* Tags */}
       <View style={styles.tagsRow}>
         <View style={styles.tag}>
-          <Text style={styles.tagText}>🌾 Wheat</Text>
+          <AppText style={styles.tagText}>🌾 Wheat</AppText>
         </View>
         <View style={styles.tag}>
-          <Text style={styles.tagText}>🥕 Vegetables</Text>
+          <AppText style={styles.tagText}>🥕 Vegetables</AppText>
         </View>
       </View>
     </TouchableOpacity>
@@ -96,22 +98,22 @@ const ProductsScreen = ({ navigation, route }) => {
     </View>
 
     <View style={styles.categoryChip}>
-      <Text style={styles.categoryText}>
+      <AppText style={styles.categoryText}>
         {item.category?.name || "Category"}
-      </Text>
+      </AppText>
     </View>
 
-    <Text style={styles.price}>
+    <AppText style={styles.price}>
       ₹{item.price || 0}
-    </Text>
+    </AppText>
 
-    <Text style={styles.title}>
+    <AppText style={styles.title}>
       {item.name}
-    </Text>
+    </AppText>
 
-    <Text style={styles.description} numberOfLines={2}>
+    <AppText style={styles.description} numberOfLines={2}>
       {item.description}
-    </Text>
+    </AppText>
 
   </TouchableOpacity>
 );
@@ -149,9 +151,9 @@ const ProductsScreen = ({ navigation, route }) => {
                     <Icon name="arrow-back" size={24} color="#000" />
                   </TouchableOpacity>
 
-                  <Text style={styles.headerTitle}>
+                  <AppText style={styles.headerTitle}>
                     {brandName}
-                  </Text>
+                  </AppText>
 
                   <Image
                     source={{uri:brandImage}}
@@ -162,7 +164,7 @@ const ProductsScreen = ({ navigation, route }) => {
                 {/* Search */}
                 <View style={styles.searchBar}>
                   <Icon name="search" size={18} color="#999" />
-                  <TextInput
+                  <AppTextInput
                     placeholder="Search products name or crop problems"
                     placeholderTextColor="#999"
                     style={styles.searchInput}
@@ -172,9 +174,9 @@ const ProductsScreen = ({ navigation, route }) => {
             </ImageBackground>
 
             {/* Count */}
-            <Text style={styles.countText}>
-              Showing <Text style={{ fontWeight: "700" }}>{products?.length}</Text> products
-            </Text>
+            <AppText style={styles.countText}>
+              Showing <AppText style={{ fontWeight: "700" }}>{products?.length}</AppText> products
+            </AppText>
           </>
         }
         renderItem={renderItem}

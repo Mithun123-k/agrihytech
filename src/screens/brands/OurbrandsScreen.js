@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useMemo, useState, useEffect } from 'react';
 import {
   View,
@@ -93,21 +95,21 @@ const OurbrandsScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.textContainer}>
-            <Text
+            <AppText
               numberOfLines={1}
               adjustsFontSizeToFit
               style={styles.productName}
             >
               {item.name}
-            </Text>
+            </AppText>
 
-            <Text style={styles.qtyText}>Category: {item.category?.name}</Text>
+            <AppText style={styles.qtyText}>Category: {item.category?.name}</AppText>
           </View>
         </View>
 
         <View style={styles.assignedBadge}>
           <Feather name="check" size={15} color="#5E8E1A" />
-          <Text style={styles.assignedText}>Selected</Text>
+          <AppText style={styles.assignedText}>Selected</AppText>
         </View>
       </View>
     );
@@ -132,7 +134,7 @@ const OurbrandsScreen = ({ navigation }) => {
           color="#7F7F7F"
         />
 
-        <TextInput
+        <AppTextInput
           value={search}
           onChangeText={setSearch}
           placeholder="Search brand name"
@@ -154,8 +156,8 @@ const OurbrandsScreen = ({ navigation }) => {
             ) : (
               <View style={styles.emptyState}>
                 <Feather name="briefcase" size={36} color="#A4AFA0" />
-                <Text style={styles.emptyTitle}>No brands selected</Text>
-                <Text style={styles.emptyText}>Select brands available for your registered categories.</Text>
+                <AppText style={styles.emptyTitle}>No brands selected</AppText>
+                <AppText style={styles.emptyText}>Select brands available for your registered categories.</AppText>
               </View>
             )
           }
@@ -170,7 +172,7 @@ const OurbrandsScreen = ({ navigation }) => {
           setBrandModal(true);
         }}
       >
-        <Text style={styles.addButtonText}>Manage Brands</Text>
+        <AppText style={styles.addButtonText}>Manage Brands</AppText>
       </TouchableOpacity>
 
       <Modal visible={brandModal} transparent animationType="slide" onRequestClose={() => setBrandModal(false)}>
@@ -178,8 +180,8 @@ const OurbrandsScreen = ({ navigation }) => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <View>
-                <Text style={styles.modalTitle}>Select Brands</Text>
-                <Text style={styles.modalSubtitle}>Choose Company and Admin brands.</Text>
+                <AppText style={styles.modalTitle}>Select Brands</AppText>
+                <AppText style={styles.modalSubtitle}>Choose Company and Admin brands.</AppText>
               </View>
               <TouchableOpacity onPress={() => setBrandModal(false)}>
                 <Feather name="x" size={24} color="#202020" />
@@ -200,17 +202,17 @@ const OurbrandsScreen = ({ navigation }) => {
                   >
                     <Image source={{ uri: item.image }} style={styles.optionImage} />
                     <View style={styles.optionText}>
-                      <Text style={styles.optionName}>{item.name}</Text>
-                      <Text style={styles.optionCategory}>{item.category?.name || 'Uncategorized'}</Text>
+                      <AppText style={styles.optionName}>{item.name}</AppText>
+                      <AppText style={styles.optionCategory}>{item.category?.name || 'Uncategorized'}</AppText>
                     </View>
                     <Feather name={selected ? 'check-square' : 'square'} size={22} color={selected ? '#4C7A1E' : '#9B9B9B'} />
                   </TouchableOpacity>
                 );
               }}
-              ListEmptyComponent={<Text style={styles.noOptions}>No Company or Admin brands are available.</Text>}
+              ListEmptyComponent={<AppText style={styles.noOptions}>No Company or Admin brands are available.</AppText>}
             />
             <TouchableOpacity disabled={saving} style={styles.saveButton} onPress={saveAssignments}>
-              {saving ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.saveButtonText}>Save Selection</Text>}
+              {saving ? <ActivityIndicator color="#FFFFFF" /> : <AppText style={styles.saveButtonText}>Save Selection</AppText>}
             </TouchableOpacity>
           </View>
         </View>

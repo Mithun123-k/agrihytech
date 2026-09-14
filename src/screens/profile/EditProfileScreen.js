@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useState } from "react";
 import {
     View,
@@ -119,9 +120,9 @@ const EditProfileScreen = ({ navigation }) => {
                             />
                         </TouchableOpacity>
 
-                        <Text style={styles.title}>
+                        <AppText style={styles.title}>
                             Edit Profile
-                        </Text>
+                        </AppText>
 
                         <View style={{ width: responsiveFont(22) }} />
                     </View>
@@ -164,9 +165,9 @@ const EditProfileScreen = ({ navigation }) => {
                             {/* FIRM */}
                             {user?.role !== "B2C" && (
                                 <>
-                                    <Text style={styles.label}>
+                                    <AppText style={styles.label}>
                                         Firm Name
-                                    </Text>
+                                    </AppText>
 
                                     <FormikInput
                                         name="firmName"
@@ -176,9 +177,9 @@ const EditProfileScreen = ({ navigation }) => {
                             )}
 
                             {/* NAME */}
-                            <Text style={styles.label}>
+                            <AppText style={styles.label}>
                                {user?.role !== "B2C" ?  "Proprietor Name" : 'Farmer name' }
-                            </Text>
+                            </AppText>
 
                             <FormikInput
                                 name="proprietorName"
@@ -186,22 +187,22 @@ const EditProfileScreen = ({ navigation }) => {
                             />
 
                             {/* MOBILE */}
-                            <Text style={styles.label}>
+                            <AppText style={styles.label}>
                                 Mobile
-                            </Text>
+                            </AppText>
 
                             <View style={styles.disabledInput}>
-                                <Text style={styles.disabledText}>
+                                <AppText style={styles.disabledText}>
                                     {user?.mobile || "Not Available"}
-                                </Text>
+                                </AppText>
                             </View>
 
                             {/* LOCATION */}
                             <View style={styles.locationBox}>
 
-                                <Text style={styles.locationTitle}>
+                                <AppText style={styles.locationTitle}>
                                     📍 Location
-                                </Text>
+                                </AppText>
 
                                 {/* ROW 1 */}
                                 <View style={styles.row}>
@@ -262,9 +263,9 @@ const EditProfileScreen = ({ navigation }) => {
                                     color="#fff"
                                 />
                             ) : (
-                                <Text style={styles.updateText}>
+                                <AppText style={styles.updateText}>
                                     Update Profile
-                                </Text>
+                                </AppText>
                             )}
                         </TouchableOpacity>
                     </View>

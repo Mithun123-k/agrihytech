@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React from 'react';
 import {
   View,
@@ -15,6 +16,7 @@ import {
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import LanguageSelector from '../../components/common/LanguageSelector';
 
 const { width, height } = Dimensions.get('window');
 
@@ -71,13 +73,13 @@ const RoleCard = ({
 
       <View style={styles.cardContent}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.cardTitle}>
+          <AppText style={styles.cardTitle}>
             {title}
-          </Text>
+          </AppText>
 
-          <Text style={styles.cardDescription}>
+          <AppText style={styles.cardDescription}>
             {description}
-          </Text>
+          </AppText>
         </View>
 
         <Ionicons
@@ -102,25 +104,29 @@ const IntroScreen = ({ navigation }) => {
       <SafeAreaView style={styles.safeArea}>
         {/* ✅ Header Fixed */}
         <View style={styles.header}>
+          <LanguageSelector style={styles.languageSelector} />
+
           <View
             style={
               styles.headerTextContainer
             }
           >
-            <Text style={styles.heading}>
-              Choose how you{'\n'}
+            <AppText style={styles.heading}>
+              Choose how you
+            </AppText>
+            <AppText style={styles.heading}>
               want to use the app
-            </Text>
+            </AppText>
 
-            <Text style={styles.subHeading}>
+            <AppText style={styles.subHeading}>
               Select your role to continue
-            </Text>
+            </AppText>
           </View>
 
           {/* <TouchableOpacity>
-            <Text style={styles.skipText}>
+            <AppText style={styles.skipText}>
               Skip
-            </Text>
+            </AppText>
           </TouchableOpacity> */}
         </View>
 
@@ -193,11 +199,7 @@ const styles = StyleSheet.create({
 
   // ✅ Header
   header: {
-    flexDirection: 'row',
-
-    justifyContent: 'space-between',
-
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
 
     marginTop: hp(1),
 
@@ -205,8 +207,13 @@ const styles = StyleSheet.create({
   },
 
   headerTextContainer: {
-    flex: 1,
+    width: '100%',
     paddingRight: wp(3),
+  },
+
+  languageSelector: {
+    alignSelf: 'flex-end',
+    marginBottom: hp(1.5),
   },
 
   heading: {

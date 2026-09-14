@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, {
   useState,
   useRef,
@@ -307,23 +309,23 @@ const OtpScreen = ({
             </View>
 
             {/* TITLE */}
-            <Text style={styles.title}>
+            <AppText style={styles.title}>
               Verify Your Number
-            </Text>
+            </AppText>
 
             {/* OTP SHOW */}
-            {/* <Text
+            {/* <AppText
               style={styles.subtitle}
             >
               {initialOtp}
-            </Text> */}
+            </AppText> */}
 
-            <Text
+            <AppText
               style={styles.subtitle}
             >
               Enter the 4-digit OTP
               sent to +91 {mobile}
-            </Text>
+            </AppText>
 
             {/* OTP BOX */}
             <View style={styles.otpRow}>
@@ -332,7 +334,7 @@ const OtpScreen = ({
                   digit,
                   index,
                 ) => (
-                  <TextInput
+                  <AppTextInput
                     key={index}
                     ref={ref =>
                       (inputs.current[
@@ -358,36 +360,36 @@ const OtpScreen = ({
 
             {/* ERROR */}
             {error && (
-              <Text
+              <AppText
                 style={
                   styles.errorText
                 }
               >
                 {error}
-              </Text>
+              </AppText>
             )}
 
             {/* TIMER / RESEND */}
             {timer > 0 ? (
-              <Text
+              <AppText
                 style={styles.timer}
               >
                 Resend OTP in{' '}
                 {timer}s
-              </Text>
+              </AppText>
             ) : (
               <TouchableOpacity
                 onPress={
                   handleResend
                 }
               >
-                <Text
+                <AppText
                   style={
                     styles.resend
                   }
                 >
                   Resend OTP
-                </Text>
+                </AppText>
               </TouchableOpacity>
             )}
 
@@ -416,13 +418,13 @@ const OtpScreen = ({
               {loading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text
+                <AppText
                   style={
                     styles.btnText
                   }
                 >
                   Continue
-                </Text>
+                </AppText>
               )}
             </TouchableOpacity>
           </View>

@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
@@ -133,21 +134,21 @@ const MandiBhavScreen = ({navigation, route}) => {
 
         {/* Center Content */}
         <View style={styles.centerContent}>
-          <Text
+          <AppText
             numberOfLines={1}
             adjustsFontSizeToFit
             style={styles.itemTitle}
           >
             {item.name}
-          </Text>
+          </AppText>
 
-          <Text
+          <AppText
             numberOfLines={1}
             adjustsFontSizeToFit
             style={styles.hindiText}
           >
             {item.hindi}
-          </Text>
+          </AppText>
         </View>
 
         {/* Right Content */}
@@ -164,19 +165,19 @@ const MandiBhavScreen = ({navigation, route}) => {
               color="#FFF"
             />
 
-            <Text style={styles.badgeText}>
+            <AppText style={styles.badgeText}>
               Today
-            </Text>
+            </AppText>
           </View>
 
           {/* Price */}
-          <Text
+          <AppText
             numberOfLines={1}
             adjustsFontSizeToFit
             style={styles.priceText}
           >
             {item.price}
-          </Text>
+          </AppText>
         </View>
       </TouchableOpacity>
     );
@@ -210,27 +211,27 @@ const MandiBhavScreen = ({navigation, route}) => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text
+        <AppText
           numberOfLines={1}
           adjustsFontSizeToFit
           style={styles.headerTitle}
         >
           {route.params?.market || 'Mandi Bhav'}
-        </Text>
+        </AppText>
       </View>
 
       <View style={styles.filters}>
-        <Text style={styles.filterTitle}>Find Mandi Prices</Text>
-        <Text style={styles.filterSub}>{route.params?.district || 'Selected district'} · {route.params?.market || 'Selected mandi'}</Text>
+        <AppText style={styles.filterTitle}>Find Mandi Prices</AppText>
+        <AppText style={styles.filterSub}>{route.params?.district || 'Selected district'} · {route.params?.market || 'Selected mandi'}</AppText>
         <View style={styles.picker}><Picker style={styles.pickerText} dropdownIconColor="#222" selectedValue={commodity} onValueChange={setCommodity}><Picker.Item color="#222" label="Select Commodity" value="" />{commodities.map(item => <Picker.Item color="#222" key={item} label={item} value={item} />)}</Picker></View>
-        <View style={styles.filterActions}><TouchableOpacity style={styles.resetButton} onPress={() => { setCommodity(''); setAppliedCommodity(''); setRecords([]); load(''); }}><Text>Reset</Text></TouchableOpacity><TouchableOpacity style={styles.searchButton} onPress={() => { setAppliedCommodity(commodity); load(commodity); }}><Icon name="search" size={18} color="#FFF" /><Text style={styles.searchText}>Search Prices</Text></TouchableOpacity></View>
+        <View style={styles.filterActions}><TouchableOpacity style={styles.resetButton} onPress={() => { setCommodity(''); setAppliedCommodity(''); setRecords([]); load(''); }}><AppText>Reset</AppText></TouchableOpacity><TouchableOpacity style={styles.searchButton} onPress={() => { setAppliedCommodity(commodity); load(commodity); }}><Icon name="search" size={18} color="#FFF" /><AppText style={styles.searchText}>Search Prices</AppText></TouchableOpacity></View>
       </View>
 
       {/* -------------------- Scrollable List -------------------- */}
 
-      {loading ? <Text style={styles.message}>Loading latest mandi prices...</Text> : null}
-      {error ? <TouchableOpacity onPress={load}><Text style={styles.error}>{error}  Tap to retry</Text></TouchableOpacity> : null}
-      {!loading && !error && !mandiData.length ? <Text style={styles.message}>No prices found for this location.</Text> : null}
+      {loading ? <AppText style={styles.message}>Loading latest mandi prices...</AppText> : null}
+      {error ? <TouchableOpacity onPress={load}><AppText style={styles.error}>{error}  Tap to retry</AppText></TouchableOpacity> : null}
+      {!loading && !error && !mandiData.length ? <AppText style={styles.message}>No prices found for this location.</AppText> : null}
       <FlatList
         data={mandiData}
         keyExtractor={item => item.id}

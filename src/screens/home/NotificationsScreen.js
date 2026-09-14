@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useState } from "react";
 import {
   View,
@@ -75,11 +76,11 @@ const NotificationsScreen = ({navigation}) => {
       </View>
 
       <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <AppText style={styles.title}>{item.title}</AppText>
+        <AppText style={styles.message}>{item.message}</AppText>
       </View>
 
-      <Text style={styles.time}>{item.time}</Text>
+      <AppText style={styles.time}>{item.time}</AppText>
     </TouchableOpacity>
   );
 
@@ -101,7 +102,7 @@ const NotificationsScreen = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icon name="arrow-back" size={22 * scale} color="#222" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <AppText style={styles.headerTitle}>Notifications</AppText>
         <View style={{ width: 22 * scale }} />
       </View>
 
@@ -116,14 +117,14 @@ const NotificationsScreen = ({navigation}) => {
             ]}
             onPress={() => setSelectedTab(tab)}
           >
-            <Text
+            <AppText
               style={[
                 styles.tabText,
                 selectedTab === tab && styles.activeTabText,
               ]}
             >
               {tab}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         ))}
       </View>

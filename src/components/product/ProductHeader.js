@@ -1,4 +1,5 @@
-{/* <Text style={styles.title}>CropGuard Pro Insecticide</Text> */}
+import AppText from '../common/AppText';
+{/* <AppText style={styles.title}>CropGuard Pro Insecticide</AppText> */}
 
 import React from "react";
 import {
@@ -28,13 +29,13 @@ const ProductHeader = ({
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
 
-        <Text
+        <AppText
           style={styles.title}
           numberOfLines={1}
           ellipsizeMode="tail"
         >
           {title}
-        </Text>
+        </AppText>
 
         {showShare ? (
           <TouchableOpacity onPress={onShare}>

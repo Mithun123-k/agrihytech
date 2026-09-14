@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -98,28 +100,28 @@ const AddBrandModal = ({
         <View style={styles.overlay}>
             <View style={styles.container}>
 
-                <Text style={styles.title}>
+                <AppText style={styles.title}>
                     {mode === "edit" ? "Edit Brand" : "Create Brand"}
-                </Text>
+                </AppText>
 
-                <Text style={styles.label}>Brand Name *</Text>
-                <TextInput
+                <AppText style={styles.label}>Brand Name *</AppText>
+                <AppTextInput
                     style={styles.input}
                     placeholder="Enter brand name"
                     value={name}
                     onChangeText={setName}
                 />
 
-                <Text style={styles.label}>Category</Text>
+                <AppText style={styles.label}>Category</AppText>
                 <TouchableOpacity
                     style={styles.dropdown}
                     onPress={() => setOpenCategory(!openCategory)}>
-                    <Text style={!category && { color: '#999' }}>
+                    <AppText style={!category && { color: '#999' }}>
                         {
                             categories.find(c => c.value === category)?.label ||
                             'Select Category'
                         }
-                    </Text>
+                    </AppText>
                 </TouchableOpacity>
 
                 {openCategory && (
@@ -132,7 +134,7 @@ const AddBrandModal = ({
                                     setCategory(item.value);
                                     setOpenCategory(false);
                                 }}>
-                                <Text>{item.label}</Text>
+                                <AppText>{item.label}</AppText>
                             </TouchableOpacity>
                         ))}
                     </View>
@@ -141,7 +143,7 @@ const AddBrandModal = ({
                 <TouchableOpacity
                     style={styles.upload}
                     onPress={pickImage}>
-                    <Text>Select Image</Text>
+                    <AppText>Select Image</AppText>
                 </TouchableOpacity>
 
                 {image && (
@@ -155,15 +157,15 @@ const AddBrandModal = ({
                     <TouchableOpacity
                         style={[styles.btn, { backgroundColor: '#ccc' }]}
                         onPress={onClose}>
-                        <Text>Cancel</Text>
+                        <AppText>Cancel</AppText>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.btn}
                         onPress={handleSubmit}>
-                        <Text style={{ color: '#fff' }}>
+                        <AppText style={{ color: '#fff' }}>
                             {mode === "edit" ? "Update" : "Create"}
-                        </Text>
+                        </AppText>
                     </TouchableOpacity>
                 </View>
 

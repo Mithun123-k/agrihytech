@@ -15,14 +15,16 @@ import MandiBhavScreen from '../screens/mandibhav/MandiBhavScreen';
 import UserProductsScreen from '../screens/product/UserProductScreen';
 import UserBrandScreen from '../screens/home/UserBrandScreen';
 import ProductDetailsScreen from '../screens/product/ProductDetailsScreen';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const icons = { Home: 'home', Search: 'search', Category: 'grid', Profile: 'person' };
 function CompanyTabs() {
+  const { t } = useLanguage();
   return <Tab.Navigator screenOptions={({ route }) => ({
     headerShown: false, tabBarShowLabel: true, tabBarActiveTintColor: '#4A7C1C', tabBarInactiveTintColor: '#777',
-    tabBarStyle: styles.tabBar, tabBarLabelStyle: styles.tabBarLabel,
+    tabBarStyle: styles.tabBar, tabBarLabelStyle: styles.tabBarLabel, tabBarLabel: t(route.name),
     tabBarIcon: ({ focused, color }) => <Ionicons name={`${icons[route.name]}${focused ? '' : '-outline'}`} size={26} color={color} />,
   })}>
     <Tab.Screen name="Home" component={HomeScreen} />

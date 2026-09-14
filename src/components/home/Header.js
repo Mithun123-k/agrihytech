@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React, {
   useEffect,
   useState,
@@ -313,7 +314,7 @@ const HomeHeader = ({
                   styles.textContainer
                 }
               >
-                <Text
+                <AppText
                   style={
                     styles.greeting
                   }
@@ -325,15 +326,15 @@ const HomeHeader = ({
                     ? userName
                     : 'Ramesh'}{' '}
                   🌾
-                </Text>
+                </AppText>
 
-                <Text
+                <AppText
                   style={
                     styles.highlight
                   }
                 >
                   Here's today's
-                  <Text
+                  <AppText
                     style={
                       styles.title
                     }
@@ -341,9 +342,9 @@ const HomeHeader = ({
                     {' '}
                     best crop {'\n'}
                     care solutions
-                  </Text>{' '}
+                  </AppText>{' '}
                   for you
-                </Text>
+                </AppText>
               </View>
 
               <TouchableOpacity
@@ -404,7 +405,7 @@ const HomeHeader = ({
                       wp(3),
                   }}
                 >
-                  <Text
+                  <AppText
                     style={
                       styles.location
                     }
@@ -415,15 +416,15 @@ const HomeHeader = ({
                     {
                       locationName
                     }
-                  </Text>
+                  </AppText>
 
-                  <Text
+                  <AppText
                     style={
                       styles.temp
                     }
                   >
                     {temp}°C
-                  </Text>
+                  </AppText>
                 </View>
               </View>
 
@@ -432,7 +433,7 @@ const HomeHeader = ({
                   styles.weatherRight
                 }
               >
-                <Text
+                <AppText
                   style={
                     styles.weatherType
                   }
@@ -440,7 +441,7 @@ const HomeHeader = ({
                   {
                     weatherType
                   }
-                </Text>
+                </AppText>
 
                 <View
                   style={
@@ -455,13 +456,13 @@ const HomeHeader = ({
                     color="#4c8c2b"
                   />
 
-                  <Text
+                  <AppText
                     style={
                       styles.humidity
                     }
                   >
                     {humidity}%
-                  </Text>
+                  </AppText>
                 </View>
               </View>
             </View>

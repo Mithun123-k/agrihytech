@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
@@ -43,28 +44,28 @@ const handleCall = async (phoneNumber) => {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.heading}>Available Near You</Text>
+      <AppText style={styles.heading}>Available Near You</AppText>
 
       {storeList.map((store, index) => (
         <View key={index} style={styles.card}>
           <View style={styles.topRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.storeName}>{store.firmName}</Text>
+              <AppText style={styles.storeName}>{store.firmName}</AppText>
 
               <View style={styles.locationRow}>
                 <Octicons name="location" size={13} color="#4E7D1F" />
-                <Text style={styles.distance}><Text style={{color: "#4E7D1F",fontSize: 12,fontWeight: "700",}}>{store?.distanceInKm}</Text>{` km away`}</Text>
+                <AppText style={styles.distance}><AppText style={{color: "#4E7D1F",fontSize: 12,fontWeight: "700",}}>{store?.distanceInKm}</AppText>{` km away`}</AppText>
               </View>
             </View>
 
             <View style={styles.stockBadge}>
-              <Text style={styles.stockText}>In Stock</Text>
+              <AppText style={styles.stockText}>In Stock</AppText>
             </View>
           </View>
 
           <TouchableOpacity style={styles.callButton} onPress={() => handleCall(store?.mobile)} >
             <Icon name="phone-call" size={13} color="#4E7D1F" />
-            <Text style={styles.callText}> Call Now</Text>
+            <AppText style={styles.callText}> Call Now</AppText>
           </TouchableOpacity>
         </View>
       ))}

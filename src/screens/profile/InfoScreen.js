@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from "react";
 import {
     View,
@@ -29,7 +30,7 @@ const InfoScreen = ({ navigation, route }) => {
     if (!page) {
         return (
             <View style={styles.container}>
-                <Text>Loading...</Text>
+                <AppText>Loading...</AppText>
             </View>
         );
     }
@@ -50,7 +51,7 @@ const InfoScreen = ({ navigation, route }) => {
                     <Icon name="arrow-back" size={22 * scale} color="#222" />
                 </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>{page.title}</Text>
+                <AppText style={styles.headerTitle}>{page.title}</AppText>
 
                 <View style={{ width: 22 * scale }} />
             </View>
@@ -60,11 +61,11 @@ const InfoScreen = ({ navigation, route }) => {
                 contentContainerStyle={styles.contentContainer}
                 showsVerticalScrollIndicator={false}
             >
-                <Text style={styles.title}>{page.title}</Text>
+                <AppText style={styles.title}>{page.title}</AppText>
 
-                <Text style={styles.description}>
+                <AppText style={styles.description}>
                     {page.content}
-                </Text>
+                </AppText>
             </ScrollView>
         </View>
     );

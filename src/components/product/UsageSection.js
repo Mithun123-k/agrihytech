@@ -1,14 +1,15 @@
+import AppText from '../common/AppText';
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const StepItem = ({ number, title, subtitle }) => (
   <View style={styles.stepRow}>
     <View style={styles.circle}>
-      <Text style={styles.circleText}>{number}</Text>
+      <AppText style={styles.circleText}>{number}</AppText>
     </View>
     <View style={{ flex: 1 }}>
-      <Text style={styles.stepTitle}>{title}</Text>
-      <Text style={styles.stepSubtitle}>{subtitle}</Text>
+      <AppText style={styles.stepTitle}>{title}</AppText>
+      <AppText style={styles.stepSubtitle}>{subtitle}</AppText>
     </View>
   </View>
 );
@@ -18,7 +19,7 @@ const UsageSection = ({ data }) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.heading}>Usage & Dosage</Text>
+      <AppText style={styles.heading}>Usage & Dosage</AppText>
 
       {prodUsedata?.map((step, index) => (
         <StepItem
@@ -31,16 +32,16 @@ const UsageSection = ({ data }) => {
 
       {/* Dosage per Acre Box */}
       <View style={styles.dosageBox}>
-        <Text style={styles.boxLabel}>Dosage per Acre</Text>
-        <Text style={styles.dosageText}>500–750 ml per acre</Text>
+        <AppText style={styles.boxLabel}>Dosage per Acre</AppText>
+        <AppText style={styles.dosageText}>500–750 ml per acre</AppText>
       </View>
 
       {/* Application Time Box */}
       <View style={styles.applicationBox}>
-        <Text style={styles.boxLabel}>Application Time</Text>
-        <Text style={styles.applicationText}>
+        <AppText style={styles.boxLabel}>Application Time</AppText>
+        <AppText style={styles.applicationText}>
           Apply when pest infestation begins
-        </Text>
+        </AppText>
       </View>
     </View>
   );

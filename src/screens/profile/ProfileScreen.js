@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useState } from "react";
 
 import {
@@ -24,6 +25,7 @@ import {
 } from "react-redux";
 
 import { logout } from "../../features/auth/authSlice";
+import LanguageSelector from "../../components/common/LanguageSelector";
 
 const { width, height } =
   Dimensions.get("window");
@@ -162,13 +164,13 @@ const ProfileScreen = ({
           />
         </TouchableOpacity>
 
-        <Text
+        <AppText
           style={
             styles.headerTitle
           }
         >
           Profile
-        </Text>
+        </AppText>
 
         <View
           style={{
@@ -213,7 +215,7 @@ const ProfileScreen = ({
                 styles.userInfo
               }
             >
-              <Text
+              <AppText
                 style={
                   styles.name
                 }
@@ -223,16 +225,16 @@ const ProfileScreen = ({
               >
                 {user?.proprietorName ||
                   "User"}
-              </Text>
+              </AppText>
 
-              <Text
+              <AppText
                 style={
                   styles.phone
                 }
               >
                 {user?.mobile ||
                   "NAN"}
-              </Text>
+              </AppText>
             </View>
           </View>
 
@@ -301,7 +303,7 @@ const ProfileScreen = ({
                     styles.planContent
                   }
                 >
-                  <Text
+                  <AppText
                     style={[
                       styles.planTitle,
                       {
@@ -323,9 +325,9 @@ const ProfileScreen = ({
                         ?.subscription
                         ?.planId
                         ?.name}
-                  </Text>
+                  </AppText>
 
-                  <Text
+                  <AppText
                     style={
                       styles.planDesc
                     }
@@ -337,10 +339,10 @@ const ProfileScreen = ({
                         ? "s"
                         : ""
                       }`}
-                  </Text>
+                  </AppText>
 
                   {/* {subscription?.paymentStatus && (
-                  <Text
+                  <AppText
                     style={
                       styles.paymentStatus
                     }
@@ -349,7 +351,7 @@ const ProfileScreen = ({
                     {
                       subscription?.paymentStatus
                     }
-                  </Text>
+                  </AppText>
                 )} */}
                 </View>
 
@@ -363,7 +365,7 @@ const ProfileScreen = ({
                     )
                   }
                 >
-                  <Text
+                  <AppText
                     style={
                       styles.upgradeText
                     }
@@ -375,7 +377,7 @@ const ProfileScreen = ({
                       0
                       ? "Upgrade"
                       : "Renew"}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               </View>
             )}
@@ -385,13 +387,21 @@ const ProfileScreen = ({
         <View
           style={styles.infoCard}
         >
-          <Text
+          <AppText
             style={
               styles.sectionTitle
             }
           >
             Other Information
-          </Text>
+          </AppText>
+
+          <View style={styles.languageRow}>
+            <Icon name="language-outline" size={responsiveFont(21)} color="#4C8C2B" />
+            <AppText style={styles.languageLabel}>Language</AppText>
+            <LanguageSelector />
+          </View>
+
+          {divider()}
 
           <TouchableOpacity
             onPress={() =>
@@ -582,11 +592,11 @@ const menuItem = (
       color="#4C8C2B"
     />
 
-    <Text
+    <AppText
       style={styles.menuText}
     >
       {label}
-    </Text>
+    </AppText>
 
     <Icon
       name="chevron-forward"
@@ -620,7 +630,7 @@ const tabItem = (
       }
     />
 
-    <Text
+    <AppText
       style={[
         styles.tabText,
         {
@@ -631,7 +641,7 @@ const tabItem = (
       ]}
     >
       {label}
-    </Text>
+    </AppText>
   </View>
 );
 
@@ -944,6 +954,20 @@ const styles =
         width: 0,
         height: 2,
       },
+    },
+
+    languageRow: {
+      minHeight: hp(7),
+      paddingHorizontal: wp(5),
+      flexDirection: "row",
+      alignItems: "center",
+    },
+
+    languageLabel: {
+      flex: 1,
+      marginLeft: wp(3),
+      fontSize: responsiveFont(14),
+      color: "#222",
     },
 
     sectionTitle: {

@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from "react";
 import {
     Modal,
@@ -55,9 +56,9 @@ const LogoutModal = ({
                     </View>
 
                     {/* TITLE */}
-                    <Text style={styles.title}>
+                    <AppText style={styles.title}>
                         Are you sure you want to{"\n"}log out?
-                    </Text>
+                    </AppText>
 
                     {/* BUTTONS */}
                     <View style={styles.buttonRow}>
@@ -67,9 +68,9 @@ const LogoutModal = ({
                             onPress={onCancel}
                             activeOpacity={0.8}
                         >
-                            <Text style={styles.cancelText}>
+                            <AppText style={styles.cancelText}>
                                 Cancel
-                            </Text>
+                            </AppText>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -77,9 +78,9 @@ const LogoutModal = ({
                             onPress={onLogout}
                             activeOpacity={0.8}
                         >
-                            <Text style={styles.logoutText}>
+                            <AppText style={styles.logoutText}>
                                 Log Out
-                            </Text>
+                            </AppText>
                         </TouchableOpacity>
 
                     </View>

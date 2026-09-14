@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -28,6 +29,7 @@ import { getPublicCategories } from "../../features/category/categorySlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { launchImageLibrary } from "react-native-image-picker";
 import { getAssignableBrandsAPI } from "../../features/brands/brandAPI";
+import LanguageSelector from "../../components/common/LanguageSelector";
 
 // ✅ Validation
 const schema = Yup.object().shape({
@@ -222,14 +224,7 @@ export default function RegisterScreen({
         }) => (
           <View style={styles.card}>
             {/* 🌐 Language */}
-            <TouchableOpacity
-              style={styles.langBtn}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.langText}>
-                🌐 हिंदी में
-              </Text>
-            </TouchableOpacity>
+            <LanguageSelector style={styles.langBtn} />
 
             {/* 🟢 Logo */}
             <Image
@@ -238,9 +233,9 @@ export default function RegisterScreen({
             />
 
             {/* 📝 Title */}
-            <Text style={styles.title}>
+            <AppText style={styles.title}>
               {isCompany ? "Register your company" : "Start your smart farming journey 🌾"}
-            </Text>
+            </AppText>
 
             {/* ================= FORM ================= */}
 
@@ -263,10 +258,10 @@ export default function RegisterScreen({
 
               {isCompany && (
                 <View style={styles.logoField}>
-                  <Text style={styles.locationTitle}>Company Logo <Text style={styles.required}>*</Text></Text>
+                  <AppText style={styles.locationTitle}>Company Logo <AppText style={styles.required}>*</AppText></AppText>
                   {companyLogo?.uri ? <Image source={{ uri: companyLogo.uri }} style={styles.companyLogoPreview} /> : null}
                   <TouchableOpacity style={styles.logoPicker} activeOpacity={0.8} onPress={pickCompanyLogo}>
-                    <Text style={styles.logoPickerText}>{companyLogo ? "Change Company Logo" : "Select Company Logo"}</Text>
+                    <AppText style={styles.logoPickerText}>{companyLogo ? "Change Company Logo" : "Select Company Logo"}</AppText>
                   </TouchableOpacity>
                 </View>
               )}
@@ -300,14 +295,14 @@ export default function RegisterScreen({
               )}
 
               <View style={{ marginTop: scale(2) }}>
-                <Text style={styles.locationTitle}>
+                <AppText style={styles.locationTitle}>
                   Categories{" "}
-                  <Text
+                  <AppText
                     style={{ color: "red" }}
                   >
                     *
-                  </Text>
-                </Text>
+                  </AppText>
+                </AppText>
 
                 <TouchableOpacity
                   activeOpacity={0.8}
@@ -322,7 +317,7 @@ export default function RegisterScreen({
                     setOpenCat(true)
                   }
                 >
-                  <Text
+                  <AppText
                     style={[
                       styles.categoryText,
 
@@ -339,37 +334,37 @@ export default function RegisterScreen({
                           ", "
                         )
                       : "Select Category"}
-                  </Text>
+                  </AppText>
 
-                  <Text
+                  <AppText
                     style={
                       styles.dropdownArrow
                     }
                   >
                     ▼
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
 
                 {/* ERROR */}
                 {touched.categories &&
                   errors.categories && (
-                    <Text
+                    <AppText
                       style={styles.errorText}
                     >
                       {errors.categories}
-                    </Text>
+                    </AppText>
                   )}
               </View>
 
               {!isCompany && (
                 <View style={{ marginTop: scale(14) }}>
-                  <Text style={styles.locationTitle}>Select Brand</Text>
+                  <AppText style={styles.locationTitle}>Select Brand</AppText>
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.categorySelector}
                     onPress={() => setOpenBrand(true)}
                   >
-                    <Text
+                    <AppText
                       style={[
                         styles.categoryText,
                         !(values.dealerBrands || []).length && { color: "#999" },
@@ -384,19 +379,19 @@ export default function RegisterScreen({
                         : brandsLoading
                           ? "Loading brands..."
                           : "Select Brand"}
-                    </Text>
-                    <Text style={styles.dropdownArrow}>▼</Text>
+                    </AppText>
+                    <AppText style={styles.dropdownArrow}>▼</AppText>
                   </TouchableOpacity>
                 </View>
               )}
               {/* ================= LOCATION ================= */}
 
               {!isCompany && <View style={styles.locationBox}>
-                <Text
+                <AppText
                   style={styles.locationTitle}
                 >
                   📍 Your Location
-                </Text>
+                </AppText>
 
                 <FormikInput
                   name="state"
@@ -443,9 +438,9 @@ export default function RegisterScreen({
               {loading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>
+                <AppText style={styles.buttonText}>
                   Register
-                </Text>
+                </AppText>
               )}
             </TouchableOpacity>
 
@@ -458,11 +453,11 @@ export default function RegisterScreen({
             >
               <View style={styles.modalOverlay}>
                 <View style={styles.modalBox}>
-                  <Text
+                  <AppText
                     style={styles.modalTitle}
                   >
                     Select up to 2 categories
-                  </Text>
+                  </AppText>
 
                   <ScrollView
                     showsVerticalScrollIndicator={
@@ -526,13 +521,13 @@ export default function RegisterScreen({
                               );
                             }}
                           >
-                            <Text
+                            <AppText
                               style={
                                 styles.categoryLabel
                               }
                             >
                               {label}
-                            </Text>
+                            </AppText>
 
                             <View
                               style={[
@@ -542,13 +537,13 @@ export default function RegisterScreen({
                               ]}
                             >
                               {selected && (
-                                <Text
+                                <AppText
                                   style={
                                     styles.checkText
                                   }
                                 >
                                   ✓
-                                </Text>
+                                </AppText>
                               )}
                             </View>
                           </TouchableOpacity>
@@ -566,11 +561,11 @@ export default function RegisterScreen({
                       setOpenCat(false)
                     }
                   >
-                    <Text
+                    <AppText
                       style={styles.doneText}
                     >
                       Done
-                    </Text>
+                    </AppText>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -584,7 +579,7 @@ export default function RegisterScreen({
             >
               <View style={styles.modalOverlay}>
                 <View style={styles.modalBox}>
-                  <Text style={styles.modalTitle}>Select Brand</Text>
+                  <AppText style={styles.modalTitle}>Select Brand</AppText>
                   <ScrollView showsVerticalScrollIndicator={false}>
                     {availableBrands
                       .filter(brand => {
@@ -626,19 +621,19 @@ export default function RegisterScreen({
                                 <Image source={{ uri: brand.image }} style={styles.brandImage} />
                               ) : null}
                               <View style={styles.brandText}>
-                                <Text style={styles.categoryLabel}>{brand.name}</Text>
-                                {brand.isCompany ? <Text style={styles.companyLabel}>Company</Text> : null}
+                                <AppText style={styles.categoryLabel}>{brand.name}</AppText>
+                                {brand.isCompany ? <AppText style={styles.companyLabel}>Company</AppText> : null}
                               </View>
                             </View>
                             <View style={[styles.checkBox, selected && styles.checkBoxActive]}>
-                              {selected ? <Text style={styles.checkText}>✓</Text> : null}
+                              {selected ? <AppText style={styles.checkText}>✓</AppText> : null}
                             </View>
                           </TouchableOpacity>
                         );
                       })}
                   </ScrollView>
                   <TouchableOpacity style={styles.doneBtn} activeOpacity={0.9} onPress={() => setOpenBrand(false)}>
-                    <Text style={styles.doneText}>Done</Text>
+                    <AppText style={styles.doneText}>Done</AppText>
                   </TouchableOpacity>
                 </View>
               </View>

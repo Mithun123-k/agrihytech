@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect } from "react";
 import {
   View,
@@ -48,15 +49,15 @@ export default function SplashScreen({  }) {
       {/* <View style={styles.iconContainer}>
         {ICONS.map((item, index) => (
           <View key={index} style={styles.iconItem}>
-            <Text style={styles.icon}>{item.icon}</Text>
-            <Text style={styles.label}>{item.label}</Text>
+            <AppText style={styles.icon}>{item.icon}</AppText>
+            <AppText style={styles.label}>{item.label}</AppText>
           </View>
         ))}
       </View> */}
 
       {/* LOADING */}
       <View style={styles.loaderContainer}>
-        <Text style={styles.loadingText}>लोडिंग हो रहा है...</Text>
+        <AppText style={styles.loadingText}>लोडिंग हो रहा है...</AppText>
 
         <View style={styles.progressBar}>
           <Animated.View style={[styles.progressFill, progressStyle]} />

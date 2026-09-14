@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -93,7 +94,7 @@ const SelectLocationScreen = ({navigation}) => {
         setStateModalVisible(false);
       }}
     >
-      <Text style={styles.listItemText}>{item.name}</Text>
+      <AppText style={styles.listItemText}>{item.name}</AppText>
     </Pressable>
   );
 
@@ -105,7 +106,7 @@ const SelectLocationScreen = ({navigation}) => {
         setDistrictModalVisible(false);
       }}
     >
-      <Text style={styles.listItemText}>{item.name}</Text>
+      <AppText style={styles.listItemText}>{item.name}</AppText>
     </Pressable>
   );
 
@@ -121,16 +122,16 @@ const SelectLocationScreen = ({navigation}) => {
         {/* Bottom Card */}
         <View style={styles.bottomCard}>
           {/* Title */}
-          <Text style={styles.title}>
-            Select <Text style={styles.greenText}>State</Text> and{' '}
-            <Text style={styles.greenText}>District</Text>
-          </Text>
+          <AppText style={styles.title}>
+            Select <AppText style={styles.greenText}>State</AppText> and{' '}
+            <AppText style={styles.greenText}>District</AppText>
+          </AppText>
 
           {/* Subtitle */}
-          <Text style={styles.subTitle}>
-            अपना <Text style={styles.greenText}>राज्य</Text> और{' '}
-            <Text style={styles.greenText}>जिला</Text> चुने!
-          </Text>
+          <AppText style={styles.subTitle}>
+            अपना <AppText style={styles.greenText}>राज्य</AppText> और{' '}
+            <AppText style={styles.greenText}>जिला</AppText> चुने!
+          </AppText>
 
           {/* -------------------- State Dropdown -------------------- */}
 
@@ -139,7 +140,7 @@ const SelectLocationScreen = ({navigation}) => {
             style={styles.dropdownContainer}
             onPress={() => setStateModalVisible(true)}
           >
-            <Text
+            <AppText
               style={[
                 styles.dropdownText,
                 {
@@ -149,9 +150,9 @@ const SelectLocationScreen = ({navigation}) => {
               ]}
             >
               {getStateName()}
-            </Text>
+            </AppText>
 
-            <Text style={styles.arrow}>⌵</Text>
+            <AppText style={styles.arrow}>⌵</AppText>
           </TouchableOpacity>
 
           {/* -------------------- District Dropdown -------------------- */}
@@ -165,7 +166,7 @@ const SelectLocationScreen = ({navigation}) => {
               }
             }}
           >
-            <Text
+            <AppText
               style={[
                 styles.dropdownText,
                 {
@@ -177,9 +178,9 @@ const SelectLocationScreen = ({navigation}) => {
               ]}
             >
               {selectedDistrict || 'Select District'}
-            </Text>
+            </AppText>
 
-            <Text style={styles.arrow}>⌵</Text>
+            <AppText style={styles.arrow}>⌵</AppText>
           </TouchableOpacity>
 
           {/* -------------------- Button -------------------- */}
@@ -189,7 +190,7 @@ const SelectLocationScreen = ({navigation}) => {
             style={styles.button}
             onPress={handleNext}
           >
-            <Text style={styles.buttonText}>Next</Text>
+            <AppText style={styles.buttonText}>Next</AppText>
           </TouchableOpacity>
         </View>
 
@@ -202,9 +203,9 @@ const SelectLocationScreen = ({navigation}) => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>
+              <AppText style={styles.modalTitle}>
                 Select State
-              </Text>
+              </AppText>
 
               <FlatList
                 data={states}
@@ -225,9 +226,9 @@ const SelectLocationScreen = ({navigation}) => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>
+              <AppText style={styles.modalTitle}>
                 Select District
-              </Text>
+              </AppText>
 
               <FlatList
                 data={districts}

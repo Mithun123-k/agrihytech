@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect } from 'react';
 import {
     View,
@@ -53,15 +54,15 @@ const ProductCard = ({ item, onPress }) => {
             <Image source={{uri: item.image}} style={styles.image} resizeMode="cover" />
 
             <View style={styles.contentRow}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
+                <AppText style={styles.cardTitle}>{item.name}</AppText>
 
                 <View style={styles.countBadge}>
-                    <Text style={styles.countText}>{item.totalBrands || 0}</Text>
+                    <AppText style={styles.countText}>{item.totalBrands || 0}</AppText>
                 </View>
             </View>
 
             <TouchableOpacity style={styles.button} onPress={() => onPress(item)} activeOpacity={0.85}>
-                <Text style={styles.buttonText}>Add/Edit Products</Text>
+                <AppText style={styles.buttonText}>Add/Edit Products</AppText>
             </TouchableOpacity>
         </View>
     );
@@ -99,7 +100,7 @@ console.log("Categories in YourProductsScreen:", categories); // Debug log
                 onShare={() => console.log("share clicked")}
             />
 
-            <Text style={styles.sectionTitle}>Product Categories</Text>
+            <AppText style={styles.sectionTitle}>Product Categories</AppText>
 
             <FlatList
                 data={categories}

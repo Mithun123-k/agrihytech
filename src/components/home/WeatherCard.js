@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
@@ -5,16 +6,16 @@ const WeatherCard = () => {
   return (
     <View style={styles.card}>
       <View style={styles.left}>
-        <Text style={{fontSize:30}}>☀️</Text>
+        <AppText style={{fontSize:30}}>☀️</AppText>
         <View style={{marginLeft:10}}>
-          <Text style={{color:'#555'}}>Bhopal, M.P</Text>
-          <Text style={styles.temp}>28°C</Text>
+          <AppText style={{color:'#555'}}>Bhopal, M.P</AppText>
+          <AppText style={styles.temp}>28°C</AppText>
         </View>
       </View>
 
       <View>
-        <Text>Sunny</Text>
-        <Text style={{color:'green'}}>🌧 65%</Text>
+        <AppText>Sunny</AppText>
+        <AppText style={{color:'green'}}>🌧 65%</AppText>
       </View>
     </View>
   );

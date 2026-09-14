@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 
@@ -13,13 +14,13 @@ const SuitableCropsSection = ({ data }) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.heading}>Suitable for Crops</Text>
+      <AppText style={styles.heading}>Suitable for Crops</AppText>
 
       <View style={styles.wrap}>
         {prodCrops.map((item, index) => (
           <View key={index} style={styles.chip}>
             {/* <Image source={item.icon} style={styles.icon} /> */}
-            <Text style={styles.chipText}>{item}</Text>
+            <AppText style={styles.chipText}>{item}</AppText>
           </View>
         ))}
       </View>

@@ -1,3 +1,4 @@
+import AppText from '../../components/common/AppText';
 import React, { useEffect } from 'react';
 import {
   View,
@@ -73,18 +74,18 @@ const BrandCard = ({ item, onPress }) => {
         <Image source={{ uri: item.image }} style={styles.image} resizeMode="contain" />
       </View>
 
-      <Text numberOfLines={2} style={styles.brandName}>
+      <AppText numberOfLines={2} style={styles.brandName}>
         {item.name}
-      </Text>
+      </AppText>
 
-      <Text style={styles.productCount}>{item.productCount} Products</Text>
+      <AppText style={styles.productCount}>{item.productCount} Products</AppText>
 
       <TouchableOpacity
         activeOpacity={0.85}
         style={styles.button}
         onPress={() => onPress(item)}
       >
-        <Text style={styles.buttonText}>View All Product</Text>
+        <AppText style={styles.buttonText}>View All Product</AppText>
       </TouchableOpacity>
     </View>
   );
@@ -116,9 +117,9 @@ const SubcategoriesPage = ({ navigation, route }) => {
 
 
       <View style={styles.topSection}>
-        <Text style={styles.countText}>
-          <Text style={styles.boldText}>{brands.length}</Text> Brands Listed
-        </Text>
+        <AppText style={styles.countText}>
+          <AppText style={styles.boldText}>{brands.length}</AppText> Brands Listed
+        </AppText>
       </View>
 
       <FlatList

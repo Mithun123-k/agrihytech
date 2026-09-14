@@ -1,3 +1,5 @@
+import AppTextInput from '../../components/common/AppTextInput';
+import AppText from '../../components/common/AppText';
 // UserBrandScreen.js
 
 import React, {
@@ -181,14 +183,14 @@ const UserBrandScreen = ({
                         }
                     >
 
-                        <Text
+                        <AppText
                             numberOfLines={2}
                             style={
                                 styles.cardTitle
                             }
                         >
                             {item.name}
-                        </Text>
+                        </AppText>
 
                     </View>
 
@@ -214,9 +216,9 @@ const UserBrandScreen = ({
                 color="#B0B0B0"
             />
 
-            <Text style={styles.emptyText}>
+            <AppText style={styles.emptyText}>
                 No brands found
-            </Text>
+            </AppText>
 
         </View>
 
@@ -269,7 +271,7 @@ const UserBrandScreen = ({
 
                         </TouchableOpacity>
 
-                        <Text
+                        <AppText
                             style={
                                 styles.headerTitle
                             }
@@ -277,7 +279,7 @@ const UserBrandScreen = ({
                         >
                             Select the brand
                             you like the most
-                        </Text>
+                        </AppText>
 
                         <View
                             style={{
@@ -306,7 +308,7 @@ const UserBrandScreen = ({
                             color="#777"
                         />
 
-                        <TextInput
+                        <AppTextInput
                             placeholder="Search brand name"
                             placeholderTextColor="#999"
                             style={
@@ -332,14 +334,14 @@ const UserBrandScreen = ({
                 }
             >
 
-                <Text
+                <AppText
                     style={
                         styles.sectionTitle
                     }
                 >
                     {filteredBrand.length}{" "}
                     Brands Available
-                </Text>
+                </AppText>
 
             </View>
 

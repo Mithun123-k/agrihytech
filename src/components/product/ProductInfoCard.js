@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 
@@ -16,21 +17,21 @@ const ProductInfoCard = ({ data }) => {
       />
 
       <View style={styles.tagRow}>
-        <Text style={styles.category}>Insecticide</Text>
+        <AppText style={styles.category}>Insecticide</AppText>
         <View style={styles.govtContainer}>
           <Image
             source={require("../../assets/icons/check.png")}
             style={styles.govtIcon}
           />
-          <Text style={styles.govt}>Govt Approved</Text>
+          <AppText style={styles.govt}>Govt Approved</AppText>
         </View>
       </View>
 
-      <Text style={styles.name}>{proddata?.name}</Text>
+      <AppText style={styles.name}>{proddata?.name}</AppText>
 
-      <Text style={styles.desc}>
+      <AppText style={styles.desc}>
         {proddata?.description}
-      </Text>
+      </AppText>
 
       {/* <View style={styles.cropsRow}>
         <View style={styles.cropItem}>
@@ -39,7 +40,7 @@ const ProductInfoCard = ({ data }) => {
             style={styles.cropIcon}
           // tintColor={"red"}
           />
-          <Text style={styles.crop}>Wheat</Text>
+          <AppText style={styles.crop}>Wheat</AppText>
         </View>
 
         <View style={styles.cropItem}>
@@ -47,17 +48,17 @@ const ProductInfoCard = ({ data }) => {
             source={require("../../assets/icons/veg.png")}
             style={styles.cropIcon}
           />
-          <Text style={styles.crop}>Vegetables</Text>
+          <AppText style={styles.crop}>Vegetables</AppText>
         </View>
       </View> */}
 
       <View style={{ marginTop: 10 }}>
-        <Text style={{ fontSize: 14, color: "#1363FF", marginRight: 20, fontWeight: "500", }}>
+        <AppText style={{ fontSize: 14, color: "#1363FF", marginRight: 20, fontWeight: "500", }}>
           Price Range: -  ₹{proddata?.price || "N/A"}
-        </Text>
-        <Text style={{ fontSize: 14, color: "#272727", marginTop:8 }}>
-          <Text style={{ fontWeight: "500" , color: "#7F7F7F"}}> </Text>Qty: {proddata?.quantity || ""} {proddata?.unit || ""}
-        </Text>
+        </AppText>
+        <AppText style={{ fontSize: 14, color: "#272727", marginTop:8 }}>
+          <AppText style={{ fontWeight: "500" , color: "#7F7F7F"}}> </AppText>Qty: {proddata?.quantity || ""} {proddata?.unit || ""}
+        </AppText>
       </View>
 
     </View>

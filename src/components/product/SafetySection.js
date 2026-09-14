@@ -1,3 +1,4 @@
+import AppText from '../common/AppText';
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 
@@ -16,14 +17,14 @@ const SafetySection = () => {
           source={require("../../assets/icons/check.png")}
           style={styles.headerIcon}
         />
-        <Text style={styles.heading}>Safety & Precautions</Text>
+        <AppText style={styles.heading}>Safety & Precautions</AppText>
       </View>
 
       <View style={styles.inner}>
         {points.map((item, index) => (
           <View key={index} style={styles.pointRow}>
-            <Text style={styles.dot}>•</Text>
-            <Text style={styles.pointText}>{item}</Text>
+            <AppText style={styles.dot}>•</AppText>
+            <AppText style={styles.pointText}>{item}</AppText>
           </View>
         ))}
       </View>
