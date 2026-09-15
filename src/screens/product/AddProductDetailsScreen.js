@@ -19,7 +19,7 @@ import ProductHeader from '../../components/product/ProductHeader';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AddBrandModal from '../brands/AddBrandModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBrandsByCategory, getCategoriesByRole } from '../../features/category/categorySlice';
+import { getBrandsByCategory, getMyCategories } from '../../features/category/categorySlice';
 import { createProduct, updateProduct } from '../../features/product/productSlice';
 import { createBrand } from '../../features/brands/brandSlice';
 
@@ -219,6 +219,8 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
     );
     const { user } = useSelector(state => state.auth);
 
+    const productCategories = categories;
+
     console.log("User from Add product => ", user?.role)
 
     const { loading } = useSelector(state => state.product);
@@ -238,8 +240,8 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
 
     // 🔥 API CALL
     useEffect(() => {
-        dispatch(getCategoriesByRole());
-    }, []);
+        dispatch(getMyCategories());
+    }, [dispatch]);
 
     const pickBrandImage = async () => {
         const result = await launchImageLibrary({
@@ -568,7 +570,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                         required
                                         value={values.category}
                                         placeholder="Select Category"
-                                        items={categories.map(cat => ({ label: cat.name, value: cat._id }))}
+                                        items={productCategories.map(cat => ({ label: cat.name, value: cat._id }))}
                                         onChange={itemValue => {
                                             console.log("Selected Category ID => ", itemValue);
                                             setFieldValue('category', itemValue);
@@ -895,7 +897,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                     <AddBrandModal
                         visible={brandModal}
                         onClose={() => setBrandModal(false)}
-                        categories={categories.map(cat => ({ label: cat.name, value: cat._id }))}
+                        categories={productCategories.map(cat => ({ label: cat.name, value: cat._id }))}
                         onCreate={(brand) => handleCreateBrand(brand, setFieldValue)}
                     />
                 </View>

@@ -2,6 +2,7 @@ import AppText from '../../components/common/AppText';
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { companyError, idOf, imageUri, getCompanyBrands, getCompanyCategories, getCompanyProducts, saveCompanyBrand, deleteCompanyBrand, saveCompanyProduct, deleteCompanyProduct } from '../../features/company/companyAPI';
+import { getmyCategoriesAPI } from '../../features/category/categoryAPI';
 import { CompanyPage, CompanyButton, CompanyField, CompanySelect, useCompanyData, pickCompanyImages, confirmCompanyDelete, s } from './shared';
 
 const loadCatalog = async () => {
@@ -11,6 +12,13 @@ const loadCatalog = async () => {
 const loadBrandOptions = async () => {
   const [brands, categories] = await Promise.all([getCompanyBrands(), getCompanyCategories()]);
   return { brands, categories };
+};
+
+const loadCompanyProductCategories = async () => {
+  const categoryResponse = await getmyCategoriesAPI();
+  const categoryData = categoryResponse.data;
+  return (Array.isArray(categoryData) ? categoryData : categoryData.categories || [])
+    .map(category => ({ ...category, _id: idOf(category) }));
 };
 
 export function CompanyBrands({ navigation, route }) {
@@ -111,7 +119,7 @@ export function CompanyProducts({ navigation, route }) {
 
 export function CompanyProductForm({ navigation, route }) {
   const product = route.params?.product;
-  const resource = useCompanyData(getCompanyCategories);
+  const resource = useCompanyData(loadCompanyProductCategories);
   const [draft, setDraft] = useState({
     name: product?.name || '',
     category: idOf(product?.category) || route.params?.categoryId || '',

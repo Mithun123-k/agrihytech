@@ -56,7 +56,7 @@ const companySchema = Yup.object().shape({
   contactPerson: Yup.string().trim().min(2, "Contact person required").required("Contact person required"),
   phone: Yup.string().matches(/^[0-9]{10}$/, "Invalid phone number").required("Phone required"),
   email: Yup.string().trim().email("Invalid email address"),
-  categories: Yup.array().min(1, "Please select at least 1 category").max(2, "Only 2 categories allowed").required("Category is required"),
+  categories: Yup.array().min(1, "Please select 1 category").max(1, "Only 1 category allowed").required("Category is required"),
 });
 
 export default function RegisterScreen({
@@ -333,7 +333,7 @@ export default function RegisterScreen({
                       ? values.categories.join(
                           ", "
                         )
-                      : "Select Category"}
+                      : isCompany ? "Select 1 Category" : "Select up to 2 Categories"}
                   </AppText>
 
                   <AppText
@@ -456,7 +456,7 @@ export default function RegisterScreen({
                   <AppText
                     style={styles.modalTitle}
                   >
-                    Select up to 2 categories
+                    {isCompany ? "Select only 1 category" : "Select up to 2 categories"}
                   </AppText>
 
                   <ScrollView
@@ -500,7 +500,7 @@ export default function RegisterScreen({
                               } else {
                                 if (
                                   updated.length <
-                                  2
+                                  (isCompany ? 1 : 2)
                                 ) {
                                   updated.push(
                                     label
@@ -508,7 +508,7 @@ export default function RegisterScreen({
                                 } else {
                                   Alert.alert(
                                     "Limit",
-                                    "Only 2 categories allowed"
+                                    isCompany ? "Only 1 category allowed" : "Only 2 categories allowed"
                                   );
 
                                   return;
