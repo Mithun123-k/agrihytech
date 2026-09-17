@@ -48,6 +48,7 @@ const schema = Yup.object().shape({
   // ✅ CATEGORY REQUIRED
   categories: Yup.array()
     .min(1, "Please select at least 1 category")
+    .max(2, "Only 2 categories allowed")
     .required("Category is required"),
 });
 
@@ -362,6 +363,7 @@ export default function RegisterScreen({
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.categorySelector}
+                    disabled={!values.categories.length}
                     onPress={() => setOpenBrand(true)}
                   >
                     <AppText
@@ -376,7 +378,9 @@ export default function RegisterScreen({
                             .filter(brand => (values.dealerBrands || []).includes(brand._id))
                             .map(brand => brand.name)
                             .join(", ")
-                        : brandsLoading
+                        : !values.categories.length
+                          ? "Select categories first"
+                          : brandsLoading
                           ? "Loading brands..."
                           : "Select Brand"}
                     </AppText>
@@ -519,6 +523,15 @@ export default function RegisterScreen({
                                 "categories",
                                 updated
                               );
+                              if (!isCompany) {
+                                const eligibleIds = availableBrands
+                                  .filter(brand => brand.isCompany
+                                    ? (brand.categories || []).some(category => updated.includes(category))
+                                    : updated.includes(brand.category?.name))
+                                  .map(brand => brand._id);
+                                setFieldValue("dealerBrands", (values.dealerBrands || [])
+                                  .filter(id => eligibleIds.includes(id)));
+                              }
                             }}
                           >
                             <AppText
@@ -583,14 +596,13 @@ export default function RegisterScreen({
                   <ScrollView showsVerticalScrollIndicator={false}>
                     {availableBrands
                       .filter(brand => {
-                        if (!values.categories.length) return true;
+                        if (!values.categories.length) return false;
                         if (brand.isCompany) {
                           return (brand.categories || []).some(category =>
                             values.categories.includes(category)
                           );
                         }
-                        return !brand.category?.name ||
-                          values.categories.includes(brand.category.name);
+                        return values.categories.includes(brand.category?.name);
                       })
                       .map(brand => {
                         const selected = (values.dealerBrands || []).includes(brand._id);

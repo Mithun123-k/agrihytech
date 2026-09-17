@@ -62,7 +62,7 @@ export const registerB2B = createAsyncThunk(
       return { token, user };
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Registration failed"
+        err.response?.data?.error || err.response?.data?.message || err.message || "Registration failed"
       );
     }
   }
