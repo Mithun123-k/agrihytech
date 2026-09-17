@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     Dimensions,
     Image,
+    Alert,
 } from 'react-native';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
@@ -22,6 +23,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBrandsByCategory, getMyCategories } from '../../features/category/categorySlice';
 import { createProduct, updateProduct } from '../../features/product/productSlice';
 import { createBrand } from '../../features/brands/brandSlice';
+import { getMeAPI } from '../../features/auth/authAPI';
+import { getAssignableBrandsAPI } from '../../features/brands/brandAPI';
 
 const { width } = Dimensions.get('window');
 const isTablet = width >= 768;
@@ -219,13 +222,15 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
     );
     const { user } = useSelector(state => state.auth);
 
-    const productCategories = categories;
+    const productCategories = Array.isArray(categories) ? categories.filter(Boolean) : [];
+    const availableBrands = Array.isArray(brands) ? brands.filter(Boolean) : [];
 
     console.log("User from Add product => ", user?.role)
 
     const { loading } = useSelector(state => state.product);
 
     const [images, setImages] = useState([]);
+    const [assignedBrands, setAssignedBrands] = useState([]);
     const [brandModal, setBrandModal] = useState(false);
     const [brandData, setBrandData] = useState(brands); // 🔥 add this
     const [newBrand, setNewBrand] = useState({
@@ -242,6 +247,28 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
     useEffect(() => {
         dispatch(getMyCategories());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (user?.role !== 'B2B') return;
+        let active = true;
+        Promise.all([getMeAPI(), getAssignableBrandsAPI()])
+            .then(([profileResponse, brandResponse]) => {
+                const profile = profileResponse.data.user || {};
+                const idOf = value => typeof value === 'string' ? value : value?._id || value?.id;
+                const ids = new Set((profile.dealerBrands || []).map(idOf));
+                if (profile.company) ids.add(idOf(profile.company));
+                const options = [...(brandResponse.data.brands || []).filter(Boolean),
+                    ...(profile.dealerBrands || []).filter(brand => brand && typeof brand === 'object')];
+                const assigned = new Map(options.filter(brand => ids.has(idOf(brand)))
+                    .map(brand => [idOf(brand), brand]));
+                if (active) setAssignedBrands([...assigned.values()]);
+            })
+            .catch(error => {
+                if (active) Alert.alert('Unable to load assigned brands',
+                    error.response?.data?.error || error.message || 'Please try again.');
+            });
+        return () => { active = false; };
+    }, [user?.role]);
 
     const pickBrandImage = async () => {
         const result = await launchImageLibrary({
@@ -575,7 +602,11 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                             console.log("Selected Category ID => ", itemValue);
                                             setFieldValue('category', itemValue);
                                             // setFieldValue('subCategory', '');
-                                            dispatch(getBrandsByCategory({ categoryId: itemValue , isAdmin: user?.role === 'ADMIN' }));
+                                            if (user?.role === 'B2B') {
+                                                setFieldValue('brand', '');
+                                            } else {
+                                                dispatch(getBrandsByCategory({ categoryId: itemValue , isAdmin: user?.role === 'ADMIN' }));
+                                            }
                                         }}
                                         error={touched.category && errors.category}
                                     />
@@ -605,11 +636,20 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                 disabled={!values.category}
                                 multiple={user?.role === 'ADMIN'}
                                 items={[
-                                    ...brands.map(brand => ({
+                                    ...(user?.role === 'B2B' ? assignedBrands.filter(brand => {
+                                        const selectedCategory = productCategories.find(category => category._id === values.category);
+                                        const categoryId = typeof brand.category === 'string' ? brand.category : brand.category?._id;
+                                        const categoryNames = Array.isArray(brand.categories)
+                                            ? brand.categories
+                                            : [brand.categories || brand.category?.name];
+                                        return categoryId === values.category ||
+                                            (selectedCategory && categoryNames.some(name =>
+                                                typeof name === 'string' && name.trim().toLowerCase() === selectedCategory.name?.trim().toLowerCase()));
+                                    }) : availableBrands).map(brand => ({
                                         label: brand.name,
                                         value: brand._id,
                                     })),
-                                    { label: '+ Add New Brand', value: '__add_new__' },
+                                    ...(user?.role === 'B2B' ? [] : [{ label: '+ Add New Brand', value: '__add_new__' }]),
                                 ]}
                                 onChange={itemValue => {
                                     if (

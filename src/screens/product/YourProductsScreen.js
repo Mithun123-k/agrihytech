@@ -100,6 +100,15 @@ console.log("Categories in YourProductsScreen:", categories); // Debug log
                 onShare={() => console.log("share clicked")}
             />
 
+            <TouchableOpacity
+                style={styles.addProductButton}
+                activeOpacity={0.85}
+                onPress={() => navigation.navigate('AddProductDetailsScreen')}
+            >
+                <Icon name="add-outline" size={22} color="#FFFFFF" />
+                <AppText style={styles.addProductText}>Add New Product</AppText>
+            </TouchableOpacity>
+
             <AppText style={styles.sectionTitle}>Product Categories</AppText>
 
             <FlatList
@@ -158,6 +167,24 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
         color: '#232323',
+    },
+
+    addProductButton: {
+        marginHorizontal: 24,
+        marginBottom: 20,
+        minHeight: 48,
+        borderRadius: 12,
+        backgroundColor: '#4C7A1E',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    addProductText: {
+        marginLeft: 6,
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#FFFFFF',
     },
 
     listContent: {
