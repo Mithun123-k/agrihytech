@@ -1,5 +1,6 @@
 import AppText from '../../components/common/AppText';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { companyError, idOf, imageUri, getCompanyBrands, getCompanyCategories, getCompanyProducts, saveCompanyBrand, deleteCompanyBrand, saveCompanyProduct, deleteCompanyProduct } from '../../features/company/companyAPI';
 import { getmyCategoriesAPI } from '../../features/category/categoryAPI';
@@ -118,6 +119,7 @@ export function CompanyProducts({ navigation, route }) {
 }
 
 export function CompanyProductForm({ navigation, route }) {
+  const companyId = useSelector(state => idOf(state.auth.user));
   const product = route.params?.product;
   const resource = useCompanyData(loadCompanyProductCategories);
   const [draft, setDraft] = useState({
@@ -138,14 +140,14 @@ export function CompanyProductForm({ navigation, route }) {
       return;
     }
     setBusy(true);
-    try { await saveCompanyProduct(draft, product?._id); navigation.goBack(); }
+    try { await saveCompanyProduct(draft, product?._id, companyId); navigation.goBack(); }
     catch (error) { Alert.alert('Unable to save product', companyError(error)); }
     finally { setBusy(false); }
   };
   return <CompanyPage title={product ? 'Edit Product' : 'Add Product'} navigation={navigation} resource={resource}>
     <View style={s.card}>
       <CompanyField label="Product Name" value={draft.name} onChangeText={field('name')} />
-      <CompanySelect label="Category" value={draft.category} onChange={field('category')} options={resource.data || []} />
+      <CompanySelect label="Category" value={draft.category} onChange={field('category')} options={resource.data || []} textColor="#222" />
       <CompanyField label="Description (optional)" value={draft.description} onChangeText={field('description')} multiline />
       {(draft.images.length ? draft.images : product?.images || []).map((asset, index) => <Image key={index} source={{ uri: imageUri(asset) }} style={s.image} />)}
       <CompanyButton secondary title="Choose Images (up to 5)" disabled={busy} onPress={pick} />

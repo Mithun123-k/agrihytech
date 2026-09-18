@@ -53,10 +53,10 @@ export function CompanyButton({ title, onPress, disabled, secondary, danger }) {
 export function CompanyField({ label, value, onChangeText, ...props }) {
   return <View style={s.field}><AppText style={s.label}>{label}</AppText><AppTextInput accessibilityLabel={label} style={s.input} value={String(value ?? '')} onChangeText={onChangeText} placeholderTextColor="#888" {...props} /></View>;
 }
-export function CompanySelect({ label, value, onChange, options }) {
-  return <View style={s.field}><AppText style={s.label}>{label}</AppText><View style={s.select}><Picker accessibilityLabel={label} selectedValue={value} onValueChange={onChange}>
-    <Picker.Item label={`Select ${label.toLowerCase()}`} value="" />
-    {options.map(item => <Picker.Item key={item._id} label={item.name} value={item._id} />)}
+export function CompanySelect({ label, value, onChange, options, textColor }) {
+  return <View style={s.field}><AppText style={s.label}>{label}</AppText><View style={s.select}><Picker accessibilityLabel={label} selectedValue={value} onValueChange={onChange} style={textColor ? { color: textColor } : undefined} dropdownIconColor={textColor}>
+    <Picker.Item label={`Select ${label.toLowerCase()}`} value="" color={textColor} style={textColor ? { color: textColor, backgroundColor: '#fff' } : undefined} />
+    {options.map(item => <Picker.Item key={item._id} label={item.name} value={item._id} color={textColor} style={textColor ? { color: textColor, backgroundColor: '#fff' } : undefined} />)}
   </Picker></View></View>;
 }
 export async function pickCompanyImages(multiple = false) {

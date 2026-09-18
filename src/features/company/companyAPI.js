@@ -59,8 +59,12 @@ export function companyBrandForm(draft) {
   appendCompanyImage(form, 'image', draft.image);
   return form;
 }
-export function companyProductForm(draft) {
+export function companyProductForm(draft, companyId) {
   const form = new FormData();
+  if (companyId) {
+    form.append('companyBrand', companyId);
+    form.append('brand', companyId);
+  }
   form.append('name', draft.name.trim());
   form.append('category', draft.category);
   if (draft.description?.trim()) form.append('description', draft.description.trim());
@@ -72,9 +76,9 @@ export const saveCompanyBrand = (draft, id) => id
   ? API.put(`/brands/${id}`, companyBrandForm(draft), multipart)
   : API.post('/brands/create', companyBrandForm(draft), multipart);
 export const deleteCompanyBrand = id => API.delete(`/brands/${id}`);
-export const saveCompanyProduct = (draft, id) => id
-  ? API.put(`/products/${id}`, companyProductForm(draft), multipart)
-  : API.post('/products/create', companyProductForm(draft), multipart);
+export const saveCompanyProduct = (draft, id, companyId) => id
+  ? API.put(`/products/${id}`, companyProductForm(draft, companyId), multipart)
+  : API.post('/products/create', companyProductForm(draft, companyId), multipart);
 export const deleteCompanyProduct = id => API.delete(`/products/${id}`);
 export async function getCompanyDealers() {
   const { data } = await API.get('/brands/my-dealers');

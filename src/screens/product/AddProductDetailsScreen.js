@@ -249,14 +249,23 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (user?.role !== 'B2B') return;
+        if (!['ADMIN', 'B2B'].includes(user?.role)) return;
         let active = true;
+        if (user.role === 'ADMIN') {
+            getAssignableBrandsAPI().then(response => {
+                if (active) setAssignedBrands(Array.isArray(response.data.brands) ? response.data.brands.filter(Boolean) : []);
+            }).catch(error => {
+                if (active) Alert.alert('Unable to load brands', error.response?.data?.error || error.message);
+            });
+            return () => { active = false; };
+        }
         Promise.all([getMeAPI(), getAssignableBrandsAPI()])
             .then(([profileResponse, brandResponse]) => {
                 const profile = profileResponse.data.user || {};
                 const idOf = value => typeof value === 'string' ? value : value?._id || value?.id;
                 const ids = new Set((profile.dealerBrands || []).map(idOf));
                 if (profile.company) ids.add(idOf(profile.company));
+                (profile.companies || []).forEach(company => ids.add(idOf(company)));
                 const options = [...(brandResponse.data.brands || []).filter(Boolean),
                     ...(profile.dealerBrands || []).filter(brand => brand && typeof brand === 'object')];
                 const assigned = new Map(options.filter(brand => ids.has(idOf(brand)))
@@ -435,8 +444,10 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                 formData.append('safetyPrecautions', values.safetyPrecautions);
 
                 if (Array.isArray(values.brand)) {
+                    const company = user?.role === 'ADMIN' && assignedBrands.find(brand => brand.isCompany && values.brand.includes(brand._id));
+                    if (company) formData.append('companyBrand', company._id);
                     values.brand.forEach(brandId => {
-                        formData.append('brand[]', brandId);
+                        if (!company) formData.append('brand[]', brandId);
                     });
                 } else {
                     formData.append('brand', values.brand);
@@ -605,6 +616,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                             if (user?.role === 'B2B') {
                                                 setFieldValue('brand', '');
                                             } else {
+                                                if (user?.role === 'ADMIN') setFieldValue('brand', []);
                                                 dispatch(getBrandsByCategory({ categoryId: itemValue , isAdmin: user?.role === 'ADMIN' }));
                                             }
                                         }}
@@ -636,7 +648,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                 disabled={!values.category}
                                 multiple={user?.role === 'ADMIN'}
                                 items={[
-                                    ...(user?.role === 'B2B' ? assignedBrands.filter(brand => {
+                                    ...(['B2B', 'ADMIN'].includes(user?.role) ? assignedBrands.filter(brand => {
                                         const selectedCategory = productCategories.find(category => category._id === values.category);
                                         const categoryId = typeof brand.category === 'string' ? brand.category : brand.category?._id;
                                         const categoryNames = Array.isArray(brand.categories)
@@ -649,7 +661,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                         label: brand.name,
                                         value: brand._id,
                                     })),
-                                    ...(user?.role === 'B2B' ? [] : [{ label: '+ Add New Brand', value: '__add_new__' }]),
+                                    ...(['B2B', 'ADMIN'].includes(user?.role) ? [] : [{ label: '+ Add New Brand', value: '__add_new__' }]),
                                 ]}
                                 onChange={itemValue => {
                                     if (
@@ -660,7 +672,13 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                         return;
                                     }
 
-                                    setFieldValue('brand', itemValue);
+                                    if (user?.role === 'ADMIN' && Array.isArray(itemValue)) {
+                                        const addedCompany = assignedBrands.find(brand => brand.isCompany && itemValue.includes(brand._id) && !values.brand.includes(brand._id));
+                                        const companyIds = new Set(assignedBrands.filter(brand => brand.isCompany).map(brand => brand._id));
+                                        setFieldValue('brand', addedCompany ? [addedCompany._id] : itemValue.filter(id => !companyIds.has(id)));
+                                    } else {
+                                        setFieldValue('brand', itemValue);
+                                    }
                                 }}
                                 error={touched.brand && errors.brand}
                             />

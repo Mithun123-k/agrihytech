@@ -615,13 +615,6 @@ export default function RegisterScreen({
                               let updated;
                               if (selected) {
                                 updated = (values.dealerBrands || []).filter(id => id !== brand._id);
-                              } else if (brand.isCompany) {
-                                const companyIds = availableBrands
-                                  .filter(item => item.isCompany)
-                                  .map(item => item._id);
-                                updated = (values.dealerBrands || [])
-                                  .filter(id => !companyIds.includes(id))
-                                  .concat(brand._id);
                               } else {
                                 updated = [...(values.dealerBrands || []), brand._id];
                               }
