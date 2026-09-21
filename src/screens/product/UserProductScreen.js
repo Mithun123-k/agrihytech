@@ -1,6 +1,6 @@
 import AppTextInput from '../../components/common/AppTextInput';
 import AppText from '../../components/common/AppText';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import {
   getProductsByBrand,
   getProductsByCategory,
 } from "../../features/brands/brandSlice";
+import { getSubCategoriesAPI } from '../../features/category/categoryAPI';
 
 const UserProductsScreen = ({ navigation, route }) => {
   const { brandId, categoryName, categoryImage, categoryId } = route.params;
@@ -26,14 +27,51 @@ const UserProductsScreen = ({ navigation, route }) => {
 
   const { products } = useSelector((state) => state.brand);
   const { user } = useSelector((state) => state.auth);
+  const [subCategories, setSubCategories] = useState([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [loadingSubCategories, setLoadingSubCategories] = useState(
+    !brandId && !!categoryId && !/medicine/i.test(categoryName || '')
+  );
+
+  useEffect(() => {
+    if (brandId || !categoryId || /medicine/i.test(categoryName || '')) return;
+    let active = true;
+    setLoadingSubCategories(true);
+    getSubCategoriesAPI(categoryId).then(response => {
+      if (active) setSubCategories(response.data.subCategories || []);
+    }).catch(() => {
+      if (active) setSubCategories([]);
+    }).finally(() => {
+      if (active) setLoadingSubCategories(false);
+    });
+    return () => { active = false; };
+  }, [brandId, categoryId, categoryName]);
 
   useEffect(() => {
     if (!brandId) {
-      dispatch(getProductsByCategory({ categoryId }));
+      if (!loadingSubCategories && (!subCategories.length || selectedSubCategory)) {
+        dispatch(getProductsByCategory({ categoryId, subCategoryId: selectedSubCategory?._id }));
+      }
     } else {
       dispatch(getProductsByBrand({ brandId }));
     }
-  }, [dispatch, user?.role, brandId, categoryId]);
+  }, [dispatch, user?.role, brandId, categoryId, loadingSubCategories, subCategories.length, selectedSubCategory]);
+
+  if (!brandId && (loadingSubCategories || (subCategories.length && !selectedSubCategory))) {
+    return <View style={styles.container}>
+      <SafeAreaView style={{ padding: 24 }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}><AppText style={{ fontSize: 25, color: '#202820' }}>←</AppText></TouchableOpacity>
+        <AppText style={{ fontSize: 24, fontWeight: '700', color: '#202820', marginVertical: 22 }}>{categoryName}</AppText>
+        <AppText style={{ fontSize: 17, fontWeight: '600', color: '#202820', marginBottom: 16 }}>Select subcategory</AppText>
+        <TouchableOpacity onPress={() => setSelectedSubCategory({ _id: '', name: 'All products' })} style={{ backgroundColor: '#fff', padding: 18, borderRadius: 14, marginBottom: 12 }}>
+          <AppText style={{ fontSize: 17, color: '#202820' }}>All products  →</AppText>
+        </TouchableOpacity>
+        {subCategories.map(item => <TouchableOpacity key={item._id} onPress={() => setSelectedSubCategory(item)} style={{ backgroundColor: '#fff', padding: 18, borderRadius: 14, marginBottom: 12 }}>
+          <AppText style={{ fontSize: 17, color: '#202820' }}>{item.name}  →</AppText>
+        </TouchableOpacity>)}
+      </SafeAreaView>
+    </View>;
+  }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -93,12 +131,12 @@ const UserProductsScreen = ({ navigation, route }) => {
             >
               <SafeAreaView>
                 <View style={styles.headerRow}>
-                  <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <TouchableOpacity onPress={() => selectedSubCategory ? setSelectedSubCategory(null) : navigation.goBack()}>
                     <Icon name="arrow-back" size={24} color="#000" />
                   </TouchableOpacity>
 
                   <AppText style={styles.headerTitle}>
-                    {categoryName || "Seed"}
+                    {selectedSubCategory?.name || categoryName || "Seed"}
                   </AppText>
 
                   <Image source={{ uri: categoryImage }} style={styles.logo} />

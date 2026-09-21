@@ -67,6 +67,7 @@ export function companyProductForm(draft, companyId) {
   }
   form.append('name', draft.name.trim());
   form.append('category', draft.category);
+  if (draft.subCategory) form.append('subCategory', draft.subCategory);
   if (draft.description?.trim()) form.append('description', draft.description.trim());
   (draft.images || []).forEach(asset => appendCompanyImage(form, 'images', asset));
   return form;

@@ -146,7 +146,7 @@ const CategoryScreen = ({
       onPress={() =>
         user?.role === "B2C"
           ? navigation.navigate(
-              "UserProduct",
+              "UserCatalog",
               {
                 categoryId: item._id,
                 categoryName: item.name,

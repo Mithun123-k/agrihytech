@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabs from './BottomTabs';
 import SakataProductsScreen from '../screens/product/ProductScreen';
 import UserProductsScreen from '../screens/product/UserProductScreen';
+import UserCatalogScreen from '../screens/product/UserCatalogScreen';
 import BrandScreen from '../screens/home/BrandScreen';
 import UserBrandScreen from '../screens/home/UserBrandScreen';
 import ProductDetailsScreen from '../screens/product/ProductDetailsScreen';
@@ -21,6 +22,8 @@ import MandiBhavScreen from '../screens/mandibhav/MandiBhavScreen'
 import PremiumScreen from '../screens/auth/PremiumScreen';
 import DeleteAccountScreen from '../screens/profile/DeleteAccountScreen';
 import AnudanYojanaScreen, { AnudanYojanaDetails } from '../screens/anudan/AnudanYojanaScreen';
+import AdminCategoryManager from '../screens/category/AdminCategoryManager';
+import AdminCategoryDetail from '../screens/category/AdminCategoryDetail';
 
 
 
@@ -32,6 +35,7 @@ const MainNavigator = () => {
       <Stack.Screen name="Tabs" component={BottomTabs} />
       <Stack.Screen name="product" component={SakataProductsScreen} />
       <Stack.Screen name="UserProduct" component={UserProductsScreen} />
+      <Stack.Screen name="UserCatalog" component={UserCatalogScreen} />
       <Stack.Screen name="BrandScreen" component={BrandScreen} />
       <Stack.Screen name="UserBrandScreen" component={UserBrandScreen} />
       <Stack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
@@ -51,6 +55,8 @@ const MainNavigator = () => {
       <Stack.Screen name='DeleteAccountScreen' component={DeleteAccountScreen} />
       <Stack.Screen name='AnudanYojanaScreen' component={AnudanYojanaScreen} />
       <Stack.Screen name='AnudanYojanaDetails' component={AnudanYojanaDetails} />
+      <Stack.Screen name='AdminCategoryManager' component={AdminCategoryManager} />
+      <Stack.Screen name='AdminCategoryDetail' component={AdminCategoryDetail} />
       
 
 

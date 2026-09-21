@@ -34,9 +34,9 @@ export const getProductsByBrand = createAsyncThunk(
 
 export const getProductsByCategory = createAsyncThunk(
   "product/getProductsByCategory",
-  async ({ categoryId, page = 1 }, thunkAPI) => {
-    try {
-      const res = await getProductsByCategoryAPI(categoryId, page);
+    async ({ categoryId, page = 1, subCategoryId }, thunkAPI) => {
+      try {
+        const res = await getProductsByCategoryAPI(categoryId, page, subCategoryId);
 
       return {
         products: res.data.products,

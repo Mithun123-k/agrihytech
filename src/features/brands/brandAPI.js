@@ -21,8 +21,8 @@ export const getProductsByBrandAPI = (brandId, page = 1) => {
   return API.get(`/brands/${brandId}/products`);
 };
 
-export const getProductsByCategoryAPI = (categoryId, page = 1) => {
-  return API.get(`/products/user/${categoryId}`);
+export const getProductsByCategoryAPI = (categoryId, page = 1, subCategoryId) => {
+  return API.get(`/products/user/${categoryId}`, { params: { page, ...(subCategoryId ? { subCategoryId } : {}) } });
 }
 
 export const getMyProductsByBrandAPI = (brandId, page = 1) => {

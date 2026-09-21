@@ -1,7 +1,7 @@
 import AppTextInput from '../../components/common/AppTextInput';
 import AppText from '../../components/common/AppText';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
@@ -21,6 +21,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import AddBrandModal from '../brands/AddBrandModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBrandsByCategory, getMyCategories } from '../../features/category/categorySlice';
+import { getSubCategoriesAPI } from '../../features/category/categoryAPI';
 import { createProduct, updateProduct } from '../../features/product/productSlice';
 import { createBrand } from '../../features/brands/brandSlice';
 import { getMeAPI } from '../../features/auth/authAPI';
@@ -175,44 +176,6 @@ const Dropdown = ({
     );
 };
 
-const CATEGORY_OPTIONS = [
-    { label: 'Seeds', value: 'Seeds' },
-    { label: 'Fertilizers', value: 'Fertilizers' },
-    { label: 'Pesticides', value: 'Pesticides' },
-    { label: 'Equipment', value: 'Equipment' },
-];
-
-// ADD THIS near CATEGORY_OPTIONS
-const BRAND_OPTIONS = [
-    { label: 'CropGuard', value: 'CropGuard' },
-    { label: 'AgriTech', value: 'AgriTech' },
-    { label: 'Kisan Power', value: 'Kisan Power' },
-    { label: '+ Add New Brand', value: '__add_new__' },
-];
-
-const SUBCATEGORY_OPTIONS = {
-    Seeds: [
-        { label: 'Wheat Seeds', value: 'Wheat Seeds' },
-        { label: 'Rice Seeds', value: 'Rice Seeds' },
-        { label: 'Vegetable Seeds', value: 'Vegetable Seeds' },
-    ],
-    Fertilizers: [
-        { label: 'Organic', value: 'Organic' },
-        { label: 'Chemical', value: 'Chemical' },
-        { label: 'Bio Fertilizer', value: 'Bio Fertilizer' },
-    ],
-    Pesticides: [
-        { label: 'Insecticide', value: 'Insecticide' },
-        { label: 'Fungicide', value: 'Fungicide' },
-        { label: 'Herbicide', value: 'Herbicide' },
-    ],
-    Equipment: [
-        { label: 'Sprayer', value: 'Sprayer' },
-        { label: 'Tractor Tools', value: 'Tractor Tools' },
-        { label: 'Irrigation', value: 'Irrigation' },
-    ],
-};
-
 const AddProductDetailsScreen = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const product = route?.params?.product;
@@ -231,6 +194,10 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
 
     const [images, setImages] = useState([]);
     const [assignedBrands, setAssignedBrands] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    const [subCategoryLoading, setSubCategoryLoading] = useState(false);
+    const [subCategoryError, setSubCategoryError] = useState(false);
+    const subCategoryRequest = useRef(0);
     const [brandModal, setBrandModal] = useState(false);
     const [brandData, setBrandData] = useState(brands); // 🔥 add this
     const [newBrand, setNewBrand] = useState({
@@ -247,6 +214,28 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
     useEffect(() => {
         dispatch(getMyCategories());
     }, [dispatch]);
+
+    const loadSubCategories = useCallback(categoryId => {
+        const request = ++subCategoryRequest.current;
+        setSubCategories([]);
+        setSubCategoryError(false);
+        if (!categoryId) return;
+        setSubCategoryLoading(true);
+        getSubCategoriesAPI(categoryId).then(response => {
+            if (request === subCategoryRequest.current) setSubCategories(response.data.subCategories || []);
+        }).catch(() => {
+            if (request === subCategoryRequest.current) setSubCategoryError(true);
+        }).finally(() => {
+            if (request === subCategoryRequest.current) setSubCategoryLoading(false);
+        });
+    }, []);
+
+    useEffect(() => {
+        const categoryId = typeof product?.category === 'string' ? product.category : product?.category?._id;
+        if (!categoryId) return;
+        loadSubCategories(categoryId);
+        return () => { subCategoryRequest.current += 1; };
+    }, [product?.category, loadSubCategories]);
 
     useEffect(() => {
         if (!['ADMIN', 'B2B'].includes(user?.role)) return;
@@ -400,8 +389,9 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                 brand:
                     user?.role === 'ADMIN'
                         ? product?.brand || []
-                        : product?.brand?.[0] || '',
-                category: product?.category || '',
+                        : product?.companyBrand?._id || product?.companyBrand || product?.brand?.[0]?._id || product?.brand?.[0] || '',
+                category: typeof product?.category === 'string' ? product.category : product?.category?._id || '',
+                subCategory: typeof product?.subCategory === 'string' ? product.subCategory : product?.subCategory?._id || '',
                 description: product?.description || '',
                 price: product?.price?.toString() || '',
                 quantity: product?.quantity?.toString() || '',
@@ -429,12 +419,25 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
             validationSchema={validationSchema}
 
             onSubmit={async values => {
+                const selectedCategory = productCategories.find(category => category._id === values.category);
+                if (!/medicine/i.test(selectedCategory?.name || '') && (subCategoryLoading || subCategoryError)) {
+                    Alert.alert('Subcategories unavailable', 'Could not load subcategories for this category.', [
+                        { text: 'Cancel' },
+                        { text: 'Retry', onPress: () => loadSubCategories(values.category) },
+                    ]);
+                    return;
+                }
+                if (subCategories.length && !values.subCategory) {
+                    Alert.alert('Subcategory required', 'Select a subcategory for this product.');
+                    return;
+                }
                 const formData = new FormData();
 
                 // Basic fields
                 formData.append('name', values.name);
                 // formData.append('brand', values.brand);
                 formData.append('category', values.category);
+                if (values.subCategory) formData.append('subCategory', values.subCategory);
                 formData.append('description', values.description);
                 formData.append('price', values.price);
                 formData.append('quantity', values.quantity);
@@ -601,8 +604,8 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
 
 
 
-                            <View style={styles.row}>
-                                <View style={styles.half}>
+                            <View style={[styles.row, user?.role === 'ADMIN' && { flexDirection: 'column' }]}>
+                                <View style={[styles.half, user?.role === 'ADMIN' && { flex: 0 }]}>
                                     <Dropdown
                                         label="Category"
                                         required
@@ -612,6 +615,8 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                         onChange={itemValue => {
                                             console.log("Selected Category ID => ", itemValue);
                                             setFieldValue('category', itemValue);
+                                            setFieldValue('subCategory', '');
+                                            loadSubCategories(itemValue);
                                             // setFieldValue('subCategory', '');
                                             if (user?.role === 'B2B') {
                                                 setFieldValue('brand', '');
@@ -624,19 +629,22 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                     />
                                 </View>
 
-                                {/* <View style={styles.half}>
+                                {(subCategories.length > 0 || (user?.role === 'ADMIN' && values.category &&
+                                    !/medicine/i.test(productCategories.find(item => item._id === values.category)?.name || ''))) &&
+                                <View style={[styles.half, user?.role === 'ADMIN' && { flex: 0 }]}>
                                     <Dropdown
                                         label="Sub Category"
-                                        required
+                                        required={subCategories.length > 0}
                                         value={values.subCategory}
-                                        placeholder="Select Sub Category"
-                                        items={SUBCATEGORY_OPTIONS[values.category] || []}
+                                        placeholder={subCategories.length ? 'Select Sub Category' : 'No subcategories yet'}
+                                        disabled={!subCategories.length}
+                                        items={subCategories.map(item => ({ label: item.name, value: item._id }))}
                                         onChange={itemValue =>
                                             setFieldValue('subCategory', itemValue)
                                         }
                                         error={touched.subCategory && errors.subCategory}
                                     />
-                                </View> */}
+                                </View>}
                             </View>
 
 
@@ -645,7 +653,7 @@ const AddProductDetailsScreen = ({ navigation, route }) => {
                                 required
                                 value={values.brand}
                                 placeholder="Select Brand"
-                                disabled={!values.category}
+                                disabled={!values.category || (subCategories.length > 0 && !values.subCategory)}
                                 multiple={user?.role === 'ADMIN'}
                                 items={[
                                     ...(['B2B', 'ADMIN'].includes(user?.role) ? assignedBrands.filter(brand => {

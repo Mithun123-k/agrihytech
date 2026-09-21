@@ -296,7 +296,7 @@ const SearchScreen = ({ navigation }) => {
                         () =>
                           role === "B2C"
                             ? navigation.navigate(
-                                "UserProduct",
+                                "UserCatalog",
                                 {
                                   categoryId:
                                     item._id,

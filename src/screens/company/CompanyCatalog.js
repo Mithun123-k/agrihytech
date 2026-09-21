@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { companyError, idOf, imageUri, getCompanyBrands, getCompanyCategories, getCompanyProducts, saveCompanyBrand, deleteCompanyBrand, saveCompanyProduct, deleteCompanyProduct } from '../../features/company/companyAPI';
 import { getmyCategoriesAPI } from '../../features/category/categoryAPI';
+import { getSubCategoriesAPI } from '../../features/category/categoryAPI';
 import { CompanyPage, CompanyButton, CompanyField, CompanySelect, useCompanyData, pickCompanyImages, confirmCompanyDelete, s } from './shared';
 
 const loadCatalog = async () => {
@@ -122,19 +123,48 @@ export function CompanyProductForm({ navigation, route }) {
   const companyId = useSelector(state => idOf(state.auth.user));
   const product = route.params?.product;
   const resource = useCompanyData(loadCompanyProductCategories);
+  const [subCategories, setSubCategories] = useState([]);
+  const [subCategoryLoading, setSubCategoryLoading] = useState(false);
+  const [subCategoryError, setSubCategoryError] = useState(false);
+  const [subCategoryRetry, setSubCategoryRetry] = useState(0);
   const [draft, setDraft] = useState({
     name: product?.name || '',
     category: idOf(product?.category) || route.params?.categoryId || '',
+    subCategory: idOf(product?.subCategory) || '',
     description: product?.description || '',
     images: [],
   });
   const [busy, setBusy] = useState(false);
   const field = key => value => setDraft(old => ({ ...old, [key]: value }));
+  React.useEffect(() => {
+    if (!draft.category) { setSubCategories([]); setSubCategoryError(false); return; }
+    let active = true;
+    setSubCategoryLoading(true);
+    setSubCategoryError(false);
+    setSubCategories([]);
+    getSubCategoriesAPI(draft.category).then(response => {
+      if (active) setSubCategories(response.data.subCategories || []);
+    }).catch(() => { if (active) setSubCategoryError(true); })
+      .finally(() => { if (active) setSubCategoryLoading(false); });
+    return () => { active = false; };
+  }, [draft.category, subCategoryRetry]);
   const pick = async () => {
     try { const images = await pickCompanyImages(true); if (images?.length) field('images')(images); }
     catch (error) { Alert.alert('Photo library', companyError(error)); }
   };
   const save = async () => {
+    const selectedCategory = (resource.data || []).find(item => item._id === draft.category);
+    if (!/medicine/i.test(selectedCategory?.name || '') && (subCategoryLoading || subCategoryError)) {
+      Alert.alert('Subcategories unavailable', 'Could not load subcategories for this category.', [
+        { text: 'Cancel' },
+        { text: 'Retry', onPress: () => setSubCategoryRetry(value => value + 1) },
+      ]);
+      return;
+    }
+    if (subCategories.length && !draft.subCategory) {
+      Alert.alert('Missing details', 'Select a subcategory for this product.');
+      return;
+    }
     if (!draft.name.trim() || !draft.category || (!product && !draft.images.length)) {
       Alert.alert('Missing details', 'Enter a product name, select a category and choose a product image.');
       return;
@@ -147,7 +177,8 @@ export function CompanyProductForm({ navigation, route }) {
   return <CompanyPage title={product ? 'Edit Product' : 'Add Product'} navigation={navigation} resource={resource}>
     <View style={s.card}>
       <CompanyField label="Product Name" value={draft.name} onChangeText={field('name')} />
-      <CompanySelect label="Category" value={draft.category} onChange={field('category')} options={resource.data || []} textColor="#222" />
+      <CompanySelect label="Category" value={draft.category} onChange={value => setDraft(old => ({ ...old, category: value, subCategory: '' }))} options={resource.data || []} textColor="#222" />
+      {subCategories.length > 0 && <CompanySelect label="Subcategory" value={draft.subCategory} onChange={field('subCategory')} options={subCategories} textColor="#222" />}
       <CompanyField label="Description (optional)" value={draft.description} onChangeText={field('description')} multiline />
       {(draft.images.length ? draft.images : product?.images || []).map((asset, index) => <Image key={index} source={{ uri: imageUri(asset) }} style={s.image} />)}
       <CompanyButton secondary title="Choose Images (up to 5)" disabled={busy} onPress={pick} />

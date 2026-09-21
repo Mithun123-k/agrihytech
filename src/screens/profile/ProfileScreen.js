@@ -473,6 +473,15 @@ const ProfileScreen = ({
               </>
             )}
 
+          {user?.role === "ADMIN" && (
+            <>
+              {divider()}
+              <TouchableOpacity onPress={() => navigation.navigate("AdminCategoryManager")}>
+                {menuItem("grid-outline", "Manage Categories")}
+              </TouchableOpacity>
+            </>
+          )}
+
           {divider()}
 
           <TouchableOpacity

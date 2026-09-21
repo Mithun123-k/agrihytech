@@ -1,6 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getHomeAPI, getUserHomeAPI } from "./homeAPI";
 import { getmyCategoriesAPI } from "../category/categoryAPI";
+import { getAssignableBrandsAPI, getProductsByBrandAPI } from "../brands/brandAPI";
+
+const withPopularBrands = async homeData => {
+  if (homeData.brands?.length) return homeData;
+
+  try {
+    const { data } = await getAssignableBrandsAPI();
+    const candidates = (data.brands || []).filter(brand => brand.isCompany).slice(0, 8);
+    const results = await Promise.allSettled(candidates.map(async brand => {
+      const response = await getProductsByBrandAPI(brand._id);
+      return { ...brand, totalProducts: response.data.total || 0 };
+    }));
+    const brands = results
+      .filter(result => result.status === "fulfilled" && result.value.totalProducts > 0)
+      .map(result => result.value)
+      .sort((left, right) => right.totalProducts - left.totalProducts)
+      .slice(0, 4);
+    return { ...homeData, brands };
+  } catch {
+    return homeData;
+  }
+};
 
 // 🔹 FETCH B2B / ADMIN HOME DATA
 export const getHomeData = createAsyncThunk(
@@ -13,13 +35,13 @@ export const getHomeData = createAsyncThunk(
           getHomeAPI(),
           getmyCategoriesAPI(),
         ]);
-        return {
+        return withPopularBrands({
           ...homeResponse.data,
           categories: categoryResponse.data.categories || [],
-        };
+        });
       }
       const response = await getHomeAPI();
-      return response.data;
+      return withPopularBrands(response.data);
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to load home"
@@ -34,7 +56,7 @@ export const getUserHomeData = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await getUserHomeAPI();
-      return res.data;
+      return withPopularBrands(res.data);
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to load user home"

@@ -34,7 +34,7 @@ const CategorySection = ({ data = [], navigation, role }) => {
                 return;
               }
               if (role === 'B2C') {
-                navigation.navigate('UserProduct', {
+                navigation.navigate('UserCatalog', {
                   categoryId: item._id,
                   categoryName: item.name,
                   categoryImage: item.image,
