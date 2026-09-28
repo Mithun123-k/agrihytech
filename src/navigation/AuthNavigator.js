@@ -8,6 +8,7 @@ import PremiumScreen from '../screens/auth/PremiumScreen'
 import YourProductsScreen from '../screens/product/YourProductsScreen'
 import { useSelector } from 'react-redux';
 import { CompanySubscription } from '../screens/company/CompanyAccount';
+import InfoScreen from '../screens/profile/InfoScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,7 @@ const AuthNavigator = () => {
       <Stack.Screen name='RegisterScreen' component={RegisterScreen} />
       <Stack.Screen name="Otp" component={OtpScreen} />
       <Stack.Screen name='PremiumScreen' component={isCompany ? CompanySubscription : PremiumScreen} />
+      <Stack.Screen name='InfoScreen' component={InfoScreen} />
 
     </Stack.Navigator>
   );

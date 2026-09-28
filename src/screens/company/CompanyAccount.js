@@ -146,6 +146,10 @@ export function CompanyProfile({ navigation }) {
           <TouchableOpacity style={profileStyles.menuRow} onPress={() => navigation.navigate(screen)}><Ionicons name={profileIcons[screen]} size={21} color="#4C8C2B" /><AppText style={profileStyles.menuText}>{title}</AppText><Ionicons name="chevron-forward" size={18} color="#999" /></TouchableOpacity>
         </View>)}
         <View style={profileStyles.divider} />
+        <TouchableOpacity style={profileStyles.menuRow} onPress={() => navigation.navigate('InfoScreen', { id: 2, role: 'COMPANY' })}><Ionicons name="document-text-outline" size={21} color="#4C8C2B" /><AppText style={profileStyles.menuText}>Terms & Conditions</AppText><Ionicons name="chevron-forward" size={18} color="#999" /></TouchableOpacity>
+        <View style={profileStyles.divider} />
+        <TouchableOpacity style={profileStyles.menuRow} onPress={() => navigation.navigate('InfoScreen', { id: 3, role: 'COMPANY' })}><Ionicons name="shield-checkmark-outline" size={21} color="#4C8C2B" /><AppText style={profileStyles.menuText}>Privacy Policy</AppText><Ionicons name="chevron-forward" size={18} color="#999" /></TouchableOpacity>
+        <View style={profileStyles.divider} />
         <View style={profileStyles.menuRow}><Ionicons name="language-outline" size={21} color="#4C8C2B" /><AppText style={profileStyles.menuText}>Language</AppText><LanguageSelector /></View>
         <View style={profileStyles.divider} />
         <TouchableOpacity style={profileStyles.menuRow} onPress={signOut}><Ionicons name="power-outline" size={21} color="#4C8C2B" /><AppText style={profileStyles.menuText}>Logout</AppText><Ionicons name="chevron-forward" size={18} color="#999" /></TouchableOpacity>

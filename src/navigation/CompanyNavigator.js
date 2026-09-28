@@ -16,6 +16,7 @@ import UserProductsScreen from '../screens/product/UserProductScreen';
 import UserBrandScreen from '../screens/home/UserBrandScreen';
 import ProductDetailsScreen from '../screens/product/ProductDetailsScreen';
 import { useLanguage } from '../i18n/LanguageContext';
+import InfoScreen from '../screens/profile/InfoScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,7 @@ export default function CompanyNavigator() {
     <Stack.Screen name="CompanyDealerDetails" component={CompanyDealerDetails} />
     <Stack.Screen name="CompanySettings" component={CompanySettings} />
     <Stack.Screen name="CompanySubscription" component={CompanySubscription} />
+    <Stack.Screen name="InfoScreen" component={InfoScreen} />
     <Stack.Screen name="AnudanYojanaScreen" component={AnudanYojanaScreen} />
     <Stack.Screen name="AnudanYojanaDetails" component={AnudanYojanaDetails} />
     <Stack.Screen name="SelectLocationScreen" component={SelectLocationScreen} />

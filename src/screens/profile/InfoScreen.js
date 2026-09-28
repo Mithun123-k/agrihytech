@@ -12,20 +12,24 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { infoPages } from "../../data/infoPages";
+import { useSelector } from 'react-redux';
+import { getTermsForRole } from '../../data/terms';
+import { privacyPolicy } from '../../data/privacy';
 
 const { width } = Dimensions.get("window");
 const scale = width / 375;
 
 const InfoScreen = ({ navigation, route }) => {
 
-    const { id } = route.params;
+    const { id, role } = route.params;
+    const sessionRole = useSelector(state => state.auth.user?.role);
 
     const [page, setPage] = useState(null);
 
     useEffect(() => {
-        const foundPage = infoPages.find(item => item.id === id);
+        const foundPage = id === 2 ? getTermsForRole(role || sessionRole) : id === 3 ? privacyPolicy : infoPages.find(item => item.id === id);
         setPage(foundPage);
-    }, [id]);
+    }, [id, role, sessionRole]);
 
     if (!page) {
         return (
@@ -61,11 +65,12 @@ const InfoScreen = ({ navigation, route }) => {
                 contentContainerStyle={styles.contentContainer}
                 showsVerticalScrollIndicator={false}
             >
-                <AppText style={styles.title}>{page.title}</AppText>
-
-                <AppText style={styles.description}>
-                    {page.content}
-                </AppText>
+                {page.subtitle ? <AppText style={styles.subtitle}>{page.subtitle}</AppText> : null}
+                {page.updated ? <AppText style={styles.updated}>Last Updated: {page.updated}</AppText> : null}
+                {page.sections ? page.sections.map(section => <View key={section.heading} style={styles.section}>
+                    <AppText style={styles.sectionTitle}>{section.heading}</AppText>
+                    <AppText style={styles.description}>{section.body}</AppText>
+                </View>) : <AppText style={styles.description}>{page.content}</AppText>}
             </ScrollView>
         </View>
     );
@@ -105,18 +110,15 @@ const styles = StyleSheet.create({
         paddingBottom: 40
     },
 
-    title: {
-        fontSize: 21 * scale,
-        fontWeight: "600",
-        marginBottom: 20,
-        color: "#222"
-    },
-
     description: {
         fontSize: 14 ,
         fontWeight:'400',
         lineHeight: 20,
         color: "#555"
-    }
+    },
+    subtitle: { fontSize: 15, fontWeight: '600', color: '#385F21', marginBottom: 6 },
+    updated: { fontSize: 13, color: '#777', marginBottom: 22 },
+    section: { marginBottom: 20 },
+    sectionTitle: { fontSize: 16, fontWeight: '700', color: '#222', marginBottom: 7 }
 
 });

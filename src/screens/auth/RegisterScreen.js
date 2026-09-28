@@ -50,6 +50,7 @@ const schema = Yup.object().shape({
     .min(1, "Please select at least 1 category")
     .max(2, "Only 2 categories allowed")
     .required("Category is required"),
+  acceptedTerms: Yup.boolean().oneOf([true], "Please accept the Terms & Conditions"),
 });
 
 const companySchema = Yup.object().shape({
@@ -58,6 +59,7 @@ const companySchema = Yup.object().shape({
   phone: Yup.string().matches(/^[0-9]{10}$/, "Invalid phone number").required("Phone required"),
   email: Yup.string().trim().email("Invalid email address"),
   categories: Yup.array().min(1, "Please select 1 category").max(1, "Only 1 category allowed").required("Category is required"),
+  acceptedTerms: Yup.boolean().oneOf([true], "Please accept the Terms & Conditions"),
 });
 
 export default function RegisterScreen({
@@ -137,6 +139,7 @@ export default function RegisterScreen({
           pincode: "",
           categories: [],
           dealerBrands: [],
+          acceptedTerms: false,
         }}
         validationSchema={isCompany ? companySchema : schema}
         onSubmit={async (values) => {
@@ -429,6 +432,26 @@ export default function RegisterScreen({
                   keyboardType="number-pad"
                 />
               </View>}
+
+              <TouchableOpacity
+                style={styles.termsRow}
+                activeOpacity={0.8}
+                onPress={() => setFieldValue('acceptedTerms', !values.acceptedTerms)}
+              >
+                <View style={[styles.checkbox, values.acceptedTerms && styles.checkboxSelected]}>
+                  {values.acceptedTerms ? <AppText style={styles.checkmark}>✓</AppText> : null}
+                </View>
+                <AppText style={styles.termsText}>
+                  I agree to the{' '}
+                  <AppText
+                    style={styles.termsLink}
+                    onPress={() => navigation.navigate('InfoScreen', { id: 2, role: isCompany ? 'COMPANY' : 'B2B' })}
+                  >
+                    Terms & Conditions
+                  </AppText>
+                </AppText>
+              </TouchableOpacity>
+              {touched.acceptedTerms && errors.acceptedTerms ? <AppText style={styles.errorText}>{errors.acceptedTerms}</AppText> : null}
             </ScrollView>
 
             {/* ================= BUTTON ================= */}
@@ -1010,6 +1033,29 @@ const styles = StyleSheet.create({
 
     fontWeight: "700",
   },
+
+  termsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: scale(18),
+    marginBottom: scale(6),
+  },
+
+  checkbox: {
+    width: scale(22),
+    height: scale(22),
+    borderRadius: scale(5),
+    borderWidth: 1.5,
+    borderColor: "#2e7d32",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: scale(10),
+  },
+
+  checkboxSelected: { backgroundColor: "#2e7d32" },
+  checkmark: { color: "#fff", fontSize: responsiveFont(14), fontWeight: "700" },
+  termsText: { flex: 1, color: "#555", fontSize: responsiveFont(13), lineHeight: scale(19) },
+  termsLink: { color: "#2e7d32", fontWeight: "700", textDecorationLine: "underline" },
 
   doneBtn: {
     marginTop: scale(18),

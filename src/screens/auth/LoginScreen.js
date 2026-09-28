@@ -222,11 +222,17 @@ const LoginScreen = ({
             <AppText style={styles.terms}>
               By logging into this app,
               you agree to our{' '}
-              <AppText style={styles.link}>
+              <AppText
+                style={styles.link}
+                onPress={() => navigation.navigate('InfoScreen', { id: 2, role })}
+              >
                 Terms of Service
               </AppText>{' '}
               and{' '}
-              <AppText style={styles.link}>
+              <AppText
+                style={styles.link}
+                onPress={() => navigation.navigate('InfoScreen', { id: 3, role })}
+              >
                 Privacy Policy
               </AppText>
               .
