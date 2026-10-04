@@ -113,7 +113,7 @@ const HomeScreen = ({
 
   const openWhatsApp = () => {
     const phone =
-      '919999999999';
+      '919243127974';
 
     const message =
       'Hello, I need help';
@@ -127,7 +127,7 @@ const HomeScreen = ({
 
   const makeCall = () => {
     Linking.openURL(
-      `tel:+919999999999`,
+      `tel:+919243127974`,
     );
   };
 
