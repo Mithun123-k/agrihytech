@@ -456,20 +456,23 @@ const ProfileScreen = ({
                   )}
                 </TouchableOpacity>
 
-                {divider()}
-
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate(
-                      "OurbrandsScreen",
-                    )
-                  }
-                >
-                  {menuItem(
-                    "pricetags-outline",
-                    "Brands",
-                  )}
-                </TouchableOpacity>
+                {user?.role === "B2B" && (
+                  <>
+                    {divider()}
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate(
+                          "OurbrandsScreen",
+                        )
+                      }
+                    >
+                      {menuItem(
+                        "pricetags-outline",
+                        "Brands",
+                      )}
+                    </TouchableOpacity>
+                  </>
+                )}
               </>
             )}
 
@@ -478,6 +481,10 @@ const ProfileScreen = ({
               {divider()}
               <TouchableOpacity onPress={() => navigation.navigate("AdminCategoryManager")}>
                 {menuItem("grid-outline", "Manage Categories")}
+              </TouchableOpacity>
+              {divider()}
+              <TouchableOpacity onPress={() => navigation.navigate("AdminSubscriptionManager")}>
+                {menuItem("card-outline", "Manage Subscriptions")}
               </TouchableOpacity>
             </>
           )}

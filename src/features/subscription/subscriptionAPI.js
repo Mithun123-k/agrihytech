@@ -27,3 +27,12 @@ export const activateTrialAPI = () => {
     "/subscription/skip-trial"
   );
 };
+
+// ADMIN PLAN MANAGEMENT
+export const getAdminPlansAPI = () => API.get('/subscription');
+
+export const saveAdminPlanAPI = (plan, id) => id
+  ? API.put(`/subscription/${id}`, plan)
+  : API.post('/subscription/create', plan);
+
+export const deleteAdminPlanAPI = id => API.delete(`/subscription/${id}`);

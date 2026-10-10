@@ -24,6 +24,7 @@ import DeleteAccountScreen from '../screens/profile/DeleteAccountScreen';
 import AnudanYojanaScreen, { AnudanYojanaDetails } from '../screens/anudan/AnudanYojanaScreen';
 import AdminCategoryManager from '../screens/category/AdminCategoryManager';
 import AdminCategoryDetail from '../screens/category/AdminCategoryDetail';
+import AdminSubscriptionManager from '../screens/subscription/AdminSubscriptionManager';
 
 
 
@@ -57,6 +58,7 @@ const MainNavigator = () => {
       <Stack.Screen name='AnudanYojanaDetails' component={AnudanYojanaDetails} />
       <Stack.Screen name='AdminCategoryManager' component={AdminCategoryManager} />
       <Stack.Screen name='AdminCategoryDetail' component={AdminCategoryDetail} />
+      <Stack.Screen name='AdminSubscriptionManager' component={AdminSubscriptionManager} />
       
 
 
