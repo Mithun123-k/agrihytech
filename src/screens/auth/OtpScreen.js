@@ -87,6 +87,7 @@ const OtpScreen = ({
   const {
     role,
     otp: initialOtp,
+    mobile: routeMobile,
   } = route.params || {};
 
   const [otp, setOtp] = useState([
@@ -106,10 +107,11 @@ const OtpScreen = ({
 
   const dispatch = useDispatch();
 
-  const { mobile, loading } =
+  const { mobile: authMobile, loading } =
     useSelector(
       state => state.auth,
     );
+  const mobile = authMobile || routeMobile;
 
   console.log(
     'Initial OTP in OTP Screen:',
@@ -234,10 +236,11 @@ const OtpScreen = ({
         result.payload.token;
 
       // =========================
-      // B2B CHECK
+      // SUBSCRIPTION CHECK
       // =========================
       if (
-        user?.role === 'B2B'
+        user?.role === 'B2B' ||
+        user?.role === 'COMPANY'
       ) {
         const hasSubscription =
           user?.subscription

@@ -18,7 +18,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { useDispatch, useSelector } from "react-redux";
-import { registerB2B, registerCompany } from "../../features/auth/authSlice";
+import { registerB2B, registerCompany, sendOtp } from "../../features/auth/authSlice";
 
 import FormikInput from "../../components/auth/FormikInput";
 import PasswordInput from "../../components/auth/PasswordInput";
@@ -188,22 +188,33 @@ export default function RegisterScreen({
                 result
               )
             ) {
-              Alert.alert(
-                "Success",
-                "Registration successful"
-              );
+              if (!isCompany) {
+                await AsyncStorage.setItem("token", result.payload.token);
+                navigation.replace("PremiumScreen");
+                return;
+              }
 
-              const token =
-                result.payload.token;
+              const otpResult = await dispatch(sendOtp({
+                mobile: values.phone,
+                role: "COMPANY",
+              }));
 
-              await AsyncStorage.setItem(
-                "token",
-                token
-              );
-
-              navigation.replace(
-                "PremiumScreen"
-              );
+              if (sendOtp.fulfilled.match(otpResult)) {
+                navigation.replace("Otp", {
+                  role: "COMPANY",
+                  otp: otpResult.payload?.otp,
+                  mobile: values.phone,
+                });
+              } else {
+                Alert.alert(
+                  "OTP Error",
+                  otpResult.payload || "Registration completed, but OTP could not be sent"
+                );
+                navigation.replace("Otp", {
+                  role: "COMPANY",
+                  mobile: values.phone,
+                });
+              }
             } else {
               Alert.alert(
                 "Error",
