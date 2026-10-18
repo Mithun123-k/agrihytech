@@ -365,7 +365,7 @@ export default function RegisterScreen({
 
               {!isCompany && (
                 <View style={{ marginTop: scale(14) }}>
-                  <AppText style={styles.locationTitle}>Select Brand</AppText>
+                  <AppText style={styles.locationTitle}>Select Brand / Company (optional)</AppText>
                   <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.categorySelector}
@@ -388,7 +388,7 @@ export default function RegisterScreen({
                           ? "Select categories first"
                           : brandsLoading
                           ? "Loading brands..."
-                          : "Select Brand"}
+                          : "Select Brand / Company (optional)"}
                     </AppText>
                     <AppText style={styles.dropdownArrow}>▼</AppText>
                   </TouchableOpacity>
