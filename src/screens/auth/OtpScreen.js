@@ -86,7 +86,6 @@ const OtpScreen = ({
 }) => {
   const {
     role,
-    otp: initialOtp,
     mobile: routeMobile,
   } = route.params || {};
 
@@ -112,11 +111,6 @@ const OtpScreen = ({
       state => state.auth,
     );
   const mobile = authMobile || routeMobile;
-
-  console.log(
-    'Initial OTP in OTP Screen:',
-    initialOtp,
-  );
 
   // =========================
   // TIMER

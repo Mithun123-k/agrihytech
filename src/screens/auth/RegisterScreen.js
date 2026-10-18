@@ -26,7 +26,6 @@ import PasswordInput from "../../components/auth/PasswordInput";
 import { responsiveFont, scale } from "../../utils/responsive";
 import { getPublicCategories } from "../../features/category/categorySlice";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { launchImageLibrary } from "react-native-image-picker";
 import { getAssignableBrandsAPI } from "../../features/brands/brandAPI";
 import LanguageSelector from "../../components/common/LanguageSelector";
@@ -188,21 +187,14 @@ export default function RegisterScreen({
                 result
               )
             ) {
-              if (!isCompany) {
-                await AsyncStorage.setItem("token", result.payload.token);
-                navigation.replace("PremiumScreen");
-                return;
-              }
-
               const otpResult = await dispatch(sendOtp({
                 mobile: values.phone,
-                role: "COMPANY",
+                role: isCompany ? "COMPANY" : "B2B",
               }));
 
               if (sendOtp.fulfilled.match(otpResult)) {
                 navigation.replace("Otp", {
-                  role: "COMPANY",
-                  otp: otpResult.payload?.otp,
+                  role: isCompany ? "COMPANY" : "B2B",
                   mobile: values.phone,
                 });
               } else {
@@ -211,7 +203,7 @@ export default function RegisterScreen({
                   otpResult.payload || "Registration completed, but OTP could not be sent"
                 );
                 navigation.replace("Otp", {
-                  role: "COMPANY",
+                  role: isCompany ? "COMPANY" : "B2B",
                   mobile: values.phone,
                 });
               }

@@ -91,15 +91,9 @@ const LoginScreen = ({
       if (
         sendOtp.fulfilled.match(result)
       ) {
-        console.log(
-          'OTP sent successfully:',
-          result.payload?.otp,
-        );
-
         navigation.navigate('Otp', {
           mobile: phone,
           role: role,
-          otp: result.payload?.otp,
         });
       } else {
         Alert.alert(
