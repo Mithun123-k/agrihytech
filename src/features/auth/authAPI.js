@@ -19,7 +19,8 @@ export const registerCompanyAPI = (data) => {
   return API.post("/auth/register-company", data, {
     headers: {
       "Content-Type": "multipart/form-data"
-    }
+    },
+    timeout: 120000,
   });
 };
 

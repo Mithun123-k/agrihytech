@@ -77,7 +77,10 @@ export const registerCompany = createAsyncThunk(
       return { token: res.data.token, user: res.data.user };
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.error || err.response?.data?.message || "Company registration failed"
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        "Company registration failed"
       );
     }
   }
