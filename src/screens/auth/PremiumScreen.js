@@ -203,7 +203,7 @@ const PremiumScreen = () => {
 
     dispatch(getPlans());
 
-  }, []);
+  }, [dispatch]);
 
 
   // AUTO SELECT FIRST PLAN
@@ -247,7 +247,7 @@ const PremiumScreen = () => {
 
         Alert.alert(
           "Success",
-          "7 Days Free Trial Activated"
+          "Free trial activated successfully"
         );
 
       } catch (err) {

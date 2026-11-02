@@ -30,7 +30,7 @@ useEffect(() => {
   setLogoutHandler(() => {
     dispatch(logout());
   });
-}, []);
+}, [dispatch]);
 
 
 // 🔥 BOTH conditions must finish
@@ -43,7 +43,11 @@ if (appLoading || !minTimeDone) {
      {isAuthenticated && user?.role === 'COMPANY' ? <CompanyNavigator /> : isAuthenticated &&
     (
       (user?.role !== "B2B" && user?.role !== "COMPANY") ||
-      user?.subscription?.isActive === true
+      (
+        user?.subscription?.isActive === true &&
+        user?.subscription?.endDate &&
+        new Date(user.subscription.endDate).getTime() > Date.now()
+      )
     ) ? (
       <MainNavigator />
     ) : (

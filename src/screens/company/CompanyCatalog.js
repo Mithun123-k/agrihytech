@@ -103,7 +103,7 @@ export function CompanyProducts({ navigation, route }) {
   };
   const addProduct = () => {
     const subscription = user?.subscription;
-    const active = Boolean(subscription?.isActive && (!subscription.endDate || new Date(subscription.endDate).getTime() >= Date.now()));
+    const active = Boolean(subscription?.isActive && subscription?.endDate && new Date(subscription.endDate).getTime() > Date.now());
     if (!active) {
       Alert.alert(
         'Subscription required',

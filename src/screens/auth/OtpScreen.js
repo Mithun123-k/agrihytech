@@ -233,12 +233,14 @@ const OtpScreen = ({
       // SUBSCRIPTION CHECK
       // =========================
       if (
-        user?.role === 'B2B' ||
-        user?.role === 'COMPANY'
+        user?.role === 'B2B'
       ) {
         const hasSubscription =
-          user?.subscription
-            ?.isActive;
+          Boolean(
+            user?.subscription?.isActive &&
+            user?.subscription?.endDate &&
+            new Date(user.subscription.endDate).getTime() > Date.now()
+          );
 
         if (
           !hasSubscription

@@ -252,6 +252,7 @@ export function CompanySubscription({ navigation }) {
       // The session reload switches newly registered companies into their workspace.
       await dispatch(loadUser()).unwrap();
       Alert.alert('Success', Number(plan.price) === 0 ? 'Free trial activated' : 'Subscription activated');
+      navigation.reset({ index: 0, routes: [{ name: 'CompanyTabs' }] });
     } catch (error) {
       Alert.alert('Subscription', typeof error === 'string' ? error : companyError(error));
     } finally { setBusy(false); }

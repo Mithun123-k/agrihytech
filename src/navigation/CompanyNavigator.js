@@ -17,6 +17,7 @@ import UserBrandScreen from '../screens/home/UserBrandScreen';
 import ProductDetailsScreen from '../screens/product/ProductDetailsScreen';
 import { useLanguage } from '../i18n/LanguageContext';
 import InfoScreen from '../screens/profile/InfoScreen';
+import { useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -35,7 +36,14 @@ function CompanyTabs() {
   </Tab.Navigator>;
 }
 export default function CompanyNavigator() {
-  return <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+  const subscription = useSelector(state => state.auth.user?.subscription);
+  const hasActiveSubscription = Boolean(
+    subscription?.isActive &&
+    subscription.endDate &&
+    new Date(subscription.endDate).getTime() > Date.now()
+  );
+
+  return <Stack.Navigator initialRouteName={hasActiveSubscription ? 'CompanyTabs' : 'CompanySubscription'} screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
     <Stack.Screen name="CompanyTabs" component={CompanyTabs} />
     <Stack.Screen name="CompanyProducts" component={CompanyProducts} />
     <Stack.Screen name="CompanyProductForm" component={CompanyProductForm} />
