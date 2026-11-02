@@ -84,6 +84,7 @@ export function CompanyBrandForm({ navigation, route }) {
 }
 
 export function CompanyProducts({ navigation, route }) {
+  const user = useSelector(state => state.auth.user);
   const resource = useCompanyData(getCompanyProducts);
   const [search, setSearch] = useState('');
   const [busy, setBusy] = useState(false);
@@ -100,8 +101,24 @@ export function CompanyProducts({ navigation, route }) {
     catch (error) { Alert.alert('Unable to delete product', companyError(error)); }
     finally { setBusy(false); }
   };
+  const addProduct = () => {
+    const subscription = user?.subscription;
+    const active = Boolean(subscription?.isActive && (!subscription.endDate || new Date(subscription.endDate).getTime() >= Date.now()));
+    if (!active) {
+      Alert.alert(
+        'Subscription required',
+        'Activate a company subscription before adding products.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Choose Plan', onPress: () => navigation.navigate('CompanySubscription') },
+        ],
+      );
+      return;
+    }
+    navigation.navigate('CompanyProductForm', { brandId, categoryId });
+  };
   return <CompanyPage title={route.params?.categoryName || route.params?.brandName || 'My Products'} navigation={navigation} resource={resource}>
-    <CompanyButton title="Add Product" onPress={() => navigation.navigate('CompanyProductForm', { brandId, categoryId })} />
+    <CompanyButton title="Add Product" onPress={addProduct} />
     <CompanyField label="Search products" value={search} onChangeText={setSearch} />
     {!rows.length && !resource.loading ? <AppText style={s.text}>No products found.</AppText> : null}
     {rows.map(product => <View key={product._id} style={s.rowCard}>
