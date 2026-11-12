@@ -139,15 +139,12 @@ const IntroScreen = ({ navigation }) => {
         >
           <View style={styles.cardsContainer}>
             <RoleCard
-              title="Farmer"
-              description="Find pesticides, brands, and nearby sellers for your crops."
-              image={require('../../assets/images/farmer.jpeg')}
-              backgroundColor="#E7F0E5"
+              title="Company"
+              description="Showcase your brands and products, and connect with sellers and farmers."
+              image={require('../../assets/images/company.jpeg')}
+              backgroundColor="#E5EDF5"
               onPress={() =>
-                navigation.navigate(
-                  'Login',
-                  { role: 'B2C' },
-                )
+                navigation.navigate('Login', { role: 'COMPANY' })
               }
             />
 
@@ -163,13 +160,17 @@ const IntroScreen = ({ navigation }) => {
                 )
               }
             />
+
             <RoleCard
-              title="Company"
-              description="Showcase your brands and products, and connect with sellers and farmers."
-              image={require('../../assets/images/company.jpeg')}
-              backgroundColor="#E5EDF5"
+              title="Farmer"
+              description="Find pesticides, brands, and nearby sellers for your crops."
+              image={require('../../assets/images/farmer.jpeg')}
+              backgroundColor="#E7F0E5"
               onPress={() =>
-                navigation.navigate('Login', { role: 'COMPANY' })
+                navigation.navigate(
+                  'Login',
+                  { role: 'B2C' },
+                )
               }
             />
           </View>
@@ -193,15 +194,15 @@ const styles = StyleSheet.create({
 
     paddingTop:
       Platform.OS === 'ios'
-        ? hp(6)
-        : hp(5),
+        ? hp(3)
+        : hp(2.5),
   },
 
   // ✅ Header
   header: {
     alignItems: 'stretch',
 
-    marginTop: hp(1),
+    marginTop: hp(0.5),
 
     paddingHorizontal: wp(2),
   },
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
 
   languageSelector: {
     alignSelf: 'flex-end',
-    marginBottom: hp(1.5),
+    marginBottom: hp(0.8),
   },
 
   heading: {
@@ -256,20 +257,20 @@ const styles = StyleSheet.create({
 
   // ✅ Scroll only cards
   cardsScrollContainer: {
-    paddingBottom: hp(4),
+    paddingBottom: hp(1.5),
   },
 
   cardsContainer: {
-    marginTop: hp(4),
+    marginTop: hp(1.5),
   },
 
   // ✅ Card
   card: {
-    borderRadius: wp(6),
+    borderRadius: wp(5),
 
-    padding: wp(3.2),
+    padding: wp(2),
 
-    marginBottom: hp(2.5),
+    marginBottom: hp(1.2),
 
     elevation: 4,
 
@@ -291,12 +292,12 @@ const styles = StyleSheet.create({
 
     height:
       width < 360
-        ? hp(16)
+        ? hp(11)
         : width < 420
-        ? hp(16)
-        : hp(20),
+        ? hp(12)
+        : hp(14),
 
-    borderRadius: wp(5),
+    borderRadius: wp(4),
 
     resizeMode: 'cover',
   },
@@ -306,27 +307,27 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    marginTop: hp(1.8),
+    marginTop: hp(0.5),
   },
 
 
   cardTitle: {
-    fontSize: responsiveFont(20),
+    fontSize: responsiveFont(18),
 
     fontWeight: '600',
 
-    marginBottom: hp(0.5),
+    marginBottom: hp(0.2),
 
     color: '#111',
   },
 
   cardDescription: {
-    fontSize: responsiveFont(14),
+    fontSize: responsiveFont(13),
 
     color: '#555',
 
     paddingRight: wp(3),
 
-    lineHeight: responsiveFont(21),
+    lineHeight: responsiveFont(18),
   },
 });
