@@ -20,6 +20,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import RazorpayCheckout from "react-native-razorpay";
+import { paymentErrorMessage } from "../../utils/paymentError";
 
 import {
   useDispatch,
@@ -103,7 +104,12 @@ const PlanCard = ({
   selected,
   onPress,
   highlight,
+  features,
+  fallbackFeatures,
 }) => {
+  const planFeatures = features?.length
+    ? features
+    : fallbackFeatures;
 
   return (
 
@@ -112,12 +118,13 @@ const PlanCard = ({
       onPress={onPress}
       style={[
         styles.planCard,
+        highlight && styles.planFeatured,
         selected &&
           styles.planSelected,
       ]}
     >
 
-      <View style={{ flex: 1 }}>
+      <View style={styles.planContent}>
 
         <AppText style={styles.planTitle}>
           {title}{" "}
@@ -136,6 +143,17 @@ const PlanCard = ({
 
         )}
 
+        <View style={styles.cardFeatures}>
+          {planFeatures.map((feature, index) => (
+            <FeatureItem key={`${title}-feature-${index}`} text={feature} />
+          ))}
+        </View>
+
+        <View style={[styles.planAction, selected && styles.planActionSelected]}>
+          <AppText style={styles.planActionText}>{selected ? "Selected plan" : "Select plan"}</AppText>
+          <Ionicons name="arrow-forward" size={17} color="#FFFFFF" />
+        </View>
+
         {highlight && (
 
           <View style={styles.saveBadge}>
@@ -146,22 +164,6 @@ const PlanCard = ({
 
           </View>
 
-        )}
-
-      </View>
-
-      <View
-        style={[
-          styles.radio,
-          selected &&
-            styles.radioSelected,
-        ]}
-      >
-
-        {selected && (
-          <View
-            style={styles.radioInner}
-          />
         )}
 
       </View>
@@ -180,8 +182,8 @@ const PremiumScreen = () => {
 
   const dispatch = useDispatch();
 
-  const [selectedPlan, setSelectedPlan] =
-    useState(null);
+  const [processingPlanId, setProcessingPlanId] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   const {
     plans,
@@ -197,6 +199,23 @@ const PremiumScreen = () => {
     (state) => state.auth
   );
 
+  const isCompany = user?.role === "COMPANY";
+  const trialPlan = plans.find(plan => Number(plan.price) === 0);
+  const canStartTrial = Boolean(trialPlan && !user?.trialUsed);
+  const projectFeatures = isCompany
+    ? [
+        "Publish products under your registered category",
+        "Manage your company catalogue in one place",
+        "Add and manage authorised dealers",
+        "Reach farmers across the Agri HiTech network",
+      ]
+    : [
+        "Add products under your registered categories",
+        "Manage company brands and dealership access",
+        "Showcase products to farmers and buyers",
+        "Receive business enquiries from the marketplace",
+      ];
+
 
   // FETCH PLANS
   useEffect(() => {
@@ -205,18 +224,11 @@ const PremiumScreen = () => {
 
   }, [dispatch]);
 
-
-  // AUTO SELECT FIRST PLAN
   useEffect(() => {
-
-    if (
-      plans &&
-      plans.length > 0
-    ) {
+    if (plans?.length && !plans.some(plan => plan._id === selectedPlan?._id)) {
       setSelectedPlan(plans[0]);
     }
-
-  }, [plans]);
+  }, [plans, selectedPlan]);
 
 
   // ==========================================
@@ -225,6 +237,9 @@ const PremiumScreen = () => {
 
   const handleTrial =
     async () => {
+
+      if (!canStartTrial || loading || processingPlanId) return;
+      setProcessingPlanId(trialPlan._id);
 
       try {
 
@@ -257,6 +272,8 @@ const PremiumScreen = () => {
           err?.message || err
         );
 
+      } finally {
+        setProcessingPlanId(null);
       }
     };
 
@@ -266,17 +283,13 @@ const PremiumScreen = () => {
   // ==========================================
 
   const handlePayment =
-    async () => {
+    async (selectedPlan) => {
+
+      if (!selectedPlan) return;
+      if (processingPlanId) return;
+      setProcessingPlanId(selectedPlan._id);
 
       try {
-
-        if (!selectedPlan) {
-
-          return Alert.alert(
-            "Please select a plan"
-          );
-
-        }
 
         // CREATE ORDER
         const order =
@@ -359,14 +372,11 @@ const PremiumScreen = () => {
         );
 
       } catch (err) {
+        const paymentError = paymentErrorMessage(err);
+        Alert.alert(paymentError.title, paymentError.message);
 
-        Alert.alert(
-          "Payment Failed",
-          err?.description ||
-            err?.message ||
-            "Payment cancelled"
-        );
-
+      } finally {
+        setProcessingPlanId(null);
       }
     };
 
@@ -397,7 +407,7 @@ const PremiumScreen = () => {
           >
 
             {/* TOP BUTTON */}
-            <View style={styles.topRow}>
+            {canStartTrial ? <View style={styles.topRow}>
 
               <TouchableOpacity
                 style={styles.skipBtn}
@@ -413,71 +423,23 @@ const PremiumScreen = () => {
 
               </TouchableOpacity>
 
-            </View>
+            </View> : null}
 
 
             {/* MAIN CARD */}
             <View style={styles.card}>
 
-              {/* PREMIUM BADGE */}
-              <View
-                style={styles.premiumBadge}
-              >
-
-                <Ionicons
-                  name="diamond"
-                  size={moderateScale(14)}
-                  color="#fff"
-                />
-
-                <AppText
-                  style={styles.badgeText}
-                >
-                  PREMIUM
-                </AppText>
-
-              </View>
-
-
               {/* TITLE */}
               <AppText style={styles.title}>
-                Unlock Premium Seller
-                Experience
+                Choose your {isCompany ? "company" : "seller"} plan
               </AppText>
 
               {/* SUBTITLE */}
               <AppText style={styles.subtitle}>
-                Boost your business
-                visibility and grow
-                faster with premium
-                selling tools.
+                {isCompany
+                  ? "Select the access period that suits your company. Manage products and dealers while reaching farmers across Agri HiTech Kisan."
+                  : "Select the access period that suits your shop. Manage products and company partnerships while connecting with farmers."}
               </AppText>
-
-
-              {/* FEATURES */}
-              <View
-                style={
-                  styles.featuresContainer
-                }
-              >
-
-                <FeatureItem
-                  text="Seller can add and publish products without limits"
-                />
-
-                <FeatureItem
-                  text="Products appear higher in search and category results"
-                />
-
-                <FeatureItem
-                  text="Unlock calls, messages, or order requests from buyers"
-                />
-
-                <FeatureItem
-                  text="Clean, distraction-free selling experience"
-                />
-
-              </View>
 
 
               {/* PLANS */}
@@ -507,20 +469,22 @@ const PremiumScreen = () => {
 
                       subText={`${plan.duration} days access`}
 
+                      features={plan.features}
+
+                      fallbackFeatures={projectFeatures}
+
                       highlight={
                         plan.isRecommended
                       }
 
-                      selected={
-                        selectedPlan?._id ===
-                        plan._id
-                      }
+                      selected={processingPlanId === plan._id || selectedPlan?._id === plan._id}
 
-                      onPress={() =>
-                        setSelectedPlan(
-                          plan
-                        )
-                      }
+                      onPress={() => {
+                        if (loading || processingPlanId) return;
+                        setSelectedPlan(plan);
+                        if (Number(plan.price) === 0) handleTrial();
+                        else handlePayment(plan);
+                      }}
 
                     />
 
@@ -538,27 +502,6 @@ const PremiumScreen = () => {
                 payment powered by
                 Razorpay.
               </AppText>
-
-
-              {/* CONTINUE BUTTON */}
-              <TouchableOpacity
-                style={styles.continueBtn}
-                onPress={handlePayment}
-                activeOpacity={0.9}
-                disabled={loading}
-              >
-
-                <AppText
-                  style={
-                    styles.continueText
-                  }
-                >
-                  {loading
-                    ? "Processing..."
-                    : "Continue"}
-                </AppText>
-
-              </TouchableOpacity>
 
 
               {/* FOOTER */}
@@ -684,6 +627,10 @@ const styles = StyleSheet.create({
 
     borderColor: "#ECECEC",
 
+    borderTopWidth: 5,
+
+    borderTopColor: "#4C7C1A",
+
     width: "92%",
 
     alignSelf: "center",
@@ -768,32 +715,36 @@ const styles = StyleSheet.create({
       verticalScale(5),
   },
 
+  cardFeatures: {
+    marginTop: verticalScale(14),
+  },
+
   featureRow: {
     flexDirection: "row",
 
     alignItems: "flex-start",
 
-    marginBottom:
-      verticalScale(5),
+    marginBottom: verticalScale(7),
+    paddingVertical: verticalScale(3),
   },
 
   checkIcon: {
-    width: moderateScale(18),
+    width: moderateScale(22),
 
     height:
-      moderateScale(18),
+      moderateScale(22),
 
     borderRadius:
       moderateScale(11),
 
-    backgroundColor: "#D28A00",
+    backgroundColor: "#56B847",
 
     justifyContent: "center",
 
     alignItems: "center",
 
     marginRight:
-      moderateScale(12),
+      moderateScale(10),
 
     marginTop: 2,
   },
@@ -802,61 +753,79 @@ const styles = StyleSheet.create({
     flex: 1,
 
     fontSize: isSmallDevice
-      ? moderateScale(12.5)
-      : moderateScale(14),
+      ? moderateScale(12)
+      : moderateScale(13),
 
-    color: "#4B5563",
+    color: "#20372B",
 
     // lineHeight:
     //   verticalScale(22),
 
-    fontWeight: "500",
+    fontWeight: "600",
   },
 
   planContainer: {
-    marginTop:
-      verticalScale(12),
+    marginTop: verticalScale(14),
+    flexDirection: "column",
   },
 
   planCard: {
-    borderWidth: 1.2,
+    borderWidth: 1.5,
 
-    borderColor: "#E5E7EB",
+    borderColor: "#75A879",
 
     borderRadius:
       moderateScale(20),
 
+    borderTopWidth: 1.5,
+
     padding:
-      moderateScale(16),
+      moderateScale(18),
 
     marginBottom:
-      verticalScale(14),
+      verticalScale(12),
 
-    flexDirection: "row",
+    flexDirection: "column",
 
     justifyContent:
-      "space-between",
+      "flex-start",
 
-    alignItems: "center",
+    backgroundColor: "#FFFFFF",
 
-    backgroundColor: "#fff",
-
-    minHeight:
-      verticalScale(82),
+    minHeight: verticalScale(230),
+    width: "100%",
+    alignItems: "stretch",
+    shadowColor: "#3D7A12",
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
   },
 
   planSelected: {
     backgroundColor: "#F4FAEE",
 
-    borderColor: "#6A9E3F",
+    borderColor: "#4C7C1A",
+    borderWidth: 2,
+
   },
+
+  planFeatured: {
+    backgroundColor: "#F3F9E9",
+    borderColor: "#6BAF62",
+  },
+
+  planContent: { flex: 1 },
+  planAction: { marginTop: verticalScale(15), backgroundColor: "#075A35", borderRadius: moderateScale(12), paddingVertical: verticalScale(12), paddingHorizontal: moderateScale(16), flexDirection: "row", alignItems: "center", justifyContent: "center", gap: moderateScale(8) },
+  planActionSelected: { backgroundColor: "#8BCF4B" },
+  planActionText: { color: "#FFFFFF", fontSize: moderateScale(14), fontWeight: "800" },
 
   planTitle: {
     fontSize: isSmallDevice
-      ? moderateScale(14)
-      : moderateScale(16),
+      ? moderateScale(16)
+      : moderateScale(18),
 
-    fontWeight: "700",
+    fontWeight: "800",
 
     color: "#111827",
 
@@ -865,9 +834,10 @@ const styles = StyleSheet.create({
   },
 
   priceText: {
-    color: "#3D7A12",
+    color: "#28620E",
 
     fontWeight: "800",
+    fontSize: moderateScale(30),
   },
 
   subText: {
@@ -886,7 +856,7 @@ const styles = StyleSheet.create({
     marginTop:
       verticalScale(8),
 
-    backgroundColor: "#2563EB",
+    backgroundColor: "#FFF2C7",
 
     paddingHorizontal:
       moderateScale(10),
@@ -901,7 +871,7 @@ const styles = StyleSheet.create({
   },
 
   saveText: {
-    color: "#fff",
+    color: "#8A5A00",
 
     fontSize:
       moderateScale(11),

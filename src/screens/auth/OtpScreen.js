@@ -309,7 +309,7 @@ const OtpScreen = ({
 
             {/* TITLE */}
             <AppText style={styles.title}>
-              Verify Your Number
+              Verify Your WhatsApp Number
             </AppText>
 
             {/* OTP SHOW */}
@@ -322,8 +322,7 @@ const OtpScreen = ({
             <AppText
               style={styles.subtitle}
             >
-              Enter the 4-digit OTP
-              sent to +91 {mobile}
+              We sent a 4-digit verification code to your WhatsApp number +91 {mobile}. Enter it below to continue.
             </AppText>
 
             {/* OTP BOX */}

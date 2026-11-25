@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RazorpayCheckout from 'react-native-razorpay';
+import { paymentErrorMessage } from '../../utils/paymentError';
 import { logout, updateProfile, loadUser } from '../../features/auth/authSlice';
 import { getCompanyProfile, getCompanyProducts, getCompanyDealers, getCompanyDealerDetails, getCompanyCategories, assignCompanyDealer, removeCompanyDealer, setCompanyDealerStatus, getCompanySubscription, getCompanyPlans, startCompanyTrial, createCompanyOrder, verifyCompanyPayment, companyError, appendCompanyImage } from '../../features/company/companyAPI';
 import { CompanyPage, CompanyButton, CompanyField, useCompanyData, pickCompanyImages, s } from './shared';
@@ -254,14 +255,19 @@ export function CompanySubscription({ navigation }) {
       Alert.alert('Success', Number(plan.price) === 0 ? 'Free trial activated' : 'Subscription activated');
       navigation.reset({ index: 0, routes: [{ name: 'CompanyTabs' }] });
     } catch (error) {
-      Alert.alert('Subscription', typeof error === 'string' ? error : companyError(error));
+      if (Number(plan.price) > 0 && !error?.response) {
+        const paymentError = paymentErrorMessage(error);
+        Alert.alert(paymentError.title, paymentError.message);
+      } else {
+        Alert.alert('Subscription', typeof error === 'string' ? error : companyError(error));
+      }
     } finally { setBusy(false); }
   };
   return <CompanyPage title="Subscription" navigation={navigation} resource={resource}>
     <View style={s.card}><AppText style={s.title}>{current?.planId?.name || 'Choose your plan'}</AppText><AppText style={s.text}>{subscriptionActive(current) ? 'Active' : 'Inactive'}</AppText>
       {current?.startDate ? <AppText style={s.text}>{dateLabel(current.startDate)} – {dateLabel(current.endDate)}</AppText> : null}
     </View>
-    {plans.map(plan => <View key={plan._id} style={s.card}>
+    {plans.map(plan => <View key={plan._id} style={[s.subscriptionCard, plan.isRecommended && s.subscriptionCardRecommended]}>
       <AppText style={s.title}>{plan.name}{plan.isRecommended ? ' · Recommended' : ''}</AppText><AppText style={s.number}>{plan.currency || 'INR'} {plan.price}</AppText><AppText style={s.text}>{plan.duration} days</AppText>
       {(plan.features || []).map((feature, index) => <AppText key={index} style={s.text}>✓ {feature}</AppText>)}
       <CompanyButton secondary={selected?._id !== plan._id} title={selected?._id === plan._id ? 'Selected' : 'Select Plan'} disabled={busy || (plan.price === 0 && (subscription?.trialUsed || subscriptionActive(current)))} onPress={() => setSelectedId(plan._id)} />

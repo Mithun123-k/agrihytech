@@ -75,6 +75,8 @@ export const s = StyleSheet.create({
   content: { padding: scale(16), paddingBottom: scale(35) },
   tabContent: { paddingBottom: scale(120) },
   card: { backgroundColor: '#fff', borderRadius: scale(18), padding: scale(16), marginBottom: scale(14), elevation: 2 },
+  subscriptionCard: { backgroundColor: '#FFF9E9', borderRadius: scale(22), padding: scale(17), marginBottom: scale(14), borderWidth: 1, borderTopWidth: scale(5), borderColor: '#F0D99A', borderTopColor: '#D28A00', elevation: 5, shadowColor: '#8A5A00', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 5 }, minHeight: scale(190) },
+  subscriptionCardRecommended: { borderColor: '#4C7A1E', borderWidth: 2, borderTopWidth: scale(5), borderTopColor: '#28620E', backgroundColor: '#F3FBEA' },
   title: { fontSize: responsiveFont(20), fontWeight: '600', color: '#222', marginBottom: scale(10) },
   text: { fontSize: responsiveFont(14), color: '#555', marginBottom: scale(8) },
   label: { fontSize: responsiveFont(14), color: '#333', marginBottom: scale(6) },

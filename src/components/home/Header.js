@@ -303,7 +303,7 @@ const HomeHeader = ({
       >
         <View style={styles.overlay} />
 
-        <SafeAreaView>
+        <SafeAreaView edges={[]}>
           <View style={styles.content}>
             {/* Top Row */}
             <View
@@ -340,8 +340,7 @@ const HomeHeader = ({
                     }
                   >
                     {' '}
-                    best crop {'\n'}
-                    care solutions
+                    best crop care solutions
                   </AppText>{' '}
                   for you
                 </AppText>
@@ -478,11 +477,7 @@ export default HomeHeader;
 const styles =
   StyleSheet.create({
     container: {
-      height:
-        width < 360
-          ? hp(28)
-          : hp(30),
-          marginBottom:hp(5)
+      marginBottom: hp(1),
     },
 
     background: {
@@ -500,8 +495,8 @@ const styles =
       paddingTop:
         Platform.OS ===
         'ios'
-          ? hp(1)
-          : hp(1.5),
+          ? hp(2.5)
+          : hp(2.5),
     },
 
     // ✅ TOP ROW
@@ -529,7 +524,7 @@ const styles =
       color: '#444',
 
       marginBottom:
-        hp(0.7),
+        hp(0.3),
     },
 
     // ✅ HIGHLIGHT TEXT
@@ -625,7 +620,8 @@ const styles =
 
     // ✅ WEATHER CARD
     weatherCard: {
-      marginTop: hp(3),
+      marginTop: hp(2),
+      marginBottom: hp(1.5),
 
       borderRadius: wp(5),
 

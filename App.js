@@ -1,6 +1,7 @@
 import React, {useEffect}  from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
-import { SafeAreaView, Text } from 'react-native';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import RNBootSplash from "react-native-bootsplash";
 import { Provider } from 'react-redux';
 import { store } from './src/apps/store';
@@ -15,13 +16,16 @@ const App = () => {
 },[]);
 
   return (
-    // <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F6F2' }} edges={['top']}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F5F6F2" translucent={false} />
       <LanguageProvider>
         <Provider store={store}>
           <AppNavigator />
         </Provider>
       </LanguageProvider>
-    // </SafeAreaView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 
 };

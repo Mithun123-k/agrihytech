@@ -175,6 +175,20 @@ const HomeScreen = ({
             data={banners}
           />
 
+          <View style={styles.trustBar}>
+            {[
+              ['500+', 'Verified Brands'],
+              ['25K+', 'Products'],
+              ['10K+', 'Dealers'],
+              ['28', 'States Covered'],
+            ].map(([value, label], index) => (
+              <View key={label} style={[styles.trustItem, index > 0 && styles.trustDivider]}>
+                <AppText style={styles.trustValue}>{value}</AppText>
+                <AppText style={styles.trustLabel}>{label}</AppText>
+              </View>
+            ))}
+          </View>
+
           <CategorySection
             data={categories}
             navigation={
@@ -274,6 +288,43 @@ const styles =
         wp(4),
 
       marginTop: hp(0.5),
+    },
+
+    trustBar: {
+      flexDirection: 'row',
+      backgroundColor: '#FFFFFF',
+      borderRadius: wp(5),
+      borderWidth: 1,
+      borderColor: '#E5ECE6',
+      marginTop: hp(1.5),
+      marginBottom: hp(1.5),
+      paddingVertical: hp(1.5),
+      elevation: 3,
+      shadowColor: '#274B38',
+      shadowOpacity: 0.08,
+      shadowRadius: 7,
+      shadowOffset: { width: 0, height: 3 },
+    },
+    trustItem: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: wp(0.5),
+    },
+    trustDivider: {
+      borderLeftWidth: 1,
+      borderLeftColor: '#E4E9E4',
+    },
+    trustValue: {
+      fontSize: responsiveFont(20),
+      fontWeight: '800',
+      color: '#23764D',
+    },
+    trustLabel: {
+      fontSize: responsiveFont(10),
+      color: '#586474',
+      textAlign: 'center',
+      marginTop: hp(0.4),
     },
 
     // ✅ Loader
